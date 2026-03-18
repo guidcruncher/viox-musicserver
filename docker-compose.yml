@@ -1,0 +1,75 @@
+networks:
+  proxy:
+    external: true
+
+services:
+  dbmate:
+    image: ghcr.io/amacneil/dbmate:latest
+    container_name: dbmate
+    hostname: dbmate
+    volumes:
+      - ./db/migrations:/db/migrations
+      - ../run/data:/db
+    environment:
+      DATABASE_URL: sqlite:/db/datastore.db
+    entrypoint: ["dbmate"]
+    command: ["up"]
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /db/datastore.db ]"]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+
+  viox-musicserver:
+    depends_on:
+      dbmate:
+        condition: service_completed_successfully
+    image: guidcruncher/viox-musicserver:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: viox-musicserver
+    hostname: viox-musicserver
+    restart: unless-stopped
+    secrets:
+      - spotify-clientid
+      - spotify-clientsecret
+
+    # networks:
+    #  - proxy
+    network_mode: host
+    dns:
+      - 192.168.1.201
+      - 8.8.8.8
+      - 8.8.4.4
+    # Device access for audio
+    devices:
+      - /dev/snd:/dev/snd
+
+    # Volume mounts
+    volumes:
+      - ../run/cache:/cache
+      - ../run/config:/config
+      - ../run/music:/music
+      - ../run/data:/data
+    # Environment variables
+    environment:
+      - XDG_RUNTIME_DIR=/run/user/1000
+      - BASE_URL=https://raspberry-pi.starling-escalator.ts.net
+      - ENABLE_SPOTIFY_CACHE=false
+      - RADIO_PROVIDER=tunein
+
+    # Capabilities for audio access
+    cap_add:
+      - SYS_NICE
+
+    # IPC for shared memory (PulseAudio)
+    ipc: host
+
+secrets:
+  spotify-clientid:
+    file: ../spotify-clientid.secret
+  spotify-clientsecret:
+   file: ../spotify-clientsecret.secret
+
+

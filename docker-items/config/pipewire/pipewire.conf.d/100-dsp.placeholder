@@ -1,0 +1,36 @@
+context.modules = [
+  {
+    name = libpipewire-module-filter-chain
+    args = {
+      node.name        = "placeholder-dsp"
+      node.description = "Placeholder Filter (No Processing)"
+      media.name       = "Placeholder DSP"
+
+      audio.rate = $AUDIO_RATE
+      audio.channels = $AUDIO_CHANNELS
+      audio.position = "$AUDIO_POSITION"
+      
+      filter.graph = {
+        nodes = [
+          {
+            type   = builtin
+            label  = copy
+            name   = passthrough
+            control = { }
+          }
+        ]
+      }
+
+      capture.props = {
+        node.name   = "dsp-input"
+        media.class = "Audio/Sink"
+      }
+
+      playback.props = {
+        node.name   = "dsp-output"
+        media.class = "Audio/Source"
+      }
+    }
+  }
+]
+
