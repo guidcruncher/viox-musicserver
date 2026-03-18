@@ -1,0 +1,34 @@
+import type {
+  MediaItem,
+  MediaSourceRef,
+  MediaItemNormalizer,
+} from "@/types";
+
+export class LocalFileNormalizer implements MediaItemNormalizer {
+  normalize(raw: any): MediaItem {
+    if (!raw) throw new Error("Cannot normalize empty local file object");
+
+    const ref: MediaSourceRef = {
+      source: "local",
+      itemType: "track",
+      sourceId: raw.path, // full path or hashed path
+      uri: raw.path,
+    };
+
+    return {
+      id: this.buildId(ref),
+      sourceRef: ref,
+      title: raw.title || raw.filename,
+      subtitle: raw.album,
+      artist: raw.artist,
+      album: raw.album,
+      imageUrl: raw.coverArtPath,
+      durationMs: raw.durationMs,
+      isLive: false,
+    };
+  }
+
+  private buildId(ref: MediaSourceRef): string {
+    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`;
+  }
+}
