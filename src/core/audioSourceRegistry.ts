@@ -34,6 +34,13 @@ export class AudioSourceRegistry {
   }
 
   /**
+   * Resolves adapter from a MediaItem
+   */
+  getAdapterForItem(item: MediaItem): AudioSourceAdapter {
+     return this.getAdapter(item.sourceRef.source);
+  }
+
+  /**
    * Resolve adapter from a MediaSourceRef.
    */
   getAdapterForRef(ref: MediaSourceRef): AudioSourceAdapter {
