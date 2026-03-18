@@ -9,6 +9,7 @@ import { SqlitePlaylistStore } from "@/infra/playlistStore";
 import { SpotifyPlaybackBackend } from "@/infra/backends/spotifyBackend";
 import { MPDPlaybackBackend } from "@/infra/backends/mpdBackend";
 import { OtherPlaybackBackend } from "@/infra/backends/otherBackend";
+import { PipewireFfmpegBackend } from "@/infra/backends/pipewireFfmpegBackend";
 
 // Router
 import { SimpleBackendRouter } from "@/infra/backendRouter";
@@ -45,7 +46,12 @@ export function createVioxBackend() {
   //
   const spotifyBackend = new SpotifyPlaybackBackend(/* spotifyClient */);
   const mpdBackend = new MPDPlaybackBackend(/* mpdClient */);
-  const otherBackend = new OtherPlaybackBackend();
+  // const otherBackend = new OtherPlaybackBackend();
+  const otherBackend = new PipewireFfmpegBackend({
+    ffmpegPath: "ffmpeg",
+    pwCatPath: "pw-cat",
+    // device: "alsa_output.pci-0000_00_1f.3.analog-stereo", // optional
+  });
 
   //
   // ────────────────────────────────────────────────
