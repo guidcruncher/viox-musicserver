@@ -1,5 +1,5 @@
 import { MediaItem } from "./index"
 
 export interface MediaItemNormalizer {
-  normalize(raw: any): MediaItem;
+  normalize(raw: any): MediaItem
 }

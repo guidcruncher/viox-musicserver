@@ -1,13 +1,13 @@
 import { AudioSource, MediaItem } from "./index"
 
 export interface AudioSourceAdapter {
-  readonly id: AudioSource;
+  readonly id: AudioSource
 
-  search(query: string): Promise<MediaItem[]>;
+  search(query: string): Promise<MediaItem[]>
 
-  getById(ref: MediaSourceRef): Promise<MediaItem | null>;
+  getById(ref: MediaSourceRef): Promise<MediaItem | null>
 
-  getPlaybackUrl(ref: MediaSourceRef): Promise<string | null>;
+  getPlaybackUrl(ref: MediaSourceRef): Promise<string | null>
 
-  browse?(options: BrowseOptions): Promise<MediaItem[]>;
+  browse?(options: BrowseOptions): Promise<MediaItem[]>
 }

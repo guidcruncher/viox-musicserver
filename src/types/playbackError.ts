@@ -3,10 +3,10 @@ export type PlaybackErrorCode =
   | "NOT_AUTHORIZED"
   | "NETWORK"
   | "BACKEND_ERROR"
-  | "UNSUPPORTED_FORMAT";
+  | "UNSUPPORTED_FORMAT"
 
 export interface PlaybackError {
-  code: PlaybackErrorCode;
-  message: string;
-  cause?: unknown;
+  code: PlaybackErrorCode
+  message: string
+  cause?: unknown
 }

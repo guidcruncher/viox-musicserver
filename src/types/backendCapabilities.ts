@@ -1,5 +1,5 @@
 export interface BackendCapabilities {
-  supportsGapless?: boolean;
-  supportsCrossfade?: boolean;
-  supportsLive?: boolean;
+  supportsGapless?: boolean
+  supportsCrossfade?: boolean
+  supportsLive?: boolean
 }

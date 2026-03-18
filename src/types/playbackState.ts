@@ -6,4 +6,4 @@ export type PlaybackState =
   | { type: "playing"; item: MediaItem; positionMs: number }
   | { type: "paused"; item: MediaItem; positionMs: number }
   | { type: "ended"; item: MediaItem }
-  | { type: "error"; error: PlaybackError };
+  | { type: "error"; error: PlaybackError }

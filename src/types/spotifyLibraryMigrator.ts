@@ -1,3 +1,3 @@
 export interface SpotifyLibraryMigrator {
-  migrateUserLibrary(): Promise<SpotifyLibraryMigrationResult>;
+  migrateUserLibrary(): Promise<SpotifyLibraryMigrationResult>
 }

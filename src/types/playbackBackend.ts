@@ -1,10 +1,10 @@
 export interface PlaybackBackend {
-  readonly id: string;
+  readonly id: string
 
-  play(item: MediaItem, positionMs?: number): Promise<void>;
-  pause(): Promise<void>;
-  stop(): Promise<void>;
-  seek(positionMs: number): Promise<void>;
+  play(item: MediaItem, positionMs?: number): Promise<void>
+  pause(): Promise<void>
+  stop(): Promise<void>
+  seek(positionMs: number): Promise<void>
 
-  getPosition(): Promise<number>; // ms
+  getPosition(): Promise<number> // ms
 }

@@ -1,20 +1,20 @@
 import { MediaSourceRef } from "./index"
 
 export interface MediaItem {
-  id: string; // internal VIOX ID (uuid or hash)
-  sourceRef: MediaSourceRef;
+  id: string // internal VIOX ID (uuid or hash)
+  sourceRef: MediaSourceRef
 
-  title: string;
-  subtitle?: string;
-  artist?: string;
-  album?: string;
-  imageUrl?: string;
+  title: string
+  subtitle?: string
+  artist?: string
+  album?: string
+  imageUrl?: string
 
-  durationMs?: number; // null for live
-  isLive?: boolean;    // true for stations
+  durationMs?: number // null for live
+  isLive?: boolean // true for stations
 
   // Optional extended metadata
-  description?: string;
-  releaseDate?: string;
-  explicit?: boolean;
+  description?: string
+  releaseDate?: string
+  explicit?: boolean
 }
