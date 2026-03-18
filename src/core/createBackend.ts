@@ -1,32 +1,32 @@
 import { db } from "@/infra/db";
 
 // Stores
-import { SqliteLibraryStore } from "@/infra/library-store-sqlite";
-import { SqliteQueueStore } from "@/infra/queue-store-sqlite";
-import { SqlitePlaylistStore } from "@/infra/playlist-store-sqlite";
+import { SqliteLibraryStore } from "@/infra/libraryStore";
+import { SqliteQueueStore } from "@/infra/queueStore";
+import { SqlitePlaylistStore } from "@/infra/playlistStore";
 
 // Backends
-import { SpotifyPlaybackBackend } from "@/infra/backends/spotify-backend";
-import { MPDPlaybackBackend } from "@/infra/backends/mpd-backend";
-import { OtherPlaybackBackend } from "@/infra/backends/other-backend";
+import { SpotifyPlaybackBackend } from "@/infra/backends/spotifyBackend";
+import { MPDPlaybackBackend } from "@/infra/backends/mpdBackend";
+import { OtherPlaybackBackend } from "@/infra/backends/otherBackend";
 
 // Router
-import { SimpleBackendRouter } from "@/infra/backend-router";
+import { SimpleBackendRouter } from "@/infra/backendRouter";
 
 // Orchestrator
-import { DefaultPlaybackOrchestrator } from "@/core/playback-orchestrator";
+import { DefaultPlaybackOrchestrator } from "@/core/playbackOrchestrator";
 
 // Source adapters
-import { AudioSourceRegistry } from "@/core/audio-source-registry";
-import { SpotifySourceAdapter } from "@/infra/sources/spotify-adapter";
-import { PodverseSourceAdapter } from "@/infra/sources/podverse-adapter";
-import { RadioBrowserSourceAdapter } from "@/infra/sources/radiobrowser-adapter";
-import { TuneInSourceAdapter } from "@/infra/sources/tunein-adapter";
-import { YouTubeMusicSourceAdapter } from "@/infra/sources/youtube-adapter";
+import { AudioSourceRegistry } from "@/core/audioSourceRegistry";
+import { SpotifySourceAdapter } from "@/infra/sources/spotifyAdapter";
+import { PodverseSourceAdapter } from "@/infra/sources/podverseAdapter";
+import { RadioBrowserSourceAdapter } from "@/infra/sources/radiobrowserAdapter";
+import { TuneInSourceAdapter } from "@/infra/sources/tuneinAdapter";
+import { YouTubeMusicSourceAdapter } from "@/infra/sources/youtubeAdapter";
 import { LocalSourceAdapter } from "@/infra/sources/local-adapter";
 
 // Engine
-import { DefaultPlaybackEngine } from "@/core/playback-engine";
+import { DefaultPlaybackEngine } from "@/core/playbackEngine";
 
 export function createVioxBackend() {
   //
@@ -116,3 +116,5 @@ export function createVioxBackend() {
     engine,
   };
 }
+
+export const backend = createVioxBackend()
