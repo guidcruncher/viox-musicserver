@@ -22,7 +22,7 @@ export * from "./playlist";
 export * from "./playlistMetadata";
 export * from "./playlistStore";
 export * from "./queueStore";
+export * from "./spotifyLibraryMigrationResult";
 export * from "./spotifyLibraryMigrator";
-export * from "./spotifyMigrationResults";
 export * from "./spotifyPlaylistWithItems";
 export * from "./utils";
