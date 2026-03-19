@@ -8,7 +8,6 @@ import { EqualizerService } from "@/infra/equalizer/equalizerService"
 import { SqliteLibraryStore } from "@/infra/libraryStore"
 import { PlaybackController } from "@/infra/playback/playbackController"
 import { SqlitePlaylistStore } from "@/infra/playlistStore"
-import { SearchService } from  "@/infra/search/searchService"
 import { SpeakerControlService } from "@/infra/snapserver/speakerControlService"
 import { StatusService } from "@/infra/status/statusService"
 import { SpotifyImportService } from "@/services/spotifyImportService"
@@ -65,18 +64,6 @@ export function createVioxBackend(): VioxBackend {
 
   //
   // ────────────────────────────────────────────────
-  // 6. Search service (multi‑source)
-  // ────────────────────────────────────────────────
-  //
-  const search = new SearchService({
-    spotify: spotifyBackend,
-    local: localBackend,
-    radio: radioBackend,
-    podverse: podverseBackend,
-  })
-
-  //
-  // ────────────────────────────────────────────────
   // 7. Equalizer + Speakers + Status
   // ────────────────────────────────────────────────
   //
@@ -102,7 +89,6 @@ export function createVioxBackend(): VioxBackend {
     playback,
     library,
     playlists,
-    search,
     equalizer,
     backends: backendRegistry,
     speakers,

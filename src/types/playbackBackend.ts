@@ -5,6 +5,7 @@ export interface PlaybackBackend {
 
   play(item: MediaItem, positionMs?: number): Promise<void>
   pause(): Promise<void>
+  resume(): Promise<void>
   stop(): Promise<void>
   seek(positionMs: number): Promise<void>
 
