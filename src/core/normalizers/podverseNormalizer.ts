@@ -1,81 +1,128 @@
-import type {
-  MediaItem,
-  MediaSourceRef,
-  MediaItemNormalizer,
-} from "@/types";
+import type { MediaItem, MediaSourceRef } from "@/types";
 
-export class PodverseNormalizer implements MediaItemNormalizer {
+export class PodverseNormalizer {
   normalize(raw: any): MediaItem {
-    if (!raw) throw new Error("Cannot normalize empty Podverse object");
+    if (!raw) {
+      throw new Error("PodverseNormalizer: cannot normalize empty object");
+    }
 
-    if (raw.type === "podcast") return this.podcast(raw);
-    if (raw.type === "episode") return this.episode(raw);
+    // MediaRef (clips)
+    if ("startTime" in raw) {
+      return this.fromMediaRef(raw);
+    }
 
-    throw new Error(`Unsupported Podverse item type: ${raw.type}`);
+    // Episode (API or RSS)
+    if ("mediaUrl" in raw) {
+      return this.fromEpisode(raw);
+    }
+
+    // Podcast
+    if ("feedUrls" in raw || raw.type === "podcast") {
+      return this.fromPodcast(raw);
+    }
+
+    throw new Error(`PodverseNormalizer: unsupported object type`);
   }
 
-  //
   // ────────────────────────────────────────────────
-  //   Podcast
+  // Podcast
   // ────────────────────────────────────────────────
-  //
-  private podcast(raw: any): MediaItem {
+  private fromPodcast(podcast: any): MediaItem {
     const ref: MediaSourceRef = {
       source: "podverse",
       itemType: "podcast",
-      sourceId: raw.id,
-      uri: raw.url ?? undefined,
+      sourceId: podcast.id,
+      uri: podcast.feedUrls?.[0]?.url ?? podcast.linkUrl ?? "",
     };
 
     return {
       id: this.buildId(ref),
       sourceRef: ref,
-      title: raw.title,
-      subtitle: raw.author,
-      artist: raw.author,
-      album: raw.title,
-      imageUrl: raw.imageUrl,
+      title: podcast.title ?? "Untitled Podcast",
+      subtitle: podcast.description ?? "",
+      artist: podcast.authors?.map((a: any) => a.name).join(", "),
+      album: undefined,
+      imageUrl: podcast.imageUrl,
       durationMs: undefined,
       isLive: false,
-      description: raw.description,
     };
   }
 
-  //
   // ────────────────────────────────────────────────
-  //   Episode
+  // Episode (API or RSS)
   // ────────────────────────────────────────────────
-  //
-  private episode(raw: any): MediaItem {
+  private fromEpisode(ep: any): MediaItem {
+    const podcastId =
+      ep.podcast?.id ??
+      ep.podcastId ??
+      this.extractPodcastIdFromEpisodeId(ep.id);
+
     const ref: MediaSourceRef = {
       source: "podverse",
       itemType: "episode",
-      sourceId: raw.id,
-      parentSourceId: raw.podcastId,
-      uri: raw.url ?? undefined,
+      sourceId: ep.id,
+      parentSourceId: podcastId,
+      uri: ep.mediaUrl,
     };
 
     return {
       id: this.buildId(ref),
       sourceRef: ref,
-      title: raw.title,
-      subtitle: raw.podcastTitle,
-      artist: raw.podcastAuthor,
-      album: raw.podcastTitle,
-      imageUrl: raw.imageUrl,
-      durationMs: raw.duration,
+      title: ep.title ?? "Untitled Episode",
+      subtitle: ep.description ?? "",
+      artist: ep.podcast?.title,
+      album: ep.podcast?.title,
+      imageUrl: ep.imageUrl ?? ep.podcast?.imageUrl,
+      durationMs: ep.duration ? ep.duration * 1000 : undefined,
       isLive: false,
-      description: raw.description,
-      releaseDate: raw.publishedAt,
     };
   }
 
-  //
   // ────────────────────────────────────────────────
-  //   Helpers
+  // MediaRef (clips)
   // ────────────────────────────────────────────────
-  //
+  private fromMediaRef(refObj: any): MediaItem {
+    const episode = refObj.episode;
+    const podcast = refObj.podcast;
+
+    const ref: MediaSourceRef = {
+      source: "podverse",
+      itemType: "mediaref",
+      sourceId: refObj.id,
+      parentSourceId: episode?.id,
+      uri: this.buildMediaRefUri(refObj),
+    };
+
+    return {
+      id: this.buildId(ref),
+      sourceRef: ref,
+      title: refObj.title ?? episode?.title ?? "Untitled Clip",
+      subtitle: refObj.description ?? episode?.description ?? "",
+      artist: podcast?.title,
+      album: podcast?.title,
+      imageUrl: episode?.imageUrl ?? podcast?.imageUrl,
+      durationMs: undefined,
+      isLive: false,
+    };
+  }
+
+  // ────────────────────────────────────────────────
+  // Helpers
+  // ────────────────────────────────────────────────
   private buildId(ref: MediaSourceRef): string {
     return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`;
+  }
+
+  private buildMediaRefUri(ref: any): string {
+    const episodeId = ref.episode?.id ?? "unknown";
+    const start = ref.startTime ?? 0;
+    return `mediaref:${ref.id}:episode:${episodeId}:start:${start}`;
+  }
+
+  private extractPodcastIdFromEpisodeId(id: string): string | undefined {
+    // Example: podverse:episode:123 → 123
+    if (!id) return undefined;
+    const parts = id.split(":");
+    return parts.length >= 3 ? parts[2] : undefined;
   }
 }
