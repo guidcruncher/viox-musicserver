@@ -41,7 +41,7 @@ routeFiles.forEach((file, index) => {
 
 output += `
 
-export async function registerAllRoutes(app: FastifyInstance) {
+export const registerAllRoutes = async(app: FastifyInstance) => {
 `;
 
 routeFiles.forEach((_, index) => {
