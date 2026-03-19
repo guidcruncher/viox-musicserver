@@ -2,13 +2,13 @@ import cors from "@fastify/cors"
 import fastifyStatic from "@fastify/static"
 import swagger from "@fastify/swagger"
 import Fastify from "fastify"
-import websocket from '@fastify/websocket'
+
 import { getConfig } from "@/config"
 import { createVioxBackend } from "@/core/createBackend"
+import { registerEventBus } from "@/infra/eventbus/registerEventBus"
 import { getLogger } from "@/logger"
 import { registerAllRoutes } from "@/routes"
 import { version } from "@/version"
-import { registerEventBus } from "@/infra/eventbus/registerEventBus"
 
 export const createServer = async () => {
   const logger = getLogger()

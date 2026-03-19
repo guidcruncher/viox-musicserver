@@ -1,11 +1,12 @@
-import { EVENT_DEFINITIONS } from "./appEvents"
 import { EventEmitter } from "node:events"
+
+import { EVENT_DEFINITIONS } from "./appEvents"
 
 export type AppEvents = typeof EVENT_DEFINITIONS
 export type EventKey = keyof AppEvents
 export const EVENT_KEYS = Object.keys(EVENT_DEFINITIONS) as EventKey[]
 
-export class EventBus {
+class EventBus {
   private bus = new EventEmitter()
   private clientListeners = new Map<string, Map<EventKey, Function>>()
 
