@@ -32,7 +32,7 @@ const CACHE_TTL_MS = 2000
 /**
  * Internal helper to get fresh or cached file data
  */
-function getFileData(): ConfigFile | undefined {
+const getFileData = (): ConfigFile | undefined => {
   const now = Date.now()
   if (!cachedFileData || now - lastReadTime > CACHE_TTL_MS) {
     cachedFileData = readFileConfig()
@@ -41,7 +41,7 @@ function getFileData(): ConfigFile | undefined {
   return cachedFileData
 }
 
-function getFileConfig<K extends keyof ConfigFile>(key: K): ConfigFile[K] | undefined {
+const getFileConfig = <K extends keyof ConfigFile>(key: K): ConfigFile[K] | undefined => {
   // C. File System (with 2s Cache)
   const fileConfig = getFileData()
   if (fileConfig) {
@@ -57,7 +57,7 @@ function getFileConfig<K extends keyof ConfigFile>(key: K): ConfigFile[K] | unde
  * GLOBAL GETTER
  * Usage: const val = getConfig<string>("radioProvider")
  */
-export function getConfig<T>(key: string): T {
+export const getConfig = <T>(key: string): T => {
   const logger = getLogger()
 
   // A. Derived / Hardcoded Logic

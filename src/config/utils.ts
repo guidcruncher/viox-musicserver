@@ -3,7 +3,7 @@ import fs from "node:fs"
 import { getLogger } from "../logger"
 import type { ConfigFile } from "./types"
 
-export function saveConfig(cfg: ConfigFile): ConfigFile | undefined {
+export const saveConfig = (cfg: ConfigFile): ConfigFile | undefined => {
   const logger = getLogger()
   try {
     const filePath = "/config/viox-musicserver-config.json"
@@ -19,7 +19,7 @@ export function saveConfig(cfg: ConfigFile): ConfigFile | undefined {
   }
 }
 
-export function readFileConfig(): ConfigFile | undefined {
+export const readFileConfig = (): ConfigFile | undefined => {
   const logger = getLogger()
   try {
     const filePath = "/config/viox-musicserver-config.json"
@@ -39,7 +39,7 @@ export function readFileConfig(): ConfigFile | undefined {
   }
 }
 
-export function readSecret<T>(secretPath: string): T | undefined {
+export const readSecret = <T>(secretPath: string): T | undefined => {
   try {
     return fs.readFileSync(`/run/secrets/${secretPath}`, "utf8").trim() as T
   } catch {
