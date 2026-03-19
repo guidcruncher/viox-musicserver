@@ -1,5 +1,3 @@
-// createVioxBackend.ts
-
 import { BackendRouter } from "@/core/playback/backendRouter";
 import { AudioSourceRegistry } from "@/core/sources/audioSourceRegistry";
 
@@ -16,10 +14,12 @@ import { TuneInSourceAdapter } from "@/infra/sources/tuneinAdapter";
 import { RadioBrowserSourceAdapter } from "@/infra/sources/radiobrowserAdapter";
 import { RadioPlaybackBackend } from "@/infra/backends/radioBackend";
 
-// Local / Other
+// Local
+import { LocalFileSystemClient } from "@/infra/local/LocalFileSystemClient";
+import { LocalSourceAdapter } from "@/infra/sources/localAdapter";
 import { LocalPlaybackBackend } from "@/infra/backends/localBackend";
 
-export function createVioxBackend() {
+export function createVioxBackend(config: { localRoot: string }) {
   //
   // 1. Source registry
   //
@@ -30,8 +30,8 @@ export function createVioxBackend() {
   sources.register("tunein", new TuneInSourceAdapter());
   sources.register("radiobrowser", new RadioBrowserSourceAdapter());
 
-  // Optional: local filesystem, YouTube, SoundCloud, etc.
-  sources.register("local", /* your local adapter */);
+  const localFs = new LocalFileSystemClient(config.localRoot);
+  sources.register("local", new LocalSourceAdapter(localFs));
 
   //
   // 2. Playback backends
@@ -45,7 +45,7 @@ export function createVioxBackend() {
   router.register("local", new LocalPlaybackBackend());
 
   //
-  // 3. Return the orchestrated backend
+  // 3. Return orchestrated backend
   //
   return {
     sources,
