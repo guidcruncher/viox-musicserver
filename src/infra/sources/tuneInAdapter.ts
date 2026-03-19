@@ -1,34 +1,34 @@
 import type {
   AudioSourceAdapter,
-  BrowseOptions,
   MediaItem,
   MediaSourceRef,
+  BrowseOptions,
 } from "@/types";
-import { TuneInNormalizer } from "@/core/normalizers/tuneinNormalizer";
+
+import { TuneInWebClient } from "@/infra/tunein/TuneInWebClient";
+import { TuneInNormalizer } from "@/core/normalizers/tunein-normalizer";
 
 export class TuneInSourceAdapter implements AudioSourceAdapter {
   readonly id = "tunein";
+
+  private readonly api = new TuneInWebClient();
   private readonly normalize = new TuneInNormalizer();
 
-  constructor(private readonly client: any /* TuneIn API client */) {}
-
   async search(query: string): Promise<MediaItem[]> {
-    const raw = await this.client.search(query);
-    return raw.Items.map((i: any) => this.normalize.normalize(i));
+    const stations = await this.api.search(query);
+    return stations.map((s) => this.normalize.normalize(s));
   }
 
   async getById(ref: MediaSourceRef): Promise<MediaItem | null> {
-    const raw = await this.client.getItem(ref.sourceId);
-    return raw ? this.normalize.normalize(raw) : null;
+    const station = await this.api.getStation(ref.sourceId);
+    return station ? this.normalize.normalize(station) : null;
   }
 
   async getPlaybackUrl(ref: MediaSourceRef): Promise<string | null> {
-    const raw = await this.client.getItem(ref.sourceId);
-    return raw?.Url ?? raw?.StreamUrl ?? null;
+    return await this.api.getPlaybackUrl(ref.sourceId);
   }
 
-  async browse(options: BrowseOptions): Promise<MediaItem[]> {
-    // TODO: implement TuneIn category browsing
+  async browse(): Promise<MediaItem[]> {
     return [];
   }
 }

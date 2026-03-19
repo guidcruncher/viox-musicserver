@@ -1,23 +1,11 @@
-import type {
-  MediaItem,
-  MediaSourceRef,
-  MediaItemNormalizer,
-} from "@/types";
+import type { MediaItem, MediaSourceRef } from "@/types";
 
-export class RadioBrowserNormalizer implements MediaItemNormalizer {
+export class RadioBrowserNormalizer {
   normalize(raw: any): MediaItem {
-    if (!raw) throw new Error("Cannot normalize empty RadioBrowser object");
+    if (!raw) {
+      throw new Error("RadioBrowserNormalizer: cannot normalize empty object");
+    }
 
-    // RadioBrowser always returns stations
-    return this.station(raw);
-  }
-
-  //
-  // ────────────────────────────────────────────────
-  //   Station
-  // ────────────────────────────────────────────────
-  //
-  private station(raw: any): MediaItem {
     const ref: MediaSourceRef = {
       source: "radiobrowser",
       itemType: "station",
@@ -28,23 +16,19 @@ export class RadioBrowserNormalizer implements MediaItemNormalizer {
     return {
       id: this.buildId(ref),
       sourceRef: ref,
-      title: raw.name,
-      subtitle: raw.country || raw.language,
-      artist: raw.country,
-      album: raw.name,
+      title: raw.name ?? "Unknown Station",
+      subtitle: raw.tags?.split(",").slice(0, 3).join(", ") ?? "",
+      artist: "",
+      album: undefined,
       imageUrl: raw.favicon || undefined,
       durationMs: undefined,
       isLive: true,
-      description: raw.tags,
+      country: raw.countrycode,
+      bitrate: raw.bitrate ? `${raw.bitrate}` : undefined,
     };
   }
 
-  //
-  // ────────────────────────────────────────────────
-  //   Helpers
-  // ────────────────────────────────────────────────
-  //
   private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`;
+    return `${ref.source}:${ref.itemType}:${ref.sourceId}`;
   }
 }

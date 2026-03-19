@@ -1,33 +1,35 @@
 import type {
   AudioSourceAdapter,
-  BrowseOptions,
   MediaItem,
   MediaSourceRef,
+  BrowseOptions,
 } from "@/types";
-import { RadioBrowserNormalizer } from "@/core/normalizers/radiobrowserNormalizer";
+
+import { RadioBrowserWebClient } from "@/infra/radiobrowser/RadioBrowserWebClient";
+import { RadioBrowserNormalizer } from "@/core/normalizers/radiobrowser-normalizer";
 
 export class RadioBrowserSourceAdapter implements AudioSourceAdapter {
   readonly id = "radiobrowser";
+
+  private readonly api = new RadioBrowserWebClient();
   private readonly normalize = new RadioBrowserNormalizer();
 
-  constructor(private readonly client: any /* RadioBrowser API client */) {}
-
   async search(query: string): Promise<MediaItem[]> {
-    const raw = await this.client.searchStations({ name: query });
-    return raw.map((s: any) => this.normalize.normalize(s));
+    const raw = await this.api.search({ name: query, hidebroken: true });
+    return raw.map((s) => this.normalize.normalize(s));
   }
 
   async getById(ref: MediaSourceRef): Promise<MediaItem | null> {
-    const raw = await this.client.getStationByUUID(ref.sourceId);
-    return raw ? this.normalize.normalize(raw) : null;
+    const station = await this.api.getStation(ref.sourceId);
+    return station ? this.normalize.normalize(station) : null;
   }
 
   async getPlaybackUrl(ref: MediaSourceRef): Promise<string | null> {
-    const raw = await this.client.getStationByUUID(ref.sourceId);
-    return raw?.url_resolved ?? raw?.url ?? null;
+    const station = await this.api.getStation(ref.sourceId);
+    return station?.url_resolved ?? station?.url ?? null;
   }
 
   async browse(): Promise<MediaItem[]> {
-    return []; // RadioBrowser has no hierarchical browsing
+    return [];
   }
 }
