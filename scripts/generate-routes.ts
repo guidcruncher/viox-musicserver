@@ -37,8 +37,8 @@ import type { VioxBackend } from "@/types";
 routeFiles.forEach((file, index) => {
   const importPath = "./" + relative(join(__dirname, "..", "src"), file).replace(/\\/g, "/");
   const varName = `route${index}`;
-  const importPathWithoutExtension = importPath.slice(0, importPath.lastIndexOf('.'));
-  output += `import { ${getExportName(file)} as ${varName} } from "${importPathWithoutExtension}";\n`;
+  const importPathWithoutExtension = importPath.slice(1, importPath.lastIndexOf('.'));
+  output += `import { ${getExportName(file)} } from "@${importPathWithoutExtension}";\n`;
 });
 
 output += `
@@ -47,7 +47,6 @@ export const registerAllRoutes = async(app: FastifyInstance, backend: VioxBacken
 `;
 
 routeFiles.forEach((file, index) => {
-  const cmd = `register
   output += `  ${getExportName(file)}(app, backend);\n`;
 });
 

@@ -4,21 +4,21 @@
 import { FastifyInstance } from "fastify";
 import type { VioxBackend } from "@/types";
 
-import { backendStatusRoutes as route0 } from "./routes/backendStatusRoutes";
-import { equalizerRoutes as route1 } from "./routes/equalizerRoutes";
-import { importRoutes as route2 } from "./routes/importRoutes";
-import { libraryRoutes as route3 } from "./routes/libraryRoutes";
-import { playbackRoutes as route4 } from "./routes/playbackRoutes";
-import { searchRoutes as route5 } from "./routes/searchRoutes";
-import { speakerRoutes as route6 } from "./routes/speakerRoutes";
+import { registerBackendStatusRoutes } from "@/routes/backendStatusRoutes";
+import { registerEqualizerRoutes } from "@/routes/equalizerRoutes";
+import { registerImportRoutes } from "@/routes/importRoutes";
+import { registerLibraryRoutes } from "@/routes/libraryRoutes";
+import { registerPlaybackRoutes } from "@/routes/playbackRoutes";
+import { registerSearchRoutes } from "@/routes/searchRoutes";
+import { registerSpeakerRoutes } from "@/routes/speakerRoutes";
 
 
 export const registerAllRoutes = async(app: FastifyInstance, backend: VioxBackend) => {
-  await app.register(route0, backend);
-  await app.register(route1, backend);
-  await app.register(route2, backend);
-  await app.register(route3, backend);
-  await app.register(route4, backend);
-  await app.register(route5, backend);
-  await app.register(route6, backend);
+  registerBackendStatusRoutes(app, backend);
+  registerEqualizerRoutes(app, backend);
+  registerImportRoutes(app, backend);
+  registerLibraryRoutes(app, backend);
+  registerPlaybackRoutes(app, backend);
+  registerSearchRoutes(app, backend);
+  registerSpeakerRoutes(app, backend);
 }
