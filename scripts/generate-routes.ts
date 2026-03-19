@@ -30,6 +30,7 @@ const routeFiles = collectRoutes(ROUTES_DIR);
 
 let output = `/* prettier-ignore-file */\n/* eslint-disable */\n// AUTO-GENERATED FILE — DO NOT EDIT
 import { FastifyInstance } from "fastify";
+import type { VioxBackend } from "@/types";
 
 `;
 
@@ -42,11 +43,11 @@ routeFiles.forEach((file, index) => {
 
 output += `
 
-export const registerAllRoutes = async(app: FastifyInstance) => {
+export const registerAllRoutes = async(app: FastifyInstance, backend: VioxBackend) => {
 `;
 
 routeFiles.forEach((_, index) => {
-  output += `  await app.register(route${index}, {prefix: "/api"});\n`;
+  output += `  await app.register(route${index}, backend);\n`;
 });
 
 output += `}\n`;
