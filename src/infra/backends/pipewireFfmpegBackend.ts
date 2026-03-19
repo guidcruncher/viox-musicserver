@@ -5,7 +5,6 @@ import type { MediaItem, PlaybackBackend } from "@/types"
 interface PipewireBackendOptions {
   ffmpegPath?: string
   pwCatPath?: string
-  device?: string // optional pw-cat device
 }
 
 export class PipewireFfmpegBackend implements PlaybackBackend {
@@ -51,7 +50,7 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
     })
 
     const pwCatArgs = [
-      ...(this.opts.device ? ["-d", this.opts.device] : []),
+      "--target", "streamer",
       "-p",
       "48000",
       "-c",

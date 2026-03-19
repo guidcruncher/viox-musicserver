@@ -121,8 +121,6 @@ COPY ./docker-items/config.yml /app/librespot/config.yml
 COPY ./docker-items/config/asound.conf /app/alsa/asound.conf
 COPY ./docker-items/config/pipewire/ /etc/pipewire/
 COPY ./docker-items/config/dsp/* /app/dsp/
-COPY ./docker-items/config/mpd.conf /app/mpd/
-COPY ./docker-items/config/mpc.conf /app/mpd/
 RUN mv /etc/pipewire/pipewire.conf.d/* /app/pipewire/
 
 COPY ./docker-items/config/snapserver.conf /app/snapserver/snapserver.conf

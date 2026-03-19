@@ -4,7 +4,7 @@ set -e
 
 configure_environment() {
     echo "Configurimg environment"
-    mkdir -p $MUSIC_CACHE $PODCAST_CACHE $CACHE_FOLDER /data/stores /config /music /data/mpd/playlists /data/mpd $CACHE_FOLDER/golibrespot $CACHE_FOLDER/stores /run/dbus $MUSIC_FOLDER
+    mkdir -p $MUSIC_CACHE $PODCAST_CACHE $CACHE_FOLDER /data/stores /config /music $CACHE_FOLDER/golibrespot $CACHE_FOLDER/stores /run/dbus $MUSIC_FOLDER
 
     export LIBRESPOT_DATADIR=/data/golibrespot/
     export SNAPSERVER_DATADIR=/data/snapserver/
@@ -18,8 +18,6 @@ configure_environment() {
 
     envsubst < /app/snapserver/snapserver.conf > /etc/snapserver.conf
     envsubst < /app/alsa/asound.conf > /etc/asound.conf
-    envsubst < /app/mpd/mpd.conf > /etc/mpd.conf
-    envsubst < /app/mpd/mpc.conf > /etc/mpc.conf
     envsubst < /app/librespot/config.yml > $CACHE_FOLDER/golibrespot/config.template
 
     for filename in /app/dsp/*; do
@@ -108,11 +106,6 @@ configure_environment
 
 echo "Initialization complete. Starting application."
 
-mpd -v /etc/mpd.conf --no-daemon &
-sleep 3
-mpc volume ${INITIAL_VOLUME}
-mpc update
-mpc clear 
 
 mkdir -p /data/golibrespot/
 cp $CACHE_FOLDER/golibrespot/config.template $LIBRESPOT_DATADIR/config.yml
