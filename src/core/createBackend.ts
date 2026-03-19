@@ -1,126 +1,54 @@
-import { db } from "@/infra/db";
+// createVioxBackend.ts
 
-// Stores
-import { SqliteLibraryStore } from "@/infra/libraryStore";
-import { SqliteQueueStore } from "@/infra/queueStore";
-import { SqlitePlaylistStore } from "@/infra/playlistStore";
+import { BackendRouter } from "@/core/playback/backendRouter";
+import { AudioSourceRegistry } from "@/core/sources/audioSourceRegistry";
 
-// Backends
-import { SpotifyPlaybackBackend } from "@/infra/backends/spotifyBackend";
-import { MPDPlaybackBackend } from "@/infra/backends/mpdBackend";
-import { OtherPlaybackBackend } from "@/infra/backends/otherBackend";
-import { PipewireFfmpegBackend } from "@/infra/backends/pipewireFfmpegBackend";
-
-// Router
-import { SimpleBackendRouter } from "@/infra/backendRouter";
-
-// Orchestrator
-import { DefaultPlaybackOrchestrator } from "@/core/playbackOrchestrator";
-
-// Source adapters
-import { AudioSourceRegistry } from "@/core/audioSourceRegistry";
+// Spotify
 import { SpotifySourceAdapter } from "@/infra/sources/spotifyAdapter";
-import { PodverseSourceAdapter } from "@/infra/sources/podverseAdapter";
-import { RadioBrowserSourceAdapter } from "@/infra/sources/radiobrowserAdapter";
-import { TuneInSourceAdapter } from "@/infra/sources/tuneinAdapter";
-import { YouTubeMusicSourceAdapter } from "@/infra/sources/youtubeAdapter";
-import { LocalSourceAdapter } from "@/infra/sources/local-adapter";
+import { SpotifyPlaybackBackend } from "@/infra/backends/spotifyBackend";
 
-// Engine
-import { DefaultPlaybackEngine } from "@/core/playbackEngine";
+// Podverse
+import { PodverseSourceAdapter } from "@/infra/sources/podverseAdapter";
+import { PodversePlaybackBackend } from "@/infra/backends/podverseBackend";
+
+// Radio
+import { TuneInSourceAdapter } from "@/infra/sources/tuneinAdapter";
+import { RadioBrowserSourceAdapter } from "@/infra/sources/radiobrowserAdapter";
+import { RadioPlaybackBackend } from "@/infra/backends/radioBackend";
+
+// Local / Other
+import { LocalPlaybackBackend } from "@/infra/backends/localBackend";
 
 export function createVioxBackend() {
   //
-  // ────────────────────────────────────────────────
-  //   Stores (SQLite-backed)
-  // ────────────────────────────────────────────────
+  // 1. Source registry
   //
-  const library = new SqliteLibraryStore(db);
-  const queue = new SqliteQueueStore(db);
-  const playlists = new SqlitePlaylistStore(db, library);
+  const sources = new AudioSourceRegistry();
+
+  sources.register("spotify", new SpotifySourceAdapter());
+  sources.register("podverse", new PodverseSourceAdapter());
+  sources.register("tunein", new TuneInSourceAdapter());
+  sources.register("radiobrowser", new RadioBrowserSourceAdapter());
+
+  // Optional: local filesystem, YouTube, SoundCloud, etc.
+  sources.register("local", /* your local adapter */);
 
   //
-  // ────────────────────────────────────────────────
-  //   Playback Backends
-  // ────────────────────────────────────────────────
+  // 2. Playback backends
   //
-  const spotifyBackend = new SpotifyPlaybackBackend(/* spotifyClient */);
-  const mpdBackend = new MPDPlaybackBackend(/* mpdClient */);
-  // const otherBackend = new OtherPlaybackBackend();
-  const otherBackend = new PipewireFfmpegBackend({
-    ffmpegPath: "ffmpeg",
-    pwCatPath: "pw-cat",
-    // device: "alsa_output.pci-0000_00_1f.3.analog-stereo", // optional
-  });
+  const router = new BackendRouter();
+
+  router.register("spotify", new SpotifyPlaybackBackend());
+  router.register("podverse", new PodversePlaybackBackend());
+  router.register("tunein", new RadioPlaybackBackend());
+  router.register("radiobrowser", new RadioPlaybackBackend());
+  router.register("local", new LocalPlaybackBackend());
 
   //
-  // ────────────────────────────────────────────────
-  //   Backend Router
-  // ────────────────────────────────────────────────
-  //
-  const router = new SimpleBackendRouter(
-    spotifyBackend,
-    mpdBackend,
-    otherBackend
-  );
-
-  //
-  // ────────────────────────────────────────────────
-  //   Audio Source Registry
-  // ────────────────────────────────────────────────
-  //
-  const sources = new AudioSourceRegistry([
-    new SpotifySourceAdapter(/* spotifyClient */),
-    new PodverseSourceAdapter(/* podverseClient */),
-    new RadioBrowserSourceAdapter(/* radioBrowserClient */),
-    new TuneInSourceAdapter(/* tuneInClient */),
-    new YouTubeMusicSourceAdapter(/* youtubeClient */),
-    new LocalSourceAdapter(/* localFileService */),
-  ]);
-
-  //
-  // ────────────────────────────────────────────────
-  //   Playback Orchestrator
-  // ────────────────────────────────────────────────
-  //
-  const orchestrator = new DefaultPlaybackOrchestrator(
-    queue,
-    library,
-    router
-  );
-
-  //
-  // ────────────────────────────────────────────────
-  //   Playback Engine (public façade)
-  // ────────────────────────────────────────────────
-  //
-  const engine = new DefaultPlaybackEngine(
-    library,
-    queue,
-    playlists,
-    router,
-    orchestrator,
-    sources
-  );
-
-  //
-  // ────────────────────────────────────────────────
-  //   Return all components for flexibility
-  // ────────────────────────────────────────────────
+  // 3. Return the orchestrated backend
   //
   return {
-    db,
-    library,
-    queue,
-    playlists,
-    spotifyBackend,
-    mpdBackend,
-    otherBackend,
-    router,
     sources,
-    orchestrator,
-    engine,
+    router,
   };
 }
-
-export const backend = createVioxBackend()
