@@ -2,12 +2,13 @@ import cors from "@fastify/cors"
 import fastifyStatic from "@fastify/static"
 import swagger from "@fastify/swagger"
 import Fastify from "fastify"
-
+import websocket from '@fastify/websocket'
 import { getConfig } from "@/config"
 import { createVioxBackend } from "@/core/createBackend"
 import { getLogger } from "@/logger"
 import { registerAllRoutes } from "@/routes"
 import { version } from "@/version"
+import { registerEventBus } from "@/infra/eventbus/registerEventBus"
 
 export const createServer = async () => {
   const logger = getLogger()
@@ -15,6 +16,8 @@ export const createServer = async () => {
   const app = Fastify({
     logger: (getConfig("nodeEnv") || "development").toString() == "development",
   })
+
+  registerEventBus(app)
 
   if (getConfig("nodeEnv") == "production") {
     logger.info("Registering client UI")

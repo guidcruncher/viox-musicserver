@@ -5,7 +5,7 @@ export type AppEvents = typeof EVENT_DEFINITIONS
 export type EventKey = keyof AppEvents
 export const EVENT_KEYS = Object.keys(EVENT_DEFINITIONS) as EventKey[]
 
-export class EventRegistry {
+export class EventBus {
   private bus = new EventEmitter()
   private clientListeners = new Map<string, Map<EventKey, Function>>()
 
@@ -35,4 +35,4 @@ export class EventRegistry {
   }
 }
 
-export const registry = new EventRegistry()
+export const eventBus = new EventBus()
