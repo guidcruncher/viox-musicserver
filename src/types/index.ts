@@ -11,6 +11,8 @@ export * from "./libraryStore";
 export * from "./mediaIdentity";
 export * from "./mediaItem";
 export * from "./mediaItemNormalizer";
+export * from "./mediaSource";
+export * from "./mediaSourceRef";
 export * from "./playbackBackend";
 export * from "./playbackEngine";
 export * from "./playbackError";
