@@ -13,6 +13,11 @@ export class SpotifyPlaybackBackend implements PlaybackBackend {
     this.api = new SpotifyWebClient()
   }
 
+  async resume(): Promise<void> {
+    if (!this.api.player) return
+    await this.api.player.resume()
+  }
+
   async play(item: MediaItem, positionMs: number = 0): Promise<void> {
     this.currentItem = item
 

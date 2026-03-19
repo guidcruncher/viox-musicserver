@@ -15,12 +15,14 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
   private pwcat?: ChildProcess
   private startedAt: number | null = null
   private pausedAt: number | null = null
+  private currentItem: MediaItem | null = null
 
   constructor(private readonly opts: PipewireBackendOptions = {}) {}
 
   async play(item: MediaItem, positionMs: number = 0): Promise<void> {
     await this.stop() // ensure clean state
 
+    this.currentItem = item
     const ffmpegPath = this.opts.ffmpegPath ?? "ffmpeg"
     const pwCatPath = this.opts.pwCatPath ?? "pw-cat"
 
@@ -80,6 +82,7 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
   }
 
   async pause(): Promise<void> {
+    if (!this.currentItem || this.pausedAt !== null) return
     if (!this.ffmpeg || !this.pwcat || this.pausedAt !== null) return
     this.pausedAt = await this.getPosition()
     await this.stop()
@@ -99,6 +102,7 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
 
   async seek(positionMs: number): Promise<void> {
     // naive: stop and restart at new position
+    if (!this.currentItem) return
     if (!this.startedAt && this.pausedAt === null) return
     const lastItem = this.lastItem
     if (!lastItem) return
@@ -109,6 +113,13 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
     if (this.pausedAt !== null) return this.pausedAt
     if (!this.startedAt) return 0
     return Date.now() - this.startedAt
+  }
+
+  async resume(): Promise<void> {
+    if (!this.currentItem || this.pausedAt === null) return
+    const position = this.pausedAt
+    this.pausedAt = null
+    await this.play(this.currentItem, position)
   }
 
   // ────────────────────────────────────────────────

@@ -66,4 +66,11 @@ export class LocalPlaybackBackend implements PlaybackBackend {
     if (!this.startedAt) return 0
     return Date.now() - this.startedAt
   }
+
+  async resume(): Promise<void> {
+    if (!this.currentItem || this.pausedAt === null) return
+    const position = this.pausedAt
+    this.pausedAt = null
+    await this.play(this.currentItem, position)
+  }
 }
