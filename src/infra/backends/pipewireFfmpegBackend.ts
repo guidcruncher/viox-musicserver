@@ -1,4 +1,5 @@
-import { spawn, ChildProcessWithoutNullStreams } from "node:child_process"
+import { ChildProcessWithoutNullStreams, spawn } from "node:child_process"
+
 import type { MediaItem, PlaybackBackend } from "@/types"
 
 interface PipewireBackendOptions {

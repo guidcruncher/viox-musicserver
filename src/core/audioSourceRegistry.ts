@@ -1,16 +1,16 @@
-import type {
-  AudioSource,
-  AudioSourceAdapter,
-  MediaItem,
-  MediaSourceRef,
-  BrowseOptions,
-} from "@/types"
 import { LocalSourceAdapter } from "@/infra/sources/localAdapter"
 import { PodverseSourceAdapter } from "@/infra/sources/podverseAdapter"
 import { RadioBrowserSourceAdapter } from "@/infra/sources/radioBrowserAdapter"
 import { SpotifySourceAdapter } from "@/infra/sources/spotifyAdapter"
 import { TuneInSourceAdapter } from "@/infra/sources/tuneInAdapter"
 import { YouTubeMusicSourceAdapter } from "@/infra/sources/youtubeAdapter"
+import type {
+  AudioSource,
+  AudioSourceAdapter,
+  BrowseOptions,
+  MediaItem,
+  MediaSourceRef,
+} from "@/types"
 
 export class AudioSourceRegistry {
   private readonly adapters = new Map<AudioSource, AudioSourceAdapter>()

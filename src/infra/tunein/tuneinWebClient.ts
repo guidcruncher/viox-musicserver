@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from "axios"
-import type { TuneInStation, TuneInResponse, TuneInResponseItem, TuneInDescribeItem } from "./types"
+
+import type { TuneInDescribeItem, TuneInResponse, TuneInResponseItem, TuneInStation } from "./types"
 
 export class TuneInWebClient {
   private http: AxiosInstance

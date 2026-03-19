@@ -1,6 +1,7 @@
 import axios, { AxiosInstance } from "axios"
-import { spotifyAuthClient } from "./spotifyAuthClient"
+
 import { PlayerApi } from "./playerApi"
+import { spotifyAuthClient } from "./spotifyAuthClient"
 
 interface SpotifyWebClientOptions {
   librespotBaseUrl?: string

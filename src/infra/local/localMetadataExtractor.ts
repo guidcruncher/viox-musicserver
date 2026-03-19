@@ -1,5 +1,5 @@
-import { parseFile } from "music-metadata"
 import type { IAudioMetadata } from "music-metadata"
+import { parseFile } from "music-metadata"
 
 export interface LocalAudioMetadata {
   title?: string

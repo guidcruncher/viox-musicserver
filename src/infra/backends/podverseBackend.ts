@@ -1,6 +1,7 @@
 // infra/backends/podverse-backend.ts
-import type { MediaItem, PlaybackBackend } from "@/types"
 import { spawn } from "node:child_process"
+
+import type { MediaItem, PlaybackBackend } from "@/types"
 
 export class PodversePlaybackBackend implements PlaybackBackend {
   readonly id = "podverse"

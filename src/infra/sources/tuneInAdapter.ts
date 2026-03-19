@@ -1,7 +1,6 @@
-import type { AudioSourceAdapter, MediaItem, MediaSourceRef, BrowseOptions } from "@/types"
-
-import { TuneInWebClient } from "@/infra/tunein/TuneInWebClient"
 import { TuneInNormalizer } from "@/core/normalizers/tunein-normalizer"
+import { TuneInWebClient } from "@/infra/tunein/TuneInWebClient"
+import type { AudioSourceAdapter, MediaItem, MediaSourceRef } from "@/types"
 
 export class TuneInSourceAdapter implements AudioSourceAdapter {
   readonly id = "tunein"

@@ -1,11 +1,11 @@
 import type {
+  BackendRouter,
+  LibraryStore,
+  MediaItem,
+  PlaybackBackend,
   PlaybackOrchestrator,
   PlaybackState,
-  BackendRouter,
-  PlaybackBackend,
-  MediaItem,
   QueueStore,
-  LibraryStore,
 } from "@/types"
 
 export class DefaultPlaybackOrchestrator implements PlaybackOrchestrator {

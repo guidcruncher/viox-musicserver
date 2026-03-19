@@ -1,7 +1,8 @@
 import Parser from "rss-parser"
 
 import { getLogger } from "@/logger"
-import { rfcToIso8601, Episode } from "./types"
+
+import { Episode, rfcToIso8601 } from "./types"
 
 class RSSEpisodeParser {
   private parser: Parser

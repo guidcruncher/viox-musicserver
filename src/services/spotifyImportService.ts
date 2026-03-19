@@ -1,5 +1,5 @@
-import type { MediaItem, MediaSourceRef, PlaylistStore, LibraryStore } from "@/types"
 import { SpotifyNormalizer } from "@/core/normalizers/spotifyNormalizer"
+import type { LibraryStore, MediaItem, MediaSourceRef, PlaylistStore } from "@/types"
 
 export class SpotifyImportService {
   private readonly normalize = new SpotifyNormalizer()

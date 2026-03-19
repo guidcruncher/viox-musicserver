@@ -1,9 +1,9 @@
 import type { PlaybackError, PlaybackErrorCode } from "@/types"
 
-export function makeError(
+export const makeError = (
   code: PlaybackErrorCode,
   message: string,
   cause?: unknown,
-): PlaybackError {
+): PlaybackError => {
   return { code, message, cause }
 }

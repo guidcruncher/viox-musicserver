@@ -1,27 +1,22 @@
 import { getConfig } from "@/config"
-
 import { BackendRouter } from "@/core/playback/backendRouter"
 import { AudioSourceRegistry } from "@/core/sources/audioSourceRegistry"
-
-// Spotify
-import { SpotifySourceAdapter } from "@/infra/sources/spotifyAdapter"
-import { SpotifyPlaybackBackend } from "@/infra/backends/spotifyBackend"
-
-// Podverse
-import { PodverseSourceAdapter } from "@/infra/sources/podverseAdapter"
+import { LocalPlaybackBackend } from "@/infra/backends/localBackend"
 import { PodversePlaybackBackend } from "@/infra/backends/podverseBackend"
-
-// Radio
-import { TuneInSourceAdapter } from "@/infra/sources/tuneinAdapter"
-import { RadioBrowserSourceAdapter } from "@/infra/sources/radiobrowserAdapter"
 import { RadioPlaybackBackend } from "@/infra/backends/radioBackend"
-
+import { SpotifyPlaybackBackend } from "@/infra/backends/spotifyBackend"
 // Local
 import { LocalFileSystemClient } from "@/infra/local/LocalFileSystemClient"
 import { LocalSourceAdapter } from "@/infra/sources/localAdapter"
-import { LocalPlaybackBackend } from "@/infra/backends/localBackend"
+// Podverse
+import { PodverseSourceAdapter } from "@/infra/sources/podverseAdapter"
+import { RadioBrowserSourceAdapter } from "@/infra/sources/radiobrowserAdapter"
+// Spotify
+import { SpotifySourceAdapter } from "@/infra/sources/spotifyAdapter"
+// Radio
+import { TuneInSourceAdapter } from "@/infra/sources/tuneinAdapter"
 
-export function createVioxBackend(config: { localRoot: string }) {
+export const createVioxBackend = () => {
   //
   // 1. Source registry
   //

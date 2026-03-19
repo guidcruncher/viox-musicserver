@@ -1,4 +1,4 @@
-import type { BackendRouter, PlaybackBackend, MediaItem } from "@/types"
+import type { BackendRouter, MediaItem, PlaybackBackend } from "@/types"
 
 export class SimpleBackendRouter implements BackendRouter {
   constructor(

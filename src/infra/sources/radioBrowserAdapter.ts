@@ -1,7 +1,6 @@
-import type { AudioSourceAdapter, MediaItem, MediaSourceRef, BrowseOptions } from "@/types"
-
-import { RadioBrowserWebClient } from "@/infra/radiobrowser/RadioBrowserWebClient"
 import { RadioBrowserNormalizer } from "@/core/normalizers/radiobrowser-normalizer"
+import { RadioBrowserWebClient } from "@/infra/radiobrowser/RadioBrowserWebClient"
+import type { AudioSourceAdapter, MediaItem, MediaSourceRef } from "@/types"
 
 export class RadioBrowserSourceAdapter implements AudioSourceAdapter {
   readonly id = "radiobrowser"

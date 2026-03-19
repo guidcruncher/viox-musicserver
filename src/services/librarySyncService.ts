@@ -1,4 +1,4 @@
-import type { AudioSourceRegistry, LibraryStore, PlaylistStore, MediaItem } from "@/types"
+import type { AudioSourceRegistry, LibraryStore, PlaylistStore } from "@/types"
 
 export class LibrarySyncService {
   constructor(

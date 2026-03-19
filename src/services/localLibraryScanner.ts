@@ -1,8 +1,8 @@
 import fs from "node:fs"
 import path from "node:path"
 
-import type { LibraryStore, MediaItem } from "@/types"
 import { LocalFileNormalizer } from "@/core/normalizers/localFileNormalizer"
+import type { LibraryStore, MediaItem } from "@/types"
 
 export class LocalLibraryScanner {
   private readonly normalize = new LocalFileNormalizer()

@@ -1,4 +1,4 @@
-import type { PlaybackBackend, MediaItem } from "@/types"
+import type { MediaItem, PlaybackBackend } from "@/types"
 
 export abstract class BasePlaybackBackend implements PlaybackBackend {
   abstract readonly id: string

@@ -1,12 +1,11 @@
 import type { AudioSource, MediaItem, MediaItemNormalizer } from "@/types"
-import { makeVioxId } from "./makeVioxId"
 
-import { SpotifyNormalizer } from "./spotifyNormalizer"
+import { LocalFileNormalizer } from "./localNormalizer"
 import { PodverseNormalizer } from "./podverseNormalizer"
 import { RadioBrowserNormalizer } from "./radiobrowserNormalizer"
+import { SpotifyNormalizer } from "./spotifyNormalizer"
 import { TuneInNormalizer } from "./tuneinNormalizer"
 import { YouTubeMusicNormalizer } from "./youtubeNormalizer"
-import { LocalFileNormalizer } from "./localNormalizer"
 
 export class NormalizerRegistry {
   private readonly map = new Map<AudioSource, MediaItemNormalizer>()

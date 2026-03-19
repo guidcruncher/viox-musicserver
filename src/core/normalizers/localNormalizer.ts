@@ -1,4 +1,5 @@
-import type { MediaItem, MediaSourceRef, MediaItemNormalizer } from "@/types"
+import type { MediaItem, MediaItemNormalizer, MediaSourceRef } from "@/types"
+
 import { makeVioxId } from "./makeVioxId"
 
 export class LocalFileNormalizer implements MediaItemNormalizer {

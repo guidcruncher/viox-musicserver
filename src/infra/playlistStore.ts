@@ -1,5 +1,5 @@
 import { db } from "@/infra/db"
-import type { PlaylistStore, Playlist, MediaItem, LibraryStore } from "@/types"
+import type { LibraryStore, MediaItem, Playlist, PlaylistStore } from "@/types"
 
 export class SqlitePlaylistStore implements PlaylistStore {
   private readonly conn = db

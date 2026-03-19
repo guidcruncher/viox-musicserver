@@ -1,8 +1,8 @@
-import type { AudioSourceAdapter, MediaItem, MediaSourceRef, BrowseOptions } from "@/types"
+import path from "path"
 
 import { LocalFileSystemClient } from "@/infra/local/LocalFileSystemClient"
 import { LocalMetadataExtractor } from "@/infra/local/LocalMetadataExtractor"
-import path from "path"
+import type { AudioSourceAdapter, BrowseOptions, MediaItem, MediaSourceRef } from "@/types"
 
 export class LocalSourceAdapter implements AudioSourceAdapter {
   readonly id = "local"

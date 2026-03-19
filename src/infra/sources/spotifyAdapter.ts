@@ -1,7 +1,6 @@
-import type { AudioSourceAdapter, MediaItem, MediaSourceRef, BrowseOptions } from "@/types"
-
-import { SpotifyWebClient } from "@/infra/spotify/SpotifyWebClient"
 import { SpotifyNormalizer } from "@/core/normalizers/spotify-normalizer"
+import { SpotifyWebClient } from "@/infra/spotify/SpotifyWebClient"
+import type { AudioSourceAdapter, BrowseOptions, MediaItem, MediaSourceRef } from "@/types"
 
 export class SpotifySourceAdapter implements AudioSourceAdapter {
   readonly id = "spotify"

@@ -1,5 +1,6 @@
-import type { MediaItem, PlaybackBackend } from "@/types"
 import { spawn } from "node:child_process"
+
+import type { MediaItem, PlaybackBackend } from "@/types"
 
 export class RadioPlaybackBackend implements PlaybackBackend {
   readonly id = "radio"

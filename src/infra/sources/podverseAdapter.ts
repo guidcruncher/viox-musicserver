@@ -1,8 +1,7 @@
 // infra/sources/podverse-adapter.ts
-import type { AudioSourceAdapter, MediaItem, MediaSourceRef, BrowseOptions } from "@/types"
-
-import { PodverseWebClient } from "@/infra/podverse/PodverseWebClient"
 import { PodverseNormalizer } from "@/core/normalizers/podverse-normalizer"
+import { PodverseWebClient } from "@/infra/podverse/PodverseWebClient"
+import type { AudioSourceAdapter, BrowseOptions, MediaItem, MediaSourceRef } from "@/types"
 
 export class PodverseSourceAdapter implements AudioSourceAdapter {
   readonly id = "podverse"
