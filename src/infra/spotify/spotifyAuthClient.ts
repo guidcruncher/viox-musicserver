@@ -4,7 +4,7 @@ import axios from "axios"
 
 import { getConfig } from "@/config"
 
-import { getLogger } from "../../logger"
+import { getLogger } from "@/logger"
 import { spotifyTokenStore, StoredSpotifyToken } from "./spotifyTokenStore"
 
 const CLIENT_ID = getConfig<string>("spotifyClientId")
