@@ -2,6 +2,6 @@ import { ILogObj, Logger } from "tslog"
 
 const logger: Logger<ILogObj> = new Logger()
 
-export function getLogger() {
+export const getLogger = (): Logger<ILogObj> => {
   return logger
 }

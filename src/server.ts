@@ -15,7 +15,7 @@ import { RegisterPodverseIndexer } from "./services/podverse/podverseIndexerDaem
 import { RegisterPodcastProxyRoute } from "./services/proxy/createPodcastProxyRoute"
 import { version } from "./version"
 
-export async function createServer() {
+export const createServer = async () => {
   const logger = getLogger()
 
   const app = Fastify({
@@ -41,7 +41,7 @@ export async function createServer() {
       },
     })
 
-    app.setNotFoundHandler(function (request, reply) {
+    app.setNotFoundHandler((request, reply) => {
       reply.sendFile("index.html")
     })
   }

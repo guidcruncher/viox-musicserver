@@ -1,4 +1,4 @@
-export function rfcToIso8601(input?: string): string {
+export const rfcToIso8601 = (input?: string): string => {
   if (!input) {
     return ""
   }
