@@ -54,6 +54,18 @@ export class SqliteLibraryStore implements LibraryStore {
     return rows.map((r: any) => this.fromRow(r))
   }
 
+  async listWithPaging(offset: number = 0, limit: number = 100): Promise<MediaItem[]> {
+    const rows = this.conn
+      .prepare(
+        `SELECT * FROM media_items
+       ORDER BY updated_at DESC
+       LIMIT @limit OFFSET @offset`,
+      )
+      .all({ limit, offset })
+
+    return rows.map((r: any) => this.fromRow(r))
+  }
+
   async findBySourceRef(ref: MediaSourceRef): Promise<MediaItem | undefined> {
     const row = this.conn
       .prepare(

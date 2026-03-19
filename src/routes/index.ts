@@ -10,6 +10,7 @@ import { registerImportRoutes } from "@/routes/importRoutes"
 import { registerLibraryRoutes } from "@/routes/libraryRoutes"
 import { registerPlaybackRoutes } from "@/routes/playbackRoutes"
 import { registerSpeakerRoutes } from "@/routes/speakerRoutes"
+import { registerSpotifyAuthRoutes } from "@/routes/spotifyAuthRoutes"
 
 export const registerAllRoutes = async (app: FastifyInstance, backend: VioxBackend) => {
   registerBackendStatusRoutes(app, backend)
@@ -18,4 +19,5 @@ export const registerAllRoutes = async (app: FastifyInstance, backend: VioxBacke
   registerLibraryRoutes(app, backend)
   registerPlaybackRoutes(app, backend)
   registerSpeakerRoutes(app, backend)
+  registerSpotifyAuthRoutes(app, backend)
 }

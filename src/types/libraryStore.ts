@@ -7,4 +7,5 @@ export interface LibraryStore {
   findBySourceRef(ref: MediaSourceRef): Promise<MediaItem | undefined>
   search(query: string): Promise<MediaItem[]> // local search
   list(): Promise<MediaItem[]>
+  listWithPaging(offset: number, limit: number): Promise<MediaItem[]>
 }
