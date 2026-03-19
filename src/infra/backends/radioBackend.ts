@@ -38,12 +38,14 @@ export class RadioPlaybackBackend implements PlaybackBackend {
     this.pwcat = spawn("pw-cat", [
       "--target",
       "streamer",
-      "-p",
+      "--playback",
+      "--raw",
+      "--rate",
       "48000",
-      "-c",
+      "-channels",
       "2",
-      "-f",
-      "S16_LE",
+      "--format",
+      "s16",
       "-",
     ])
 

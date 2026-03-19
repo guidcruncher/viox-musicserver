@@ -49,9 +49,20 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
       stdio: ["ignore", "pipe", "inherit"],
     })
 
-    const pwCatArgs = ["--target", "streamer", "-p", "48000", "-c", "2", "-f", "S16_LE", "-"]
 
-    this.pwcat = spawn(pwCatPath, pwCatArgs, {
+    this.pwcat = spawn("pw-cat", [
+      "--target",
+      "streamer",
+      "--playback",
+      "--raw",
+      "--rate",
+      "48000",
+      "-channels",
+      "2",
+      "--format",
+      "s16",
+      "-",
+    ], {
       stdio: ["pipe", "inherit", "inherit"],
     })
 
