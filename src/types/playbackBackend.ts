@@ -1,3 +1,5 @@
+import { MediaItem } from './mediaItem'
+
 export interface PlaybackBackend {
   readonly id: string
 
