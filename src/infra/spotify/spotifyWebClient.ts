@@ -1,4 +1,4 @@
-import axios, { AxiosError,AxiosInstance } from "axios"
+import axios, { AxiosError, AxiosInstance } from "axios"
 
 import { getLogger } from "@/logger"
 

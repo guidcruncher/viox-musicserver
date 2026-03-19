@@ -1,27 +1,45 @@
 import { SpotifyNormalizer } from "@/core/normalizers/spotifyNormalizer"
+import { getLogger } from "@/logger"
 import type { LibraryStore, MediaItem, MediaSourceRef, PlaylistStore } from "@/types"
 
 export class SpotifyImportService {
   private readonly normalize = new SpotifyNormalizer()
+  private readonly log = getLogger()
 
   constructor(
-    private readonly client: any, // Spotify Web API client
+    private readonly client: any, // SpotifyWebClient
     private readonly library: LibraryStore,
     private readonly playlists: PlaylistStore,
   ) {}
 
-  async importUserPlaylists(): Promise<void> {
-    const rawPlaylists = await this.client.getUserPlaylists()
+  // ────────────────────────────────────────────────
+  // IMPORT ALL USER PLAYLISTS
+  // ────────────────────────────────────────────────
 
-    for (const raw of rawPlaylists.items) {
+  async importUserPlaylists(): Promise<void> {
+    const res = await this.client.getMyPlaylists()
+    if (!res || !res.items) {
+      this.log.warn("[SpotifyImport] No playlists returned from Spotify")
+      return
+    }
+
+    for (const raw of res.items) {
+      if (!raw?.id) continue
       await this.importPlaylist(raw.id)
     }
   }
 
+  // ────────────────────────────────────────────────
+  // IMPORT A SINGLE PLAYLIST
+  // ────────────────────────────────────────────────
+
   async importPlaylist(playlistId: string): Promise<void> {
     const playlist = await this.client.getPlaylist(playlistId)
+    if (!playlist) {
+      this.log.warn(`[SpotifyImport] Playlist ${playlistId} returned no data`)
+      return
+    }
 
-    // Create or update playlist metadata
     const playlistRef: MediaSourceRef = {
       source: "spotify",
       itemType: "playlist",
@@ -29,44 +47,66 @@ export class SpotifyImportService {
       uri: playlist.uri,
     }
 
-    const playlistName = playlist.name
-    const playlistDescription = playlist.description
-    const playlistImage = playlist.images?.[0]?.url
+    const name = playlist.name ?? "Untitled Playlist"
+    const description = playlist.description ?? ""
+    const image = playlist.images?.[0]?.url
 
-    // Create local playlist if not exists
+    // Create or update local playlist
     let localId = await this.findLocalPlaylistId(playlistRef)
     if (!localId) {
-      localId = await this.playlists.create(playlistName, playlistDescription)
-      await this.playlists.updateImage(localId, playlistImage)
+      localId = await this.playlists.create(name, description)
+      if (image) await this.playlists.updateImage(localId, image)
     }
 
-    // Fetch items
+    // ────────────────────────────────────────────────
+    // FETCH TRACKS (PAGINATED)
+    // ────────────────────────────────────────────────
+
     const items: MediaItem[] = []
     let offset = 0
 
     while (true) {
-      const page = await this.client.getPlaylistTracks(playlistId, { offset })
+      const page = await this.client.getPlaylistTracks(playlistId, offset)
+      if (!page || !page.items) break
+
       for (const entry of page.items) {
-        if (!entry.track) continue
-        items.push(this.normalize.normalize(entry.track))
+        const track = entry?.track
+        if (!track) continue
+
+        const normalized = this.normalize.normalize(track)
+        if (normalized) items.push(normalized)
       }
+
       if (!page.next) break
       offset += page.items.length
     }
 
-    // Store items
+    // ────────────────────────────────────────────────
+    // STORE ITEMS + UPDATE PLAYLIST CONTENTS
+    // ────────────────────────────────────────────────
+
+    if (items.length === 0) {
+      this.log.warn(`[SpotifyImport] Playlist ${playlistId} has no valid items`)
+    }
+
     await this.library.upsert(items)
 
-    // Replace playlist contents
     await this.playlists.clearItems(localId)
     await this.playlists.addItems(
       localId,
       items.map((i) => i.id),
     )
+
+    this.log.info(`[SpotifyImport] Imported playlist '${name}' (${items.length} items)`)
   }
+
+  // ────────────────────────────────────────────────
+  // HELPERS
+  // ────────────────────────────────────────────────
 
   private async findLocalPlaylistId(ref: MediaSourceRef): Promise<string | null> {
     const all = await this.playlists.list()
-    return all.find((p) => p.source === "spotify" && p.sourceId === ref.sourceId)?.id ?? null
+    const match = all.find((p) => p.source === ref.source && p.sourceId === ref.sourceId)
+    return match?.id ?? null
   }
 }
