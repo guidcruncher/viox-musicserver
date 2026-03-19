@@ -1,4 +1,5 @@
-import { db } from "./db"
+import { db } from "@/infra/db"
+
 import { EqBandRecord, EqPresetRecord } from "./types"
 
 export interface EqPresetWithBands extends EqPresetRecord {
@@ -17,12 +18,12 @@ export class EqPresetStore {
   }
 
   getById(id: number): EqPresetRecord | null {
-    return db.prepare(`SELECT id, name, gain FROM eq_presets WHERE id = ? LIMIT 1`).get(id) || null
+    return (db.prepare(`SELECT id, name, gain FROM eq_presets WHERE id = ? LIMIT 1`).get(id) as EqPresetRecord | undefined) || null
   }
 
   getByName(name: string): EqPresetRecord | null {
     return (
-      db.prepare(`SELECT id, name, gain FROM eq_presets WHERE name = ? LIMIT 1`).get(name) || null
+      (db.prepare(`SELECT id, name, gain FROM eq_presets WHERE name = ? LIMIT 1`).get(name) as EqPresetRecord | undefined) || null
     )
   }
 
