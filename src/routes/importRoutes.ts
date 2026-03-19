@@ -8,8 +8,4 @@ export function registerImportRoutes(app: FastifyInstance, backend: VioxBackend)
     res.send({ ok: true })
   })
 
-  app.post("/import/local", async (_req, res) => {
-    await backend.importers.local.scan()
-    res.send({ ok: true })
-  })
 }

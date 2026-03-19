@@ -4,10 +4,10 @@ import swagger from "@fastify/swagger"
 import Fastify from "fastify"
 
 import { getConfig } from "@/config"
+import { createVioxBackend } from "@/core/createBackend"
 import { getLogger } from "@/logger"
 import { registerAllRoutes } from "@/routes"
 import { version } from "@/version"
-import { createVioxBackend } from "@/core/createBackend"
 
 export const createServer = async () => {
   const logger = getLogger()
