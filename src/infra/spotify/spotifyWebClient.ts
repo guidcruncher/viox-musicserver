@@ -1,10 +1,18 @@
 import axios, { AxiosInstance } from "axios";
 import { spotifyAuthClient } from "./spotifyAuthClient";
+import { PlayerApi } from "./playerApi";
+
+interface SpotifyWebClientOptions {
+  librespotBaseUrl?: string;
+}
 
 export class SpotifyWebClient {
   private http: AxiosInstance;
+  private librespot: AxiosInstance;
 
-  constructor() {
+  public player: PlayerApi;
+
+  constructor(opts: SpotifyWebClientOptions = {}) {
     this.http = axios.create({
       baseURL: "https://api.spotify.com/v1",
       timeout: 8000,
@@ -16,11 +24,15 @@ export class SpotifyWebClient {
       config.headers.Authorization = `Bearer ${token}`;
       return config;
     });
+
+    this.librespot = axios.create({
+      baseURL: opts.librespotBaseUrl ?? "http://127.0.0.1:3678",
+      timeout: 3000,
+    });
+
+    this.player = new PlayerApi(this.librespot, this.http);
   }
 
-  // ────────────────────────────────────────────────
-  // Search
-  // ────────────────────────────────────────────────
   async search(query: string, types: string[]) {
     const res = await this.http.get("/search", {
       params: {
@@ -32,9 +44,6 @@ export class SpotifyWebClient {
     return res.data;
   }
 
-  // ────────────────────────────────────────────────
-  // Lookup
-  // ────────────────────────────────────────────────
   async getTrack(id: string) {
     return (await this.http.get(`/tracks/${id}`)).data;
   }
