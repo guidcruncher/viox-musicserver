@@ -1,4 +1,5 @@
 import type { MediaItem, MediaSourceRef, MediaItemNormalizer } from "@/types"
+import { makeVioxId } from "./makeVioxId"
 
 export class SpotifyNormalizer implements MediaItemNormalizer {
   normalize(raw: any): MediaItem {
@@ -33,7 +34,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: raw.name,
       subtitle: raw.album?.name,
@@ -61,7 +62,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: raw.name,
       subtitle: raw.artists?.map((a: any) => a.name).join(", "),
@@ -88,7 +89,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: raw.name,
       subtitle: raw.publisher,
@@ -116,7 +117,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: raw.name,
       subtitle: raw.show?.name,
@@ -136,7 +137,4 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
   //   Helpers
   // ────────────────────────────────────────────────
   //
-  private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`
-  }
 }

@@ -1,4 +1,5 @@
 import type { AudioSource, MediaItem, MediaItemNormalizer } from "@/types"
+import { makeVioxId } from "./makeVioxId"
 
 import { SpotifyNormalizer } from "./spotifyNormalizer"
 import { PodverseNormalizer } from "./podverseNormalizer"

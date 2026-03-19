@@ -1,4 +1,5 @@
 import type { MediaItem, MediaSourceRef } from "@/types"
+import { makeVioxId } from "./makeVioxId"
 
 export class TuneInNormalizer {
   normalize(raw: any): MediaItem {
@@ -14,7 +15,7 @@ export class TuneInNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: raw.text ?? "Unknown Station",
       subtitle: raw.playing ?? raw.subtext ?? "",
@@ -26,9 +27,5 @@ export class TuneInNormalizer {
       country: raw.country ?? undefined,
       bitrate: raw.bitrate ? `${raw.bitrate}` : undefined,
     }
-  }
-
-  private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}`
   }
 }

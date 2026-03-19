@@ -1,4 +1,5 @@
 import type { MediaItem, MediaSourceRef } from "@/types"
+import { makeVioxId } from "./makeVioxId"
 
 export class RadioBrowserNormalizer {
   normalize(raw: any): MediaItem {
@@ -14,7 +15,7 @@ export class RadioBrowserNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: raw.name ?? "Unknown Station",
       subtitle: raw.tags?.split(",").slice(0, 3).join(", ") ?? "",
@@ -26,9 +27,5 @@ export class RadioBrowserNormalizer {
       country: raw.countrycode,
       bitrate: raw.bitrate ? `${raw.bitrate}` : undefined,
     }
-  }
-
-  private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}`
   }
 }

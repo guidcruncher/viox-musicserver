@@ -1,4 +1,5 @@
 import type { MediaItem, MediaSourceRef } from "@/types"
+import { makeVioxId } from "./makeVioxId"
 
 export class PodverseNormalizer {
   normalize(raw: any): MediaItem {
@@ -36,7 +37,7 @@ export class PodverseNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: podcast.title ?? "Untitled Podcast",
       subtitle: podcast.description ?? "",
@@ -63,7 +64,7 @@ export class PodverseNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: ep.title ?? "Untitled Episode",
       subtitle: ep.description ?? "",
@@ -91,7 +92,7 @@ export class PodverseNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: refObj.title ?? episode?.title ?? "Untitled Clip",
       subtitle: refObj.description ?? episode?.description ?? "",
@@ -106,9 +107,6 @@ export class PodverseNormalizer {
   // ────────────────────────────────────────────────
   // Helpers
   // ────────────────────────────────────────────────
-  private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`
-  }
 
   private buildMediaRefUri(ref: any): string {
     const episodeId = ref.episode?.id ?? "unknown"

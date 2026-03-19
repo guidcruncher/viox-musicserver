@@ -1,4 +1,5 @@
 import type { MediaItem, MediaSourceRef, MediaItemNormalizer } from "@/types"
+import { makeVioxId } from "./makeVioxId"
 
 export class YouTubeMusicNormalizer implements MediaItemNormalizer {
   normalize(raw: any): MediaItem {
@@ -38,7 +39,7 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: raw.title,
       subtitle: raw.album?.name,
@@ -64,7 +65,7 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: raw.title,
       subtitle: raw.author,
@@ -90,7 +91,7 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: raw.title,
       subtitle: raw.artist,
@@ -106,7 +107,4 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
   //   Helpers
   // ────────────────────────────────────────────────
   //
-  private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`
-  }
 }

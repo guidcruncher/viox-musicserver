@@ -1,4 +1,5 @@
 import type { MediaItem, MediaSourceRef, MediaItemNormalizer } from "@/types"
+import { makeVioxId } from "./makeVioxId"
 
 export class LocalFileNormalizer implements MediaItemNormalizer {
   normalize(raw: any): MediaItem {
@@ -12,7 +13,7 @@ export class LocalFileNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: this.buildId(ref),
+      id: makeVioxId(ref),
       sourceRef: ref,
       title: raw.title || raw.filename,
       subtitle: raw.album,
@@ -22,9 +23,5 @@ export class LocalFileNormalizer implements MediaItemNormalizer {
       durationMs: raw.durationMs,
       isLive: false,
     }
-  }
-
-  private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`
   }
 }
