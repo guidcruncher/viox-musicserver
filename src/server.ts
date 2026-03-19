@@ -7,6 +7,7 @@ import { getConfig } from "@/config"
 import { getLogger } from "@/logger"
 import { registerAllRoutes } from "@/routes"
 import { version } from "@/version"
+import { createVioxBackend } from "@/core/createBackend"
 
 export const createServer = async () => {
   const logger = getLogger()
@@ -66,8 +67,11 @@ export const createServer = async () => {
   })
 */
 
+  logger.info("Creating backend")
+  const backend = createVioxBackend()
+
   logger.info("Registering routes")
-  await registerAllRoutes(app)
+  await registerAllRoutes(app, backend)
 
   //  await mpdService.checkConnection();
   logger.info("Connected to MPD successfully")
