@@ -27,7 +27,7 @@ function collectRoutes(dir: string): string[] {
 
 const routeFiles = collectRoutes(ROUTES_DIR);
 
-let output = `// AUTO-GENERATED FILE — DO NOT EDIT
+let output = `/* prettier-ignore-file */\n/* eslint-disable */\n// AUTO-GENERATED FILE — DO NOT EDIT
 import { FastifyInstance } from "fastify";
 
 `;

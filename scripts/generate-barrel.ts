@@ -61,7 +61,7 @@ function generateBarrelForDir(dir: string) {
 
   const indexPath = path.join(absDir, "index.ts");
 
-  const header = `// AUTO-GENERATED FILE — DO NOT EDIT\n\n`;
+  const header = `/* prettier-ignore-file */\n/* eslint-disable */\n// AUTO-GENERATED FILE — DO NOT EDIT\n\n`;
   const content = header + exportLines.join("\n") + "\n";
 
   fs.writeFileSync(indexPath, content, "utf8");
