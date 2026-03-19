@@ -1,4 +1,4 @@
-import { SpotifyLibraryMigrationResult} from "./spotifyLibraryMigrationResult"
+import { SpotifyLibraryMigrationResult } from "./spotifyLibraryMigrationResult"
 
 export interface SpotifyLibraryMigrator {
   migrateUserLibrary(): Promise<SpotifyLibraryMigrationResult>

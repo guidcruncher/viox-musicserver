@@ -1,4 +1,4 @@
-import { MediaItem } from './mediaItem'
+import { MediaItem } from "./mediaItem"
 
 export interface PlaybackBackend {
   readonly id: string

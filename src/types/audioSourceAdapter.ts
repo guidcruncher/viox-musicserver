@@ -1,4 +1,4 @@
-import { AudioSource, BrowseOptions,MediaItem, MediaSourceRef } from "./index"
+import { AudioSource, BrowseOptions, MediaItem, MediaSourceRef } from "./index"
 
 export interface AudioSourceAdapter {
   readonly id: AudioSource
