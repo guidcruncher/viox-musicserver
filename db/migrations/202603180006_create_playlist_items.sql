@@ -3,8 +3,8 @@
 CREATE TABLE playlist_items (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    playlist_id TEXT NOT NULL REFERENCES playlists(id) ON DELETE CASCADE,
-    media_item_id TEXT NOT NULL REFERENCES media_items(id) ON DELETE CASCADE,
+    playlist_id TEXT NOT NULL ,
+    media_item_id TEXT NOT NULL ,
 
     position INTEGER NOT NULL,          -- ordering within playlist
 

@@ -3,7 +3,7 @@
 CREATE TABLE playback_queue (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-    media_item_id TEXT NOT NULL REFERENCES media_items(id) ON DELETE CASCADE,
+    media_item_id TEXT NOT NULL,
     position INTEGER NOT NULL,           -- ordering in queue
 
     inserted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

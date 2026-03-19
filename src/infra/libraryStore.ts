@@ -5,7 +5,8 @@ export class SqliteLibraryStore implements LibraryStore {
   private readonly conn = db
 
   async upsert(items: MediaItem[]): Promise<void> {
-    const stmt = this.conn.prepare(`
+    try {
+      const stmt = this.conn.prepare(`
       INSERT INTO media_items (
         id, source, item_type, source_id, parent_source_id, source_uri,
         title, subtitle, artist, album, image_url, duration_ms, is_live
@@ -29,11 +30,14 @@ export class SqliteLibraryStore implements LibraryStore {
         updated_at = CURRENT_TIMESTAMP
     `)
 
-    const tx = this.conn.transaction((batch: MediaItem[]) => {
-      for (const item of batch) stmt.run(this.toRow(item))
-    })
+      const tx = this.conn.transaction((batch: MediaItem[]) => {
+        for (const item of batch) stmt.run(this.toRow(item))
+      })
 
-    tx(items)
+      tx(items)
+    } catch {
+      return
+    }
   }
 
   async remove(id: string): Promise<void> {
