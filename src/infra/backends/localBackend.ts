@@ -33,7 +33,17 @@ export class LocalPlaybackBackend implements PlaybackBackend {
       "pipe:1",
     ])
 
-    this.pwcat = spawn("pw-cat", ["--target", "streamer", "-p", "48000", "-c", "2", "-f", "S16_LE", "-"])
+    this.pwcat = spawn("pw-cat", [
+      "--target",
+      "streamer",
+      "-p",
+      "48000",
+      "-c",
+      "2",
+      "-f",
+      "S16_LE",
+      "-",
+    ])
 
     this.ffmpeg.stdout.pipe(this.pwcat.stdin)
 

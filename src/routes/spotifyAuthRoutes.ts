@@ -1,8 +1,9 @@
+import axios from "axios"
 import type { FastifyInstance } from "fastify"
 import querystring from "querystring"
 
 import { getConfig, spotifyScopes } from "@/config"
-import { spotifyAuthClient } from "@/infra/spotify/spotify/spotifyAuthClient"
+import { spotifyAuthClient } from "@/infra/spotify/spotifyAuthClient"
 import { spotifyTokenStore } from "@/infra/spotify/spotifyTokenStore"
 import type { VioxBackend } from "@/types"
 
