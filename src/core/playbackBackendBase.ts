@@ -5,6 +5,7 @@ export abstract class BasePlaybackBackend implements PlaybackBackend {
 
   abstract play(item: MediaItem, positionMs?: number): Promise<void>
   abstract pause(): Promise<void>
+  abstract resume(): Promise<void>
   abstract stop(): Promise<void>
   abstract seek(positionMs: number): Promise<void>
   abstract getPosition(): Promise<number>

@@ -7,5 +7,4 @@ export function registerImportRoutes(app: FastifyInstance, backend: VioxBackend)
     await backend.importers.spotify.importUserPlaylists()
     res.send({ ok: true })
   })
-
 }
