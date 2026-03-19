@@ -8,7 +8,7 @@ export const EVENT_KEYS = Object.keys(EVENT_DEFINITIONS) as EventKey[]
 
 class EventBus {
   private bus = new EventEmitter()
-  private clientListeners = new Map<string, Map<EventKey, Function>>()
+  private clientListeners = new Map<string, Map<EventKey, (...args: any[]) => void>>()
 
   subscribe<K extends EventKey>(
     connectionId: string,

@@ -19,8 +19,6 @@ export class LocalPlaybackBackend implements PlaybackBackend {
 
     const seekArgs = positionMs > 0 ? ["-ss", (positionMs / 1000).toString()] : []
 
-// pw-cat --target streamer --playback --raw --rate 48000 --channels 2 --format s16 -
-
     this.ffmpeg = spawn("ffmpeg", [
       ...seekArgs,
       "-i",

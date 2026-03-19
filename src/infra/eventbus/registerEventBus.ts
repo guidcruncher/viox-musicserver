@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto" // Built-in for unique IDs
 import websocket from "@fastify/websocket"
 import { FastifyInstance } from "fastify"
 
-import { EVENT_KEYS,eventBus } from "./eventBus"
+import { EVENT_KEYS, eventBus } from "./eventBus"
 
 export const registerEventBus = async (app: FastifyInstance) => {
   app.register(websocket)
