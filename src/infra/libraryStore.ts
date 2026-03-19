@@ -87,7 +87,7 @@ export class SqliteLibraryStore implements LibraryStore {
       id: item.id,
       source: item.sourceRef.source,
       item_type: item.sourceRef.itemType,
-      source_id: item.sourceRef.sourceId,
+      source_id: item.sourceRef.sourceId ?? "",
       parent_source_id: item.sourceRef.parentSourceId ?? null,
       source_uri: item.sourceRef.uri ?? null,
       title: item.title,

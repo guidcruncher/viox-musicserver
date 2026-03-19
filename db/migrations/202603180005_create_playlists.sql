@@ -14,10 +14,6 @@ CREATE TABLE playlists (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Optional: prevent duplicate imported playlists
-CREATE UNIQUE INDEX playlists_source_identity_idx
-ON playlists (source, COALESCE(source_id, ''));
-
 -- migrate:down
 
 DROP TABLE IF EXISTS playlists;
