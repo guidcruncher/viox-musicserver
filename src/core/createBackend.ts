@@ -1,11 +1,11 @@
 import { SimpleBackendRouter } from "@/infra/backendRouter"
-import { BackendRegistry } from "@/infra/backendRouter"
+import { BackendRegistry } from "@/infra/backends/backendRegistry"
 import { LocalPlaybackBackend } from "@/infra/backends/localBackend"
 import { PodversePlaybackBackend } from "@/infra/backends/podverseBackend"
 import { RadioPlaybackBackend } from "@/infra/backends/radioBackend"
 import { SpotifyPlaybackBackend } from "@/infra/backends/spotifyBackend"
 import { EqualizerService } from "@/infra/equalizer/equalizerService"
-import { LibraryStore } from "@/infra/libraryStore"
+import { SqliteLibraryStore } from "@/infra/libraryStore"
 import { PlaybackController } from "@/infra/playback/playbackController"
 import { SqlitePlaylistStore } from "@/infra/playlistStore"
 import { SpeakerControlService } from "@/infra/snapserver/speakerControlService"
@@ -59,7 +59,7 @@ export function createVioxBackend(): VioxBackend {
   // 5. Library + playlist stores
   // ────────────────────────────────────────────────
   //
-  const library = new LibraryStore()
+  const library = new SqliteLibraryStore()
   const playlists = new SqlitePlaylistStore(library)
 
   //
