@@ -79,7 +79,7 @@ export class SpotifySourceAdapter implements AudioSourceAdapter {
   }
 
   private async browsePlaylist(ref: MediaSourceRef): Promise<MediaItem[]> {
-    const raw:any = await this.api.getPlaylistTracks(ref.sourceId)
+    const raw: any = await this.api.getPlaylistTracks(ref.sourceId)
     return raw.items.filter((i: any) => i.track).map((i: any) => this.normalize.normalize(i.track))
   }
 }

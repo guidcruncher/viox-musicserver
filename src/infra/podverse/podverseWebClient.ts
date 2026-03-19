@@ -58,7 +58,7 @@ export class PodverseWebClient {
       // fallback: RSS lookup
       const podcastId = id.split(":").pop()
 
-        if (!podcastId) {
+      if (!podcastId) {
         return undefined
       }
 

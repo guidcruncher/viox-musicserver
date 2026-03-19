@@ -1,5 +1,5 @@
-import type { AudioSource, LibraryStore, PlaylistStore } from "@/types"
 import { audioSourceRegistry } from "@/core/audioSourceRegistry"
+import type { AudioSource, LibraryStore, PlaylistStore } from "@/types"
 
 export class LibrarySyncService {
   private readonly registry = audioSourceRegistry()
@@ -11,7 +11,7 @@ export class LibrarySyncService {
 
   async syncSource(source: AudioSource): Promise<void> {
     const adapter = this.registry.getAdapter(source)
-    
+
     // Some sources support browsing root categories
     if (adapter.browse) {
       const items = await adapter.browse({

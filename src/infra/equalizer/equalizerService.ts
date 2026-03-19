@@ -29,7 +29,7 @@ export class EqualizerService {
   // ────────────────────────────────────────────────
 
   getAvailablePresets(): string[] {
-    return eqPresetStore.getAll().map((p:any) => p.name)
+    return eqPresetStore.getAll().map((p: any) => p.name)
   }
 
   loadPreset(name: string): void {
