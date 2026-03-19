@@ -1,9 +1,10 @@
+import { getConfig } from "@/config"
+import { LocalFileSystemClient } from "@/infra/local/localFileSystemClient"
 import { LocalSourceAdapter } from "@/infra/sources/localAdapter"
 import { PodverseSourceAdapter } from "@/infra/sources/podverseAdapter"
 import { RadioBrowserSourceAdapter } from "@/infra/sources/radioBrowserAdapter"
 import { SpotifySourceAdapter } from "@/infra/sources/spotifyAdapter"
 import { TuneInSourceAdapter } from "@/infra/sources/tuneInAdapter"
-import { YouTubeMusicSourceAdapter } from "@/infra/sources/youtubeAdapter"
 import type {
   AudioSource,
   AudioSourceAdapter,
@@ -91,8 +92,8 @@ export const audioSourceRegistry = async () => {
     new PodverseSourceAdapter(),
     new RadioBrowserSourceAdapter(),
     new TuneInSourceAdapter(),
-    new YouTubeMusicSourceAdapter(),
-    new LocalSourceAdapter(),
+    new LocalSourceAdapter(new LocalFileSystemClient(getConfig("musicFolder"))),
   ])
+
   return registry
 }
