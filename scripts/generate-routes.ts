@@ -1,8 +1,9 @@
 import { readdirSync, statSync, writeFileSync } from "fs";
-import { join, relative, extname, sep } from "path";
+import { basename, join, relative, extname, sep } from "path";
 
 const ROUTES_DIR = join(__dirname, "..", "src", "routes");
-const OUTPUT_FILE = join(__dirname, "..", "src", "routes.generated.ts");
+const OUTPUT_FILE = join(__dirname, "..", "src", "routes", "index.ts");
+
 
 function collectRoutes(dir: string): string[] {
   console.log(`Scanning ${dir}`);
@@ -16,7 +17,7 @@ function collectRoutes(dir: string): string[] {
     if (stats.isDirectory()) {
       files.push(...collectRoutes(full));
     } else if (stats.isFile()) {
-      if (extname(full) == ".ts") {
+      if ((extname(full) == ".ts") && (basename(full) !=  "index.ts")) {
         files.push(full);
       }
     }
