@@ -1,4 +1,5 @@
 import { SpotifyNormalizer } from "@/core/normalizers/spotifyNormalizer"
+import { fetchAllOffsetPages } from "@/infra/spotify/fetchAllOffsetPages"
 import { getLogger } from "@/logger"
 import type { LibraryStore, MediaItem, MediaSourceRef, PlaylistStore } from "@/types"
 
@@ -59,35 +60,33 @@ export class SpotifyImportService {
     }
 
     // ────────────────────────────────────────────────
-    // FETCH TRACKS (PAGINATED)
+    // FETCH TRACKS USING PAGINATION HELPER
     // ────────────────────────────────────────────────
 
+    const rawTracks = await fetchAllOffsetPages(
+      (offset, id) => this.client.getPlaylistTracks(id, offset),
+      100,
+      playlistId,
+    )
+
+    if (!rawTracks) {
+      this.log.warn(`[SpotifyImport] No tracks returned for playlist ${playlistId}`)
+      return
+    }
+
     const items: MediaItem[] = []
-    let offset = 0
 
-    while (true) {
-      const page = await this.client.getPlaylistTracks(playlistId, offset)
-      if (!page || !page.items) break
+    for (const entry of rawTracks) {
+      const track = entry?.track
+      if (!track) continue
 
-      for (const entry of page.items) {
-        const track = entry?.track
-        if (!track) continue
-
-        const normalized = this.normalize.normalize(track)
-        if (normalized) items.push(normalized)
-      }
-
-      if (!page.next) break
-      offset += page.items.length
+      const normalized = this.normalize.normalize(track)
+      if (normalized) items.push(normalized)
     }
 
     // ────────────────────────────────────────────────
     // STORE ITEMS + UPDATE PLAYLIST CONTENTS
     // ────────────────────────────────────────────────
-
-    if (items.length === 0) {
-      this.log.warn(`[SpotifyImport] Playlist ${playlistId} has no valid items`)
-    }
 
     await this.library.upsert(items)
 
