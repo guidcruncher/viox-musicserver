@@ -1,3 +1,5 @@
+import { getConfig } from "@/config"
+
 import { BackendRouter } from "@/core/playback/backendRouter";
 import { AudioSourceRegistry } from "@/core/sources/audioSourceRegistry";
 
@@ -30,7 +32,7 @@ export function createVioxBackend(config: { localRoot: string }) {
   sources.register("tunein", new TuneInSourceAdapter());
   sources.register("radiobrowser", new RadioBrowserSourceAdapter());
 
-  const localFs = new LocalFileSystemClient(config.localRoot);
+  const localFs = new LocalFileSystemClient(getConfig("musicFolder"))
   sources.register("local", new LocalSourceAdapter(localFs));
 
   //
