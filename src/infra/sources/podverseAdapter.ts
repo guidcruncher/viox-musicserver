@@ -7,7 +7,7 @@ import type {
 } from "@/types";
 
 import { PodverseWebClient } from "@/infra/podverse/PodverseWebClient";
-import { PodverseNormalizer } from "@/core/normalizers/podverseNormalizer";
+import { PodverseNormalizer } from "@/core/normalizers/podverse-normalizer";
 
 export class PodverseSourceAdapter implements AudioSourceAdapter {
   readonly id = "podverse";
@@ -37,18 +37,13 @@ export class PodverseSourceAdapter implements AudioSourceAdapter {
   async getPlaybackUrl(ref: MediaSourceRef): Promise<string | null> {
     if (ref.itemType !== "episode") return null;
     const raw = await this.api.getEpisode(ref.sourceId);
-    return raw.mediaUrl ?? null;
+    return raw?.mediaUrl ?? null;
   }
 
   async browse(options: BrowseOptions): Promise<MediaItem[]> {
     if (!options.ref || options.ref.itemType !== "podcast") return [];
 
-    const raw = await this.api.getEpisodes({
-      podcastId: options.ref.sourceId,
-      includePodcast: true,
-      sort: "pubDate",
-    });
-
+    const raw = await this.api.getEpisodesForPodcast(options.ref.sourceId);
     return raw.map((e: any) => this.normalize.normalize(e));
   }
 }
