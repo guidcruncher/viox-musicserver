@@ -49,7 +49,7 @@ export class SqliteLibraryStore implements LibraryStore {
     const rows = this.conn.prepare(`SELECT * FROM media_items ORDER BY updated_at DESC`).all()
     return rows.map((r: any) => this.fromRow(r))
   }
-  
+
   async findBySourceRef(ref: MediaSourceRef): Promise<MediaItem | undefined> {
     const row = this.conn
       .prepare(
