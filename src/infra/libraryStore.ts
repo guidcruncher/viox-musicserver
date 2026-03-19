@@ -96,7 +96,7 @@ export class SqliteLibraryStore implements LibraryStore {
       album: item.album ?? null,
       image_url: item.imageUrl ?? null,
       duration_ms: item.durationMs ?? null,
-      is_live: item.isLive ?? false,
+      is_live: item.isLive ? 1 : 0, // <— FIXED
     }
   }
 
@@ -118,7 +118,7 @@ export class SqliteLibraryStore implements LibraryStore {
       album: row.album ?? undefined,
       imageUrl: row.image_url ?? undefined,
       durationMs: row.duration_ms ?? undefined,
-      isLive: !!row.is_live,
+      isLive: row.is_live === 1,
     }
   }
 }
