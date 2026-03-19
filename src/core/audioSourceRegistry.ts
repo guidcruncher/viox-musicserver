@@ -86,7 +86,7 @@ export class AudioSourceRegistry {
   }
 }
 
-export const audioSourceRegistry = async () => {
+export const audioSourceRegistry = () => {
   const registry = new AudioSourceRegistry([
     new SpotifySourceAdapter(),
     new PodverseSourceAdapter(),

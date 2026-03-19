@@ -25,8 +25,6 @@ export class TuneInNormalizer {
       imageUrl: raw.image,
       durationMs: undefined,
       isLive: true,
-      country: raw.country ?? undefined,
-      bitrate: raw.bitrate ? `${raw.bitrate}` : undefined,
     }
   }
 }

@@ -1,5 +1,4 @@
 import type {
-  AudioSourceRegistry,
   BackendRouter,
   LibraryStore,
   MediaItem,
@@ -10,14 +9,17 @@ import type {
   QueueStore,
 } from "@/types"
 
+import { audioSourceRegistry } from "./audioSourceRegistry"
+
 export class DefaultPlaybackEngine implements PlaybackEngine {
+  private readonly sources = audioSourceRegistry()
+
   constructor(
     private readonly library: LibraryStore,
     private readonly queue: QueueStore,
     private readonly playlists: PlaylistStore,
     private readonly router: BackendRouter,
     private readonly orchestrator: PlaybackOrchestrator,
-    private readonly sources: AudioSourceRegistry,
   ) {}
 
   //

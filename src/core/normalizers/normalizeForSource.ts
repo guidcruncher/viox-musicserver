@@ -2,10 +2,9 @@ import type { AudioSource, MediaItem, MediaItemNormalizer } from "@/types"
 
 import { LocalFileNormalizer } from "./localNormalizer"
 import { PodverseNormalizer } from "./podverseNormalizer"
-import { RadioBrowserNormalizer } from "./radiobrowserNormalizer"
+import { RadioBrowserNormalizer } from "./radioBrowserNormalizer"
 import { SpotifyNormalizer } from "./spotifyNormalizer"
-import { TuneInNormalizer } from "./tuneinNormalizer"
-import { YouTubeMusicNormalizer } from "./youtubeNormalizer"
+import { TuneInNormalizer } from "./tuneInNormalizer"
 
 export class NormalizerRegistry {
   private readonly map = new Map<AudioSource, MediaItemNormalizer>()
@@ -15,7 +14,6 @@ export class NormalizerRegistry {
     this.map.set("podverse", new PodverseNormalizer())
     this.map.set("radiobrowser", new RadioBrowserNormalizer())
     this.map.set("tunein", new TuneInNormalizer())
-    this.map.set("youtube", new YouTubeMusicNormalizer())
     this.map.set("local", new LocalFileNormalizer())
   }
 

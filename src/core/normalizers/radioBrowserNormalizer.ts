@@ -25,8 +25,6 @@ export class RadioBrowserNormalizer {
       imageUrl: raw.favicon || undefined,
       durationMs: undefined,
       isLive: true,
-      country: raw.countrycode,
-      bitrate: raw.bitrate ? `${raw.bitrate}` : undefined,
     }
   }
 }

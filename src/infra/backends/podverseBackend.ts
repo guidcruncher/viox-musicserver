@@ -16,7 +16,7 @@ export class PodversePlaybackBackend implements PlaybackBackend {
     await this.stop()
 
     this.currentItem = item
-    const url = item.sourceRef.uri ?? item.uri
+    const url = item.sourceRef.uri
     if (!url) throw new Error("Podverse backend: no media URL")
 
     const seekArgs = positionMs > 0 ? ["-ss", (positionMs / 1000).toString()] : []

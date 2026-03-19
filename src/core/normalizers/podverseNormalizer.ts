@@ -8,11 +8,6 @@ export class PodverseNormalizer {
       throw new Error("PodverseNormalizer: cannot normalize empty object")
     }
 
-    // MediaRef (clips)
-    if ("startTime" in raw) {
-      return this.fromMediaRef(raw)
-    }
-
     // Episode (API or RSS)
     if ("mediaUrl" in raw) {
       return this.fromEpisode(raw)
@@ -73,34 +68,6 @@ export class PodverseNormalizer {
       album: ep.podcast?.title,
       imageUrl: ep.imageUrl ?? ep.podcast?.imageUrl,
       durationMs: ep.duration ? ep.duration * 1000 : undefined,
-      isLive: false,
-    }
-  }
-
-  // ────────────────────────────────────────────────
-  // MediaRef (clips)
-  // ────────────────────────────────────────────────
-  private fromMediaRef(refObj: any): MediaItem {
-    const episode = refObj.episode
-    const podcast = refObj.podcast
-
-    const ref: MediaSourceRef = {
-      source: "podverse",
-      itemType: "mediaref",
-      sourceId: refObj.id,
-      parentSourceId: episode?.id,
-      uri: this.buildMediaRefUri(refObj),
-    }
-
-    return {
-      id: makeVioxId(ref),
-      sourceRef: ref,
-      title: refObj.title ?? episode?.title ?? "Untitled Clip",
-      subtitle: refObj.description ?? episode?.description ?? "",
-      artist: podcast?.title,
-      album: podcast?.title,
-      imageUrl: episode?.imageUrl ?? podcast?.imageUrl,
-      durationMs: undefined,
       isLive: false,
     }
   }

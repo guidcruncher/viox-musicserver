@@ -12,7 +12,7 @@ export class RadioPlaybackBackend implements PlaybackBackend {
   async play(item: MediaItem): Promise<void> {
     await this.stop()
 
-    const url = item.sourceRef.uri ?? item.uri
+    const url = item.sourceRef.uri 
     if (!url) throw new Error("Radio backend: no stream URL")
 
     this.ffmpeg = spawn("ffmpeg", [

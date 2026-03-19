@@ -1,4 +1,4 @@
-import { ChildProcessWithoutNullStreams, spawn } from "node:child_process"
+import { ChildProcess, spawn } from "child_process"
 
 import type { MediaItem, PlaybackBackend } from "@/types"
 
@@ -11,8 +11,8 @@ interface PipewireBackendOptions {
 export class PipewireFfmpegBackend implements PlaybackBackend {
   readonly id = "pipewire-ffmpeg"
 
-  private ffmpeg?: ChildProcessWithoutNullStreams
-  private pwcat?: ChildProcessWithoutNullStreams
+  private ffmpeg?: ChildProcess
+  private pwcat?: ChildProcess
   private startedAt: number | null = null
   private pausedAt: number | null = null
 
@@ -63,7 +63,9 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
       stdio: ["pipe", "inherit", "inherit"],
     })
 
-    this.ffmpeg.stdout.pipe(this.pwcat.stdin)
+    if (this.ffmpeg.stdout && this.pwcat.stdin) {
+      this.ffmpeg.stdout.pipe(this.pwcat.stdin)
+    }
 
     this.startedAt = Date.now() - positionMs
     this.pausedAt = null

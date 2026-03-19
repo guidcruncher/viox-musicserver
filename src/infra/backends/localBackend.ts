@@ -14,7 +14,7 @@ export class LocalPlaybackBackend implements PlaybackBackend {
   async play(item: MediaItem, positionMs = 0): Promise<void> {
     await this.stop()
 
-    const filePath = item.sourceRef.uri ?? item.uri
+    const filePath = item.sourceRef.uri
     if (!filePath) throw new Error("Local backend: no file path")
 
     const seekArgs = positionMs > 0 ? ["-ss", (positionMs / 1000).toString()] : []
