@@ -7,13 +7,13 @@ import { getLogger } from "@/logger"
 export const registerEventBus = async (app: FastifyInstance) => {
   app.register(websocket)
 
-  app.get("/api/events", { websocket: true }, (connection) => {
+  app.get("/api/events", { websocket: true }, (connection, req) => {
     const connectionId = randomUUID()
 
     for (const eventName of EVENT_KEYS) {
       eventBus.subscribe(connectionId, eventName, (data:any) => {
-        if (connection.socket.readyState === 1) {
-          connection.socket.send(
+        if (connection.readyState === 1) {
+          connection.send(
             JSON.stringify({
               type: eventName,
               payload: data,
@@ -23,7 +23,7 @@ export const registerEventBus = async (app: FastifyInstance) => {
       })
     }
 
-    connection.socket.on("close", () => {
+    connection.on("close", () => {
       eventBus.cleanup(connectionId)
     })
   })
