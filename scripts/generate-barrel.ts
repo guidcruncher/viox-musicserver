@@ -44,7 +44,7 @@ function toExportPath(baseDir: string, filePath: string): string {
 
 function generateBarrelForDir(dir: string) {
   const absDir = path.resolve(dir);
-
+  console.log(`Generating barrels for ${dir}`)
   if (!fs.existsSync(absDir)) {
     console.error(`Directory not found: ${absDir}`);
     return;

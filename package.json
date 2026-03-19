@@ -6,7 +6,7 @@
     "dev": "npm run generate:barrels && npm run generate:routes && npm run format && tsx src/index.ts",
     "generate:routes": "tsx scripts/generate-routes.ts",
     "generate:barrels": "tsx scripts/generate-barrel.ts",
-    "build": "npm run generate:routes && npm run build:api",
+    "build": "npm run generate:barrels && npm run generate:routes && npm run build:api",
     "build:api": "tsc && tsc-alias",
     "start": "node dist/index.js",
     "format": "prettier --config ./.prettierrc --write \"src/**/*.ts\" src/*.ts",
