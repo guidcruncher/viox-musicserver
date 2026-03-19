@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify"
+
 import type { VioxBackend } from "@/types"
 
 export function registerEqualizerRoutes(app: FastifyInstance, backend: VioxBackend) {

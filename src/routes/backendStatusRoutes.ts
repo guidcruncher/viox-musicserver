@@ -1,4 +1,5 @@
 import type { FastifyInstance } from "fastify"
+
 import type { VioxBackend } from "@/types"
 
 export function registerBackendStatusRoutes(app: FastifyInstance, backend: VioxBackend) {
