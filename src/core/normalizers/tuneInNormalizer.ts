@@ -16,7 +16,7 @@ export class TuneInNormalizer {
     }
 
     return {
-      id: makeVioxId(ref),
+      id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: raw.text ?? "Unknown Station",
       subtitle: raw.playing ?? raw.subtext ?? "",

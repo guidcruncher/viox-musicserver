@@ -33,7 +33,7 @@ export class PodverseNormalizer {
     }
 
     return {
-      id: makeVioxId(ref),
+      id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: podcast.title ?? "Untitled Podcast",
       subtitle: podcast.description ?? "",
@@ -60,7 +60,7 @@ export class PodverseNormalizer {
     }
 
     return {
-      id: makeVioxId(ref),
+      id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: ep.title ?? "Untitled Episode",
       subtitle: ep.description ?? "",

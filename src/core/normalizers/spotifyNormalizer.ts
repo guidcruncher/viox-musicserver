@@ -63,7 +63,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: makeoVioxId(ref, "item"),
+      id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: raw.name,
       subtitle: raw.artists?.map((a: any) => a.name).join(", "),

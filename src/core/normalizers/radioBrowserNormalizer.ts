@@ -16,7 +16,7 @@ export class RadioBrowserNormalizer {
     }
 
     return {
-      id: makeVioxId(ref),
+      id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: raw.name ?? "Unknown Station",
       subtitle: raw.tags?.split(",").slice(0, 3).join(", ") ?? "",

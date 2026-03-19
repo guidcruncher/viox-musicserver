@@ -1,5 +1,5 @@
 /* prettier-ignore-file */
- 
+/* eslint-disable */
 // AUTO-GENERATED FILE — DO NOT EDIT
 
 export * from "./audioSourceAdapter";
@@ -14,6 +14,7 @@ export * from "./mediaItem";
 export * from "./mediaItemNormalizer";
 export * from "./mediaSource";
 export * from "./mediaSourceRef";
+export * from "./mediaStore";
 export * from "./playbackBackend";
 export * from "./playbackEngine";
 export * from "./playbackError";

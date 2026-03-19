@@ -14,7 +14,7 @@ export class LocalFileNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: makeVioxId(ref),
+      id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: raw.title || raw.filename,
       subtitle: raw.album,

@@ -40,7 +40,7 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: makeVioxId(ref),
+      id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: raw.title,
       subtitle: raw.album?.name,
@@ -66,7 +66,7 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: makeVioxId(ref),
+      id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: raw.title,
       subtitle: raw.author,
@@ -92,7 +92,7 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: makeVioxId(ref),
+      id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: raw.title,
       subtitle: raw.artist,
