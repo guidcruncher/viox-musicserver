@@ -1,6 +1,5 @@
 // src/infra/search/searchService.ts
 import type { MediaItem } from "@/types"
-import type { PlaybackBackend } from "@/types"
 
 export interface SearchBackend {
   search?(query: string): Promise<MediaItem[]>
