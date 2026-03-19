@@ -46,8 +46,9 @@ output += `
 export const registerAllRoutes = async(app: FastifyInstance, backend: VioxBackend) => {
 `;
 
-routeFiles.forEach((_, index) => {
-  output += `  await app.register(route${index}, backend);\n`;
+routeFiles.forEach((file, index) => {
+  const cmd = `register
+  output += `  ${getExportName(file)}(app, backend);\n`;
 });
 
 output += `}\n`;
@@ -56,7 +57,8 @@ writeFileSync(OUTPUT_FILE, output);
 
 function getExportName(filePath: string): string {
   const base = filePath.split(sep).pop()!;
-  return base.replace(".ts", "").replace(".js", "");
+  const name = base.replace(".ts", "").replace(".js", "");
+  return `register${name.charAt(0).toUpperCase() + name.slice(1)}`
 }
 
 console.log("Generated routes.generated.ts");
