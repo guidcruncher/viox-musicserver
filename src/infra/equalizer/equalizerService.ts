@@ -1,8 +1,8 @@
 // EqualizerService.ts
-import { eqPresetStore } from "./EqPresetStore"
-import { EqualizerCommandRunner } from "./EqualizerCommandRunner"
-import { EqualizerNodeResolver } from "./EqualizerNodeResolver"
-import { EqualizerParamParser } from "./EqualizerParamParser"
+import { eqPresetStore } from "./eqPresetStore"
+import { EqualizerCommandRunner } from "./equalizerCommandRunner"
+import { EqualizerNodeResolver } from "./equalizerNodeResolver"
+import { EqualizerParamParser } from "./equalizerParamParser"
 
 export class EqualizerService {
   private readonly validBands = [
@@ -29,7 +29,7 @@ export class EqualizerService {
   // ────────────────────────────────────────────────
 
   getAvailablePresets(): string[] {
-    return eqPresetStore.getAll().map((p) => p.name)
+    return eqPresetStore.getAll().map((p:any) => p.name)
   }
 
   loadPreset(name: string): void {

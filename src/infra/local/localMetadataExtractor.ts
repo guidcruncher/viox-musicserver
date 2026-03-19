@@ -28,8 +28,8 @@ export class LocalMetadataExtractor {
         artist: common.artist,
         album: common.album,
         durationMs: meta.format.duration ? meta.format.duration * 1000 : undefined,
-        picture: picture ? { mime: picture.format, data: picture.data } : undefined,
-        track: common.track?.no,
+        picture: picture ? { mime: picture.format, data: Buffer.from(picture.data) } : undefined,
+        track: common.track?.no || undefined,
         year: common.year,
         genre: common.genre,
       }
