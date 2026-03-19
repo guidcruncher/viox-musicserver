@@ -9,6 +9,7 @@ import { SqliteLibraryStore } from "@/infra/libraryStore"
 import { PlaybackController } from "@/infra/playback/playbackController"
 import { SqlitePlaylistStore } from "@/infra/playlistStore"
 import { SpeakerControlService } from "@/infra/snapserver/speakerControlService"
+import { SpotifyWebClient } from "@/infra/spotify/spotifyWebClient"
 import { StatusService } from "@/infra/status/statusService"
 import { SpotifyImportService } from "@/services/spotifyImportService"
 import type { VioxBackend } from "@/types/vioxBackend"
@@ -77,7 +78,7 @@ export function createVioxBackend(): VioxBackend {
   // ────────────────────────────────────────────────
   //
   const importers = {
-    spotify: new SpotifyImportService(spotifyBackend.id, library, playlists),
+    spotify: new SpotifyImportService(new SpotifyWebClient(), library, playlists),
   }
 
   //

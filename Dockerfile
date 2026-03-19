@@ -29,25 +29,15 @@ FROM guidcruncher/vioxbase:alpine-latest AS runtime
 # - gettext provides envsubst
 # - procps provides the full 'ps' utility
 RUN apk add --no-cache \
-    alsa-lib \
-    avahi-libs \
     expat \
-    ffmpeg \
-    flac \
     gettext \
     jq \
-    libvorbis \
-    opus \
-    procps \
-    soxr
-    
+    procps
+   
 # Environment variables
 ENV RADIO_PROVIDER=radiobrowser \
     PODCAST_CACHE=/data/podcastcache \
     MUSIC_CACHE=/data/musiccache \
-    MPD_HOST=127.0.0.1 \
-    MPD_PORT=6600 \
-    MPD_PASSWORD= \
     SPOTIFY_DEVICE_NAME="Speaker" \
     SNAPCLIENT_ALSA_DEVICE="hw:CARD=AUDIO,DEV=0" \
     AUDIO_BACKEND=pulseaudio \

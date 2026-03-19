@@ -73,8 +73,5 @@ export const createServer = async () => {
   logger.info("Registering routes")
   await registerAllRoutes(app, backend)
 
-  //  await mpdService.checkConnection();
-  logger.info("Connected to MPD successfully")
-
   return app
 }
