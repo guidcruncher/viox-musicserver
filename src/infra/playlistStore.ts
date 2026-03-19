@@ -1,5 +1,6 @@
 import { db } from "@/infra/db"
 import type { LibraryStore, MediaItem, Playlist, PlaylistStore } from "@/types"
+import { makeVioxId } from "./makeVioxId"
 
 export class SqlitePlaylistStore implements PlaylistStore {
   private readonly conn = db
@@ -7,7 +8,7 @@ export class SqlitePlaylistStore implements PlaylistStore {
   constructor(private readonly library: LibraryStore) {}
 
   async create(name: string, description?: string): Promise<string> {
-    const id = crypto.randomUUID()
+    const id = makeVioxId(crypto.randomUUID(), "playlist")
     this.conn
       .prepare(
         `

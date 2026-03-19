@@ -35,7 +35,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: makeVioxId(ref),
+      id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: raw.name,
       subtitle: raw.album?.name,
@@ -63,7 +63,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: makeVioxId(ref),
+      id: makeoVioxId(ref, "item"),
       sourceRef: ref,
       title: raw.name,
       subtitle: raw.artists?.map((a: any) => a.name).join(", "),
@@ -90,7 +90,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: makeVioxId(ref),
+      id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: raw.name,
       subtitle: raw.publisher,
@@ -118,7 +118,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
     }
 
     return {
-      id: makeVioxId(ref),
+      id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: raw.name,
       subtitle: raw.show?.name,
