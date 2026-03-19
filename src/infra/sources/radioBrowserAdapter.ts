@@ -1,5 +1,5 @@
-import { RadioBrowserNormalizer } from "@/core/normalizers/radiobrowser-normalizer"
-import { RadioBrowserWebClient } from "@/infra/radiobrowser/RadioBrowserWebClient"
+import { RadioBrowserNormalizer } from "@/core/normalizers/radioBrowserNormalizer"
+import { RadioBrowserWebClient } from "@/infra/radiobrowser/radioBrowserWebClient"
 import type { AudioSourceAdapter, MediaItem, MediaSourceRef } from "@/types"
 
 export class RadioBrowserSourceAdapter implements AudioSourceAdapter {

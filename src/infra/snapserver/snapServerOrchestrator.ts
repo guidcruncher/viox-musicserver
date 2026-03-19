@@ -1,4 +1,4 @@
-import { SnapserverClient } from "./snapserverClient"
+import { SnapserverClient } from "./snapServerClient"
 import { flattenClients } from "./speakerMapper"
 import type { SnapClient, SnapGroup, SnapserverStatus } from "./types"
 

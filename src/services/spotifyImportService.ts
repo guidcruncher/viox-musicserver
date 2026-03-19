@@ -63,7 +63,7 @@ export class SpotifyImportService {
     // FETCH TRACKS USING PAGINATION HELPER
     // ────────────────────────────────────────────────
 
-    const rawTracks = await fetchAllOffsetPages(
+    const rawTracks: any = await fetchAllOffsetPages(
       (offset, id) => this.client.getPlaylistTracks(id, offset),
       100,
       playlistId,

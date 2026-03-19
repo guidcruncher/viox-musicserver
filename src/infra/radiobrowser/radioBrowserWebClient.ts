@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from "axios"
 
-import { RadioBrowserDnsResolver } from "./RadioBrowserDnsResolver"
+import { RadioBrowserDnsResolver } from "./radioBrowserDnsResolver"
 
 export class RadioBrowserWebClient {
   private http: AxiosInstance

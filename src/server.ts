@@ -5,14 +5,8 @@ import Fastify from "fastify"
 
 import { getConfig } from "@/config"
 
-import { registerEventBus } from "./events/registerEventBus"
 import { getLogger } from "./logger"
-import cachePlugin from "./plugins/cacheHook"
-import migrationPlugin from "./plugins/youtubeMigrator"
 import { registerAllRoutes } from "./routes.generated"
-import { MultiLevelCache } from "./services/cache/multiLevelCache"
-import { RegisterPodverseIndexer } from "./services/podverse/podverseIndexerDaemon"
-import { RegisterPodcastProxyRoute } from "./services/proxy/createPodcastProxyRoute"
 import { version } from "./version"
 
 export const createServer = async () => {
@@ -21,9 +15,6 @@ export const createServer = async () => {
   const app = Fastify({
     logger: (getConfig("nodeEnv") || "development").toString() == "development",
   })
-
-  logger.info("Registering event bus")
-  await registerEventBus(app)
 
   if (getConfig("nodeEnv") == "production") {
     logger.info("Registering client UI")
@@ -47,19 +38,6 @@ export const createServer = async () => {
   }
 
   await app.register(cors, {})
-
-  logger.info("Registering cache")
-  const cache = new MultiLevelCache()
-
-  await app.register(cachePlugin, {
-    cacheService: cache,
-    routes: [
-      {
-        prefix: "/api/spotify",
-        alwaysOn: false,
-      },
-    ],
-  })
 
   logger.info("Enabling Swagger/OpenAPI documentation")
   await app.register(swagger, {
@@ -89,19 +67,11 @@ export const createServer = async () => {
   })
 */
 
-  logger.info("Registering youtube migrator")
-  await app.register(migrationPlugin)
-
   logger.info("Registering routes")
   await registerAllRoutes(app)
 
   //  await mpdService.checkConnection();
   logger.info("Connected to MPD successfully")
 
-  logger.info("Registering Podcast proxy")
-  await RegisterPodcastProxyRoute(app)
-
-  logger.info("Registering Podcast indexer")
-  await RegisterPodverseIndexer({ runOnStartup: false })
   return app
 }

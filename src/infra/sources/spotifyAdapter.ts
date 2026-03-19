@@ -1,5 +1,5 @@
-import { SpotifyNormalizer } from "@/core/normalizers/spotify-normalizer"
-import { SpotifyWebClient } from "@/infra/spotify/SpotifyWebClient"
+import { SpotifyNormalizer } from "@/core/normalizers/spotifyNormalizer"
+import { SpotifyWebClient } from "@/infra/spotify/spotifyWebClient"
 import type { AudioSourceAdapter, BrowseOptions, MediaItem, MediaSourceRef } from "@/types"
 
 export class SpotifySourceAdapter implements AudioSourceAdapter {
@@ -9,7 +9,7 @@ export class SpotifySourceAdapter implements AudioSourceAdapter {
   private readonly normalize = new SpotifyNormalizer()
 
   async search(query: string): Promise<MediaItem[]> {
-    const raw = await this.api.search(query, ["track", "album", "show", "episode", "playlist"])
+    const raw: any = await this.api.search(query, ["track", "album", "show", "episode", "playlist"])
 
     const items: any[] = [
       ...(raw.tracks?.items ?? []),
@@ -69,17 +69,17 @@ export class SpotifySourceAdapter implements AudioSourceAdapter {
   }
 
   private async browseAlbum(ref: MediaSourceRef): Promise<MediaItem[]> {
-    const raw = await this.api.getAlbumTracks(ref.sourceId)
+    const raw: any = await this.api.getAlbumTracks(ref.sourceId)
     return raw.items.map((t: any) => this.normalize.normalize(t))
   }
 
   private async browseShow(ref: MediaSourceRef): Promise<MediaItem[]> {
-    const raw = await this.api.getShowEpisodes(ref.sourceId)
+    const raw: any = await this.api.getShowEpisodes(ref.sourceId)
     return raw.items.map((e: any) => this.normalize.normalize(e))
   }
 
   private async browsePlaylist(ref: MediaSourceRef): Promise<MediaItem[]> {
-    const raw = await this.api.getPlaylistTracks(ref.sourceId)
+    const raw:any = await this.api.getPlaylistTracks(ref.sourceId)
     return raw.items.filter((i: any) => i.track).map((i: any) => this.normalize.normalize(i.track))
   }
 }

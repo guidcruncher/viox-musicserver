@@ -1,4 +1,4 @@
-import { SnapserverOrchestrator } from "./snapserverOrchestrator"
+import { SnapserverOrchestrator } from "./snapServerOrchestrator"
 
 export interface SpeakerStatus {
   id: string

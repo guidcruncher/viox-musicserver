@@ -1,7 +1,7 @@
 import fs from "node:fs"
 import path from "node:path"
 
-import { LocalFileNormalizer } from "@/core/normalizers/localFileNormalizer"
+import { LocalFileNormalizer } from "@/core/normalizers/localNormalizer"
 import type { LibraryStore, MediaItem } from "@/types"
 
 export class LocalLibraryScanner {

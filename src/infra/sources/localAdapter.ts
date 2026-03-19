@@ -1,7 +1,7 @@
 import path from "path"
 
-import { LocalFileSystemClient } from "@/infra/local/LocalFileSystemClient"
-import { LocalMetadataExtractor } from "@/infra/local/LocalMetadataExtractor"
+import { LocalFileSystemClient } from "@/infra/local/localFileSystemClient"
+import { LocalMetadataExtractor } from "@/infra/local/localMetadataExtractor"
 import type { AudioSourceAdapter, BrowseOptions, MediaItem, MediaSourceRef } from "@/types"
 
 export class LocalSourceAdapter implements AudioSourceAdapter {
@@ -54,7 +54,7 @@ export class LocalSourceAdapter implements AudioSourceAdapter {
   private async toMediaItem(entry: any): Promise<MediaItem> {
     const ref: MediaSourceRef = {
       source: "local",
-      itemType: entry.isDirectory ? "folder" : "file",
+      itemType: entry.isDirectory ? "folder" : "track",
       sourceId: entry.id,
       uri: entry.fullPath,
     }
@@ -66,7 +66,6 @@ export class LocalSourceAdapter implements AudioSourceAdapter {
         sourceRef: ref,
         title: entry.name,
         subtitle: "Folder",
-        isFolder: true,
         isLive: false,
       }
     }
@@ -83,7 +82,6 @@ export class LocalSourceAdapter implements AudioSourceAdapter {
       album: meta.album,
       imageUrl: undefined, // cover art handled separately if needed
       durationMs: meta.durationMs,
-      isFolder: false,
       isLive: false,
     }
   }

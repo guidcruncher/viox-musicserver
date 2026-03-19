@@ -1,5 +1,5 @@
-import { TuneInNormalizer } from "@/core/normalizers/tunein-normalizer"
-import { TuneInWebClient } from "@/infra/tunein/TuneInWebClient"
+import { TuneInNormalizer } from "@/core/normalizers/tuneInNormalizer"
+import { TuneInWebClient } from "@/infra/tunein/tuneinWebClient"
 import type { AudioSourceAdapter, MediaItem, MediaSourceRef } from "@/types"
 
 export class TuneInSourceAdapter implements AudioSourceAdapter {

@@ -1,6 +1,6 @@
 // infra/sources/podverse-adapter.ts
-import { PodverseNormalizer } from "@/core/normalizers/podverse-normalizer"
-import { PodverseWebClient } from "@/infra/podverse/PodverseWebClient"
+import { PodverseNormalizer } from "@/core/normalizers/podverseNormalizer"
+import { PodverseWebClient } from "@/infra/podverse/podverseWebClient"
 import type { AudioSourceAdapter, BrowseOptions, MediaItem, MediaSourceRef } from "@/types"
 
 export class PodverseSourceAdapter implements AudioSourceAdapter {
@@ -10,8 +10,7 @@ export class PodverseSourceAdapter implements AudioSourceAdapter {
   private readonly normalize = new PodverseNormalizer()
 
   async search(query: string): Promise<MediaItem[]> {
-    const raw = await this.api.searchPodcasts({ searchTitle: query })
-    return raw.map((p: any) => this.normalize.normalize(p))
+    return []
   }
 
   async getById(ref: MediaSourceRef): Promise<MediaItem | null> {
