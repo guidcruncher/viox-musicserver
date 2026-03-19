@@ -1,4 +1,4 @@
-import { SpotifyWebClient } from "@/infra/spotify/SpotifyWebClient"
+import { SpotifyWebClient } from "@/infra/spotify/spotifyWebClient"
 import type { MediaItem, PlaybackBackend } from "@/types"
 
 export class SpotifyPlaybackBackend implements PlaybackBackend {
