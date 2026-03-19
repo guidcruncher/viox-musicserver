@@ -1,8 +1,8 @@
-import { BasePlaybackBackend } from "@/core/playbackBackendBase";
-import type { MediaItem } from "@/types";
+import { BasePlaybackBackend } from "@/core/playbackBackendBase"
+import type { MediaItem } from "@/types"
 
 export class OtherPlaybackBackend extends BasePlaybackBackend {
-  readonly id = "other";
+  readonly id = "other"
 
   async play(item: MediaItem, positionMs?: number): Promise<void> {
     // TODO: handle radio streams, YouTube, TuneIn, etc.
@@ -21,6 +21,6 @@ export class OtherPlaybackBackend extends BasePlaybackBackend {
   }
 
   async getPosition(): Promise<number> {
-    return 0;
+    return 0
   }
 }

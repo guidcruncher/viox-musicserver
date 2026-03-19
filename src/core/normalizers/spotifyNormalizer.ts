@@ -1,24 +1,20 @@
-import type {
-  MediaItem,
-  MediaSourceRef,
-  MediaItemNormalizer,
-} from "@/types";
+import type { MediaItem, MediaSourceRef, MediaItemNormalizer } from "@/types"
 
 export class SpotifyNormalizer implements MediaItemNormalizer {
   normalize(raw: any): MediaItem {
-    if (!raw) throw new Error("Cannot normalize empty Spotify object");
+    if (!raw) throw new Error("Cannot normalize empty Spotify object")
 
     switch (raw.type) {
       case "track":
-        return this.track(raw);
+        return this.track(raw)
       case "album":
-        return this.album(raw);
+        return this.album(raw)
       case "show":
-        return this.show(raw);
+        return this.show(raw)
       case "episode":
-        return this.episode(raw);
+        return this.episode(raw)
       default:
-        throw new Error(`Unsupported Spotify item type: ${raw.type}`);
+        throw new Error(`Unsupported Spotify item type: ${raw.type}`)
     }
   }
 
@@ -34,7 +30,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       sourceId: raw.id,
       parentSourceId: raw.album?.id,
       uri: raw.uri,
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -48,7 +44,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       isLive: false,
       explicit: raw.explicit,
       releaseDate: raw.album?.release_date,
-    };
+    }
   }
 
   //
@@ -62,7 +58,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       itemType: "album",
       sourceId: raw.id,
       uri: raw.uri,
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -75,7 +71,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       durationMs: undefined,
       isLive: false,
       releaseDate: raw.release_date,
-    };
+    }
   }
 
   //
@@ -89,7 +85,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       itemType: "show",
       sourceId: raw.id,
       uri: raw.uri,
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -102,7 +98,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       durationMs: undefined,
       isLive: false,
       description: raw.description,
-    };
+    }
   }
 
   //
@@ -117,7 +113,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       sourceId: raw.id,
       parentSourceId: raw.show?.id,
       uri: raw.uri,
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -132,7 +128,7 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       description: raw.description,
       releaseDate: raw.release_date,
       explicit: raw.explicit,
-    };
+    }
   }
 
   //
@@ -141,6 +137,6 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
   // ────────────────────────────────────────────────
   //
   private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`;
+    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`
   }
 }

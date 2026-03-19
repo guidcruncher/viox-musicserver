@@ -1,12 +1,8 @@
-import { db } from "@/infra/db";
-import type {
-  LibraryStore,
-  MediaItem,
-  MediaSourceRef,
-} from "@/types";
+import { db } from "@/infra/db"
+import type { LibraryStore, MediaItem, MediaSourceRef } from "@/types"
 
 export class SqliteLibraryStore implements LibraryStore {
-  private readonly conn = db;
+  private readonly conn = db
 
   async upsert(items: MediaItem[]): Promise<void> {
     const stmt = this.conn.prepare(`
@@ -31,22 +27,22 @@ export class SqliteLibraryStore implements LibraryStore {
         duration_ms = excluded.duration_ms,
         is_live = excluded.is_live,
         updated_at = CURRENT_TIMESTAMP
-    `);
+    `)
 
     const tx = this.conn.transaction((batch: MediaItem[]) => {
-      for (const item of batch) stmt.run(this.toRow(item));
-    });
+      for (const item of batch) stmt.run(this.toRow(item))
+    })
 
-    tx(items);
+    tx(items)
   }
 
   async remove(id: string): Promise<void> {
-    this.conn.prepare(`DELETE FROM media_items WHERE id = ?`).run(id);
+    this.conn.prepare(`DELETE FROM media_items WHERE id = ?`).run(id)
   }
 
   async get(id: string): Promise<MediaItem | undefined> {
-    const row = this.conn.prepare(`SELECT * FROM media_items WHERE id = ?`).get(id);
-    return row ? this.fromRow(row) : undefined;
+    const row = this.conn.prepare(`SELECT * FROM media_items WHERE id = ?`).get(id)
+    return row ? this.fromRow(row) : undefined
   }
 
   async findBySourceRef(ref: MediaSourceRef): Promise<MediaItem | undefined> {
@@ -58,15 +54,15 @@ export class SqliteLibraryStore implements LibraryStore {
           AND item_type = ?
           AND source_id = ?
           AND COALESCE(parent_source_id, '') = COALESCE(?, '')
-      `
+      `,
       )
-      .get(ref.source, ref.itemType, ref.sourceId, ref.parentSourceId ?? null);
+      .get(ref.source, ref.itemType, ref.sourceId, ref.parentSourceId ?? null)
 
-    return row ? this.fromRow(row) : undefined;
+    return row ? this.fromRow(row) : undefined
   }
 
   async search(query: string): Promise<MediaItem[]> {
-    const like = `%${query}%`;
+    const like = `%${query}%`
     const rows = this.conn
       .prepare(
         `
@@ -74,11 +70,11 @@ export class SqliteLibraryStore implements LibraryStore {
         WHERE title LIKE @q
            OR artist LIKE @q
            OR album LIKE @q
-      `
+      `,
       )
-      .all({ q: like });
+      .all({ q: like })
 
-    return rows.map((r: any) => this.fromRow(r));
+    return rows.map((r: any) => this.fromRow(r))
   }
 
   private toRow(item: MediaItem) {
@@ -96,7 +92,7 @@ export class SqliteLibraryStore implements LibraryStore {
       image_url: item.imageUrl ?? null,
       duration_ms: item.durationMs ?? null,
       is_live: item.isLive ?? false,
-    };
+    }
   }
 
   private fromRow(row: any): MediaItem {
@@ -106,7 +102,7 @@ export class SqliteLibraryStore implements LibraryStore {
       sourceId: row.source_id,
       parentSourceId: row.parent_source_id ?? undefined,
       uri: row.source_uri ?? undefined,
-    };
+    }
 
     return {
       id: row.id,
@@ -118,6 +114,6 @@ export class SqliteLibraryStore implements LibraryStore {
       imageUrl: row.image_url ?? undefined,
       durationMs: row.duration_ms ?? undefined,
       isLive: !!row.is_live,
-    };
+    }
   }
 }

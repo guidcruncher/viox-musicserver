@@ -1,9 +1,9 @@
-import type { MediaItem, MediaSourceRef } from "@/types";
+import type { MediaItem, MediaSourceRef } from "@/types"
 
 export class TuneInNormalizer {
   normalize(raw: any): MediaItem {
     if (!raw) {
-      throw new Error("TuneInNormalizer: cannot normalize empty object");
+      throw new Error("TuneInNormalizer: cannot normalize empty object")
     }
 
     const ref: MediaSourceRef = {
@@ -11,7 +11,7 @@ export class TuneInNormalizer {
       itemType: "station",
       sourceId: raw.id,
       uri: raw.url,
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -25,10 +25,10 @@ export class TuneInNormalizer {
       isLive: true,
       country: raw.country ?? undefined,
       bitrate: raw.bitrate ? `${raw.bitrate}` : undefined,
-    };
+    }
   }
 
   private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}`;
+    return `${ref.source}:${ref.itemType}:${ref.sourceId}`
   }
 }

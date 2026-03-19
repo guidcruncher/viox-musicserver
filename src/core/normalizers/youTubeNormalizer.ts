@@ -1,29 +1,25 @@
-import type {
-  MediaItem,
-  MediaSourceRef,
-  MediaItemNormalizer,
-} from "@/types";
+import type { MediaItem, MediaSourceRef, MediaItemNormalizer } from "@/types"
 
 export class YouTubeMusicNormalizer implements MediaItemNormalizer {
   normalize(raw: any): MediaItem {
-    if (!raw) throw new Error("Cannot normalize empty YouTube Music object");
+    if (!raw) throw new Error("Cannot normalize empty YouTube Music object")
 
     // ytmusicapi uses "videoType" or "resultType"
-    const type = raw.videoType || raw.resultType || raw.type;
+    const type = raw.videoType || raw.resultType || raw.type
 
     switch (type) {
       case "song":
       case "track":
-        return this.song(raw);
+        return this.song(raw)
 
       case "video":
-        return this.video(raw);
+        return this.video(raw)
 
       case "album":
-        return this.album(raw);
+        return this.album(raw)
 
       default:
-        throw new Error(`Unsupported YouTube Music item type: ${type}`);
+        throw new Error(`Unsupported YouTube Music item type: ${type}`)
     }
   }
 
@@ -39,7 +35,7 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
       sourceId: raw.videoId,
       parentSourceId: raw.album?.id,
       uri: `https://music.youtube.com/watch?v=${raw.videoId}`,
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -51,7 +47,7 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
       imageUrl: raw.thumbnails?.[0]?.url,
       durationMs: raw.duration_seconds ? raw.duration_seconds * 1000 : undefined,
       isLive: false,
-    };
+    }
   }
 
   //
@@ -65,7 +61,7 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
       itemType: "track",
       sourceId: raw.videoId,
       uri: `https://music.youtube.com/watch?v=${raw.videoId}`,
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -77,7 +73,7 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
       imageUrl: raw.thumbnails?.[0]?.url,
       durationMs: raw.duration_seconds ? raw.duration_seconds * 1000 : undefined,
       isLive: false,
-    };
+    }
   }
 
   //
@@ -91,7 +87,7 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
       itemType: "album",
       sourceId: raw.browseId,
       uri: `https://music.youtube.com/browse/${raw.browseId}`,
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -102,7 +98,7 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
       album: raw.title,
       imageUrl: raw.thumbnails?.[0]?.url,
       isLive: false,
-    };
+    }
   }
 
   //
@@ -111,6 +107,6 @@ export class YouTubeMusicNormalizer implements MediaItemNormalizer {
   // ────────────────────────────────────────────────
   //
   private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`;
+    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`
   }
 }

@@ -1,9 +1,9 @@
-import type { MediaItem, MediaSourceRef } from "@/types";
+import type { MediaItem, MediaSourceRef } from "@/types"
 
 export class RadioBrowserNormalizer {
   normalize(raw: any): MediaItem {
     if (!raw) {
-      throw new Error("RadioBrowserNormalizer: cannot normalize empty object");
+      throw new Error("RadioBrowserNormalizer: cannot normalize empty object")
     }
 
     const ref: MediaSourceRef = {
@@ -11,7 +11,7 @@ export class RadioBrowserNormalizer {
       itemType: "station",
       sourceId: raw.stationuuid,
       uri: raw.url_resolved ?? raw.url,
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -25,10 +25,10 @@ export class RadioBrowserNormalizer {
       isLive: true,
       country: raw.countrycode,
       bitrate: raw.bitrate ? `${raw.bitrate}` : undefined,
-    };
+    }
   }
 
   private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}`;
+    return `${ref.source}:${ref.itemType}:${ref.sourceId}`
   }
 }

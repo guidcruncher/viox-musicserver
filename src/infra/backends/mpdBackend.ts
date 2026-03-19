@@ -1,12 +1,12 @@
-import { BasePlaybackBackend } from "@/core/playbackBackendBase";
-import type { MediaItem } from "@/types";
+import { BasePlaybackBackend } from "@/core/playbackBackendBase"
+import type { MediaItem } from "@/types"
 
 export class MPDPlaybackBackend extends BasePlaybackBackend {
-  readonly id = "mpd";
+  readonly id = "mpd"
 
   // TODO: Inject MPD client
   constructor(/* mpdClient */) {
-    super();
+    super()
   }
 
   async play(item: MediaItem, positionMs?: number): Promise<void> {
@@ -27,6 +27,6 @@ export class MPDPlaybackBackend extends BasePlaybackBackend {
 
   async getPosition(): Promise<number> {
     // TODO
-    return 0;
+    return 0
   }
 }

@@ -1,9 +1,9 @@
-import type { PlaybackError, PlaybackErrorCode } from "@/types";
+import type { PlaybackError, PlaybackErrorCode } from "@/types"
 
 export function makeError(
   code: PlaybackErrorCode,
   message: string,
-  cause?: unknown
+  cause?: unknown,
 ): PlaybackError {
-  return { code, message, cause };
+  return { code, message, cause }
 }

@@ -1,19 +1,15 @@
-import type {
-  MediaItem,
-  MediaSourceRef,
-  MediaItemNormalizer,
-} from "@/types";
+import type { MediaItem, MediaSourceRef, MediaItemNormalizer } from "@/types"
 
 export class LocalFileNormalizer implements MediaItemNormalizer {
   normalize(raw: any): MediaItem {
-    if (!raw) throw new Error("Cannot normalize empty local file object");
+    if (!raw) throw new Error("Cannot normalize empty local file object")
 
     const ref: MediaSourceRef = {
       source: "local",
       itemType: "track",
       sourceId: raw.path, // full path or hashed path
       uri: raw.path,
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -25,10 +21,10 @@ export class LocalFileNormalizer implements MediaItemNormalizer {
       imageUrl: raw.coverArtPath,
       durationMs: raw.durationMs,
       isLive: false,
-    };
+    }
   }
 
   private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`;
+    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`
   }
 }

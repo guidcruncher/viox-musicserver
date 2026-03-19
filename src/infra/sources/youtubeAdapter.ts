@@ -1,30 +1,27 @@
-import type {
-  AudioSourceAdapter,
-  BrowseOptions,
-  MediaItem,
-  MediaSourceRef,
-} from "@/types";
+import type { AudioSourceAdapter, BrowseOptions, MediaItem, MediaSourceRef } from "@/types"
 
 export class YouTubeMusicSourceAdapter implements AudioSourceAdapter {
-  readonly id = "youtube";
+  readonly id = "youtube"
 
   constructor(/* youtubeClient */) {}
 
   async search(query: string): Promise<MediaItem[]> {
-    return [];
+    return []
   }
 
   async getById(ref: MediaSourceRef): Promise<MediaItem | null> {
-    return null;
+    return null
   }
 
   async getPlaybackUrl(ref: MediaSourceRef): Promise<string | null> {
-    return null;
+    return null
   }
 
   async browse(options: BrowseOptions): Promise<MediaItem[]> {
-    return [];
+    return []
   }
 }
 
-export youTubeMusicSourceAdapter = (async ()=>  { return new YouTubeMusicSourceAdapter() })
+export const youTubeMusicSourceAdapter = async () => {
+  return new YouTubeMusicSourceAdapter()
+}

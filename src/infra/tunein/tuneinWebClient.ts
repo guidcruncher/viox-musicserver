@@ -1,13 +1,8 @@
-import axios, { AxiosInstance } from "axios";
-import type {
-  TuneInStation,
-  TuneInResponse,
-  TuneInResponseItem,
-  TuneInDescribeItem,
-} from "./types";
+import axios, { AxiosInstance } from "axios"
+import type { TuneInStation, TuneInResponse, TuneInResponseItem, TuneInDescribeItem } from "./types"
 
 export class TuneInWebClient {
-  private http: AxiosInstance;
+  private http: AxiosInstance
 
   constructor() {
     this.http = axios.create({
@@ -17,43 +12,40 @@ export class TuneInWebClient {
         render: "json",
         partnerId: "none",
       },
-    });
+    })
   }
 
   // ────────────────────────────────────────────────
   // Search
   // ────────────────────────────────────────────────
   async search(keyword: string): Promise<TuneInStation[]> {
-    const { data } = await this.http.get<TuneInResponse<TuneInResponseItem>>(
-      "/Search.ashx",
-      { params: { query: keyword } }
-    );
+    const { data } = await this.http.get<TuneInResponse<TuneInResponseItem>>("/Search.ashx", {
+      params: { query: keyword },
+    })
 
-    return this.extractStations(data);
+    return this.extractStations(data)
   }
 
   // ────────────────────────────────────────────────
   // Browse by country
   // ────────────────────────────────────────────────
   async browseByCountry(countryCode: string): Promise<TuneInStation[]> {
-    const { data } = await this.http.get<TuneInResponse<TuneInResponseItem>>(
-      "/Browse.ashx",
-      { params: { id: countryCode } }
-    );
+    const { data } = await this.http.get<TuneInResponse<TuneInResponseItem>>("/Browse.ashx", {
+      params: { id: countryCode },
+    })
 
-    return this.extractStations(data);
+    return this.extractStations(data)
   }
 
   // ────────────────────────────────────────────────
   // Station lookup
   // ────────────────────────────────────────────────
   async getStation(id: string): Promise<TuneInStation | undefined> {
-    const { data } = await this.http.get<TuneInResponse<TuneInDescribeItem>>(
-      "/Describe.ashx",
-      { params: { id } }
-    );
+    const { data } = await this.http.get<TuneInResponse<TuneInDescribeItem>>("/Describe.ashx", {
+      params: { id },
+    })
 
-    return this.extractStation(data);
+    return this.extractStation(data)
   }
 
   // ────────────────────────────────────────────────
@@ -62,19 +54,17 @@ export class TuneInWebClient {
   async getPlaybackUrl(id: string): Promise<string | null> {
     const { data } = await this.http.get<any>("/Tune.ashx", {
       params: { id },
-    });
+    })
 
-    return data?.body?.[0]?.url ?? null;
+    return data?.body?.[0]?.url ?? null
   }
 
   // ────────────────────────────────────────────────
   // Helpers
   // ────────────────────────────────────────────────
-  private extractStation(
-    data: TuneInResponse<TuneInDescribeItem>
-  ): TuneInStation | undefined {
-    const src = data.body?.[0];
-    if (!src) return undefined;
+  private extractStation(data: TuneInResponse<TuneInDescribeItem>): TuneInStation | undefined {
+    const src = data.body?.[0]
+    if (!src) return undefined
 
     return {
       id: src.guide_id,
@@ -85,18 +75,15 @@ export class TuneInWebClient {
       bitrate: src.bitrate,
       reliability: src.reliability,
       playing: src.playing,
-    };
+    }
   }
 
-  private extractStations(
-    data: TuneInResponse<TuneInResponseItem>
-  ): TuneInStation[] {
-    const stations: TuneInStation[] = [];
+  private extractStations(data: TuneInResponse<TuneInResponseItem>): TuneInStation[] {
+    const stations: TuneInStation[] = []
 
     const walk = (items: any[]) => {
       for (const item of items) {
-        const id =
-          item.guide_id || item.URL?.match(/id=(s\d+)/)?.[1];
+        const id = item.guide_id || item.URL?.match(/id=(s\d+)/)?.[1]
 
         if (item.type === "audio" && id && item.URL) {
           stations.push({
@@ -108,15 +95,15 @@ export class TuneInWebClient {
             bitrate: item.bitrate,
             reliability: item.reliability,
             playing: item.playing,
-          });
+          })
         }
 
-        if (item.outline) walk(item.outline);
-        if (item.children) walk(item.children);
+        if (item.outline) walk(item.outline)
+        if (item.children) walk(item.children)
       }
-    };
+    }
 
-    walk(data.body ?? []);
-    return stations;
+    walk(data.body ?? [])
+    return stations
   }
 }

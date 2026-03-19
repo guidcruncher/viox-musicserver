@@ -1,27 +1,27 @@
-import type { MediaItem, MediaSourceRef } from "@/types";
+import type { MediaItem, MediaSourceRef } from "@/types"
 
 export class PodverseNormalizer {
   normalize(raw: any): MediaItem {
     if (!raw) {
-      throw new Error("PodverseNormalizer: cannot normalize empty object");
+      throw new Error("PodverseNormalizer: cannot normalize empty object")
     }
 
     // MediaRef (clips)
     if ("startTime" in raw) {
-      return this.fromMediaRef(raw);
+      return this.fromMediaRef(raw)
     }
 
     // Episode (API or RSS)
     if ("mediaUrl" in raw) {
-      return this.fromEpisode(raw);
+      return this.fromEpisode(raw)
     }
 
     // Podcast
     if ("feedUrls" in raw || raw.type === "podcast") {
-      return this.fromPodcast(raw);
+      return this.fromPodcast(raw)
     }
 
-    throw new Error(`PodverseNormalizer: unsupported object type`);
+    throw new Error(`PodverseNormalizer: unsupported object type`)
   }
 
   // ────────────────────────────────────────────────
@@ -33,7 +33,7 @@ export class PodverseNormalizer {
       itemType: "podcast",
       sourceId: podcast.id,
       uri: podcast.feedUrls?.[0]?.url ?? podcast.linkUrl ?? "",
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -45,17 +45,14 @@ export class PodverseNormalizer {
       imageUrl: podcast.imageUrl,
       durationMs: undefined,
       isLive: false,
-    };
+    }
   }
 
   // ────────────────────────────────────────────────
   // Episode (API or RSS)
   // ────────────────────────────────────────────────
   private fromEpisode(ep: any): MediaItem {
-    const podcastId =
-      ep.podcast?.id ??
-      ep.podcastId ??
-      this.extractPodcastIdFromEpisodeId(ep.id);
+    const podcastId = ep.podcast?.id ?? ep.podcastId ?? this.extractPodcastIdFromEpisodeId(ep.id)
 
     const ref: MediaSourceRef = {
       source: "podverse",
@@ -63,7 +60,7 @@ export class PodverseNormalizer {
       sourceId: ep.id,
       parentSourceId: podcastId,
       uri: ep.mediaUrl,
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -75,15 +72,15 @@ export class PodverseNormalizer {
       imageUrl: ep.imageUrl ?? ep.podcast?.imageUrl,
       durationMs: ep.duration ? ep.duration * 1000 : undefined,
       isLive: false,
-    };
+    }
   }
 
   // ────────────────────────────────────────────────
   // MediaRef (clips)
   // ────────────────────────────────────────────────
   private fromMediaRef(refObj: any): MediaItem {
-    const episode = refObj.episode;
-    const podcast = refObj.podcast;
+    const episode = refObj.episode
+    const podcast = refObj.podcast
 
     const ref: MediaSourceRef = {
       source: "podverse",
@@ -91,7 +88,7 @@ export class PodverseNormalizer {
       sourceId: refObj.id,
       parentSourceId: episode?.id,
       uri: this.buildMediaRefUri(refObj),
-    };
+    }
 
     return {
       id: this.buildId(ref),
@@ -103,26 +100,26 @@ export class PodverseNormalizer {
       imageUrl: episode?.imageUrl ?? podcast?.imageUrl,
       durationMs: undefined,
       isLive: false,
-    };
+    }
   }
 
   // ────────────────────────────────────────────────
   // Helpers
   // ────────────────────────────────────────────────
   private buildId(ref: MediaSourceRef): string {
-    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`;
+    return `${ref.source}:${ref.itemType}:${ref.sourceId}:${ref.parentSourceId ?? ""}`
   }
 
   private buildMediaRefUri(ref: any): string {
-    const episodeId = ref.episode?.id ?? "unknown";
-    const start = ref.startTime ?? 0;
-    return `mediaref:${ref.id}:episode:${episodeId}:start:${start}`;
+    const episodeId = ref.episode?.id ?? "unknown"
+    const start = ref.startTime ?? 0
+    return `mediaref:${ref.id}:episode:${episodeId}:start:${start}`
   }
 
   private extractPodcastIdFromEpisodeId(id: string): string | undefined {
     // Example: podverse:episode:123 → 123
-    if (!id) return undefined;
-    const parts = id.split(":");
-    return parts.length >= 3 ? parts[2] : undefined;
+    if (!id) return undefined
+    const parts = id.split(":")
+    return parts.length >= 3 ? parts[2] : undefined
   }
 }

@@ -1,20 +1,20 @@
-import type { BackendRouter, PlaybackBackend, MediaItem } from "@/types";
+import type { BackendRouter, PlaybackBackend, MediaItem } from "@/types"
 
 export class SimpleBackendRouter implements BackendRouter {
   constructor(
     private readonly spotifyBackend: PlaybackBackend,
     private readonly mpdBackend: PlaybackBackend,
-    private readonly otherBackend: PlaybackBackend
+    private readonly otherBackend: PlaybackBackend,
   ) {}
 
   resolveBackendFor(item: MediaItem): PlaybackBackend {
     switch (item.sourceRef.source) {
       case "spotify":
-        return this.spotifyBackend;
+        return this.spotifyBackend
       case "local":
-        return this.mpdBackend;
+        return this.mpdBackend
       default:
-        return this.otherBackend;
+        return this.otherBackend
     }
   }
 }
