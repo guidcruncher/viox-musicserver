@@ -1,94 +1,110 @@
 // EqualizerService.ts
-import { EqualizerNodeResolver } from "./EqualizerNodeResolver";
-import { EqualizerParamParser } from "./EqualizerParamParser";
-import { EqualizerCommandRunner } from "./EqualizerCommandRunner";
-import { eqPresetStore } from "./eqPresetStore";
+import { eqPresetStore } from "./EqPresetStore"
+import { EqualizerCommandRunner } from "./EqualizerCommandRunner"
+import { EqualizerNodeResolver } from "./EqualizerNodeResolver"
+import { EqualizerParamParser } from "./EqualizerParamParser"
 
 export class EqualizerService {
   private readonly validBands = [
-    "31 Hz", "63 Hz", "125 Hz", "250 Hz", "500 Hz",
-    "1 kHz", "2 kHz", "4 kHz", "8 kHz", "16 kHz",
-  ];
+    "31 Hz",
+    "63 Hz",
+    "125 Hz",
+    "250 Hz",
+    "500 Hz",
+    "1 kHz",
+    "2 kHz",
+    "4 kHz",
+    "8 kHz",
+    "16 kHz",
+  ]
 
   constructor(
     private resolver = new EqualizerNodeResolver(),
     private parser = new EqualizerParamParser(),
-    private runner = new EqualizerCommandRunner()
+    private runner = new EqualizerCommandRunner(),
   ) {}
 
   // ────────────────────────────────────────────────
-  // Public API
+  // PRESETS
   // ────────────────────────────────────────────────
 
   getAvailablePresets(): string[] {
-    return eqPresetRepository.findAll().map((p) => p.name);
+    return eqPresetStore.getAll().map((p) => p.name)
   }
 
   loadPreset(name: string): void {
-    const preset = eqPresetRepository.findByNameWithBands(name);
-    if (!preset) return;
+    const preset = eqPresetStore.getByNameWithBands(name)
+    if (!preset) return
 
-    const params: Record<string, number> = {};
+    const params: Record<string, number> = {}
     for (const band of preset.bands) {
-      params[band.frequency] = band.gain_db;
+      params[band.frequency] = band.gain_db
     }
 
-    this.applyParams(params);
+    this.applyParams(params)
   }
 
-  setBand(band: string, gainDb: number): void {
-    const normalized = this.normalizeBand(band);
-    if (!normalized) return;
+  // ────────────────────────────────────────────────
+  // BAND CONTROL
+  // ────────────────────────────────────────────────
 
-    this.applyParams({ [normalized]: gainDb });
+  setBand(band: string, gainDb: number): void {
+    const normalized = this.normalizeBand(band)
+    if (!normalized) return
+
+    this.applyParams({ [normalized]: gainDb })
   }
 
   setGain(gainDb: number): void {
-    const nodeId = this.resolver.getNodeId();
-    if (!nodeId) return;
+    const nodeId = this.resolver.getNodeId()
+    if (!nodeId) return
 
     const cmd = `pw-cli set-param ${nodeId} Props '{ params = [ "pre_amp:gain" ${gainDb.toFixed(
-      2
-    )} ] }'`;
+      2,
+    )} ] }'`
 
-    this.runner.run(cmd);
-  }
-
-  getCurrentLevels(): Record<string, number> {
-    const nodeId = this.resolver.getNodeId();
-    if (!nodeId) return {};
-
-    const output = this.runner.run(`pw-dump ${nodeId}`);
-    if (!output) return {};
-
-    const json = JSON.parse(output);
-    return this.parser.parseLevels(json);
+    this.runner.run(cmd)
   }
 
   // ────────────────────────────────────────────────
-  // Internal helpers
+  // READ CURRENT LEVELS
+  // ────────────────────────────────────────────────
+
+  getCurrentLevels(): Record<string, number> {
+    const nodeId = this.resolver.getNodeId()
+    if (!nodeId) return {}
+
+    const output = this.runner.run(`pw-dump ${nodeId}`)
+    if (!output) return {}
+
+    const json = JSON.parse(output)
+    return this.parser.parseLevels(json)
+  }
+
+  // ────────────────────────────────────────────────
+  // INTERNAL HELPERS
   // ────────────────────────────────────────────────
 
   private applyParams(params: Record<string, number>): void {
-    const nodeId = this.resolver.getNodeId();
-    if (!nodeId) return;
+    const nodeId = this.resolver.getNodeId()
+    if (!nodeId) return
 
     const entries = Object.entries(params)
       .filter(([k]) => this.validBands.includes(k))
-      .map(([k, v]) => `"${k}" ${v.toFixed(2)}`);
+      .map(([k, v]) => `"${k}" ${v.toFixed(2)}`)
 
-    if (entries.length === 0) return;
+    if (entries.length === 0) return
 
-    const cmd = `pw-cli set-param ${nodeId} Props '{ params = [ ${entries.join(" ")} ] }'`;
-    this.runner.run(cmd);
+    const cmd = `pw-cli set-param ${nodeId} Props '{ params = [ ${entries.join(" ")} ] }'`
+    this.runner.run(cmd)
   }
 
   private normalizeBand(input: string): string | null {
-    if (this.validBands.includes(input)) return input;
+    if (this.validBands.includes(input)) return input
 
-    const clean = input.toLowerCase().replace("hz", "").trim();
-    return this.validBands.find((b) => b.toLowerCase().startsWith(clean)) || null;
+    const clean = input.toLowerCase().replace("hz", "").trim()
+    return this.validBands.find((b) => b.toLowerCase().startsWith(clean)) || null
   }
 }
 
-export const equalizerService = new EqualizerService();
+export const equalizerService = new EqualizerService()

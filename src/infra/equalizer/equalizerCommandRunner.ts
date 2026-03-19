@@ -1,5 +1,5 @@
 // EqualizerCommandRunner.ts
-import { execSync } from "child_process";
+import { execSync } from "child_process"
 
 export class EqualizerCommandRunner {
   run(cmd: string): string {
@@ -7,9 +7,9 @@ export class EqualizerCommandRunner {
       return execSync(cmd, {
         encoding: "utf-8",
         stdio: ["pipe", "pipe", "ignore"],
-      }).trim();
+      }).trim()
     } catch {
-      return "";
+      return ""
     }
   }
 }

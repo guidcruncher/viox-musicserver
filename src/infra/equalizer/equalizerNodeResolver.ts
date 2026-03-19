@@ -1,5 +1,5 @@
 // EqualizerNodeResolver.ts
-import { execSync } from "child_process";
+import { execSync } from "child_process"
 
 export class EqualizerNodeResolver {
   constructor(private description = "LADSPA Equalizer") {}
@@ -9,16 +9,16 @@ export class EqualizerNodeResolver {
       const output = execSync("pw-dump Node", {
         encoding: "utf-8",
         stdio: ["pipe", "pipe", "ignore"],
-      });
+      })
 
-      const nodes = JSON.parse(output);
+      const nodes = JSON.parse(output)
       const target = nodes.find(
-        (n: any) => n.info?.props?.["node.description"] === this.description
-      );
+        (n: any) => n.info?.props?.["node.description"] === this.description,
+      )
 
-      return target ? target.id : null;
+      return target ? target.id : null
     } catch {
-      return null;
+      return null
     }
   }
 }
