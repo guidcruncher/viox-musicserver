@@ -26,7 +26,9 @@ export class SqliteQueueStore implements QueueStore {
   }
 
   async enqueue(itemId: string): Promise<void> {
-    const maxPosRow = this.conn.prepare(`SELECT MAX(position) as maxPos FROM playback_queue`).get()
+    const maxPosRow = this.conn
+      .prepare(`SELECT MAX(position) as maxPos FROM playback_queue`)
+      .get() as any
     const nextPos = (maxPosRow?.maxPos ?? -1) + 1
 
     this.conn
@@ -63,7 +65,7 @@ export class SqliteQueueStore implements QueueStore {
   async remove(itemId: string): Promise<void> {
     const row = this.conn
       .prepare(`SELECT position FROM playback_queue WHERE media_item_id = ? LIMIT 1`)
-      .get(itemId)
+      .get(itemId) as any
     if (!row) return
 
     const pos = row.position
@@ -106,7 +108,7 @@ export class SqliteQueueStore implements QueueStore {
     const idx = meta.current_index ?? 0
     const row = this.conn
       .prepare(`SELECT media_item_id FROM playback_queue WHERE position = ? LIMIT 1`)
-      .get(idx)
+      .get(idx) as any
     return row?.media_item_id
   }
 
@@ -115,7 +117,7 @@ export class SqliteQueueStore implements QueueStore {
     const idx = (meta.current_index ?? 0) + 1
     const row = this.conn
       .prepare(`SELECT media_item_id FROM playback_queue WHERE position = ? LIMIT 1`)
-      .get(idx)
+      .get(idx) as any
     return row?.media_item_id
   }
 
@@ -125,7 +127,7 @@ export class SqliteQueueStore implements QueueStore {
     if (idx < 0) return undefined
     const row = this.conn
       .prepare(`SELECT media_item_id FROM playback_queue WHERE position = ? LIMIT 1`)
-      .get(idx)
+      .get(idx) as any
     return row?.media_item_id
   }
 
@@ -140,7 +142,7 @@ export class SqliteQueueStore implements QueueStore {
   }
 
   private getMeta(): { current_index: number | null } {
-    const row = this.conn.prepare(`SELECT current_index FROM queue_meta WHERE id = 1`).get()
+    const row = this.conn.prepare(`SELECT current_index FROM queue_meta WHERE id = 1`).get() as any
     return row ?? { current_index: null }
   }
 }

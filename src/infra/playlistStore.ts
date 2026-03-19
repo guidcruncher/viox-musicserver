@@ -73,7 +73,7 @@ export class SqlitePlaylistStore implements PlaylistStore {
     `)
 
     const tx = this.conn.transaction((ids: string[]) => {
-      const row = getMaxPos.get(playlistId)
+      const row: any = getMaxPos.get(playlistId)
       let pos = (row?.maxPos ?? -1) + 1
 
       for (const itemId of ids) {
@@ -94,7 +94,7 @@ export class SqlitePlaylistStore implements PlaylistStore {
     const getPos = this.conn.prepare(
       `SELECT position FROM playlist_items WHERE playlist_id = ? AND media_item_id = ?`,
     )
-    const row = getPos.get(playlistId, itemId)
+    const row = getPos.get(playlistId, itemId) as any
     if (!row) return
 
     const pos = row.position
@@ -141,7 +141,7 @@ export class SqlitePlaylistStore implements PlaylistStore {
   }
 
   async reorderItem(playlistId: string, itemId: string, newPosition: number): Promise<void> {
-    const row = this.conn
+    const row: any = this.conn
       .prepare(`SELECT position FROM playlist_items WHERE playlist_id = ? AND media_item_id = ?`)
       .get(playlistId, itemId)
     if (!row) return

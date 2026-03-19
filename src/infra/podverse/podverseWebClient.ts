@@ -57,6 +57,11 @@ export class PodverseWebClient {
     } catch {
       // fallback: RSS lookup
       const podcastId = id.split(":").pop()
+
+        if (!podcastId) {
+        return undefined
+      }
+
       const podcast = await this.getPodcast(podcastId)
       const feedUrl = podcast.feedUrls?.[0]?.url
 
