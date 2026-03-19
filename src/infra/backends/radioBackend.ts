@@ -7,12 +7,10 @@ export class RadioPlaybackBackend implements PlaybackBackend {
   private ffmpeg?: any;
   private pwcat?: any;
   private startedAt: number | null = null;
-  private currentItem: MediaItem | null = null;
 
   async play(item: MediaItem): Promise<void> {
     await this.stop();
 
-    this.currentItem = item;
     const url = item.sourceRef.uri ?? item.uri;
     if (!url) throw new Error("Radio backend: no stream URL");
 
@@ -37,7 +35,6 @@ export class RadioPlaybackBackend implements PlaybackBackend {
   }
 
   async pause(): Promise<void> {
-    // Radio streams cannot be paused — stop instead
     await this.stop();
   }
 
@@ -50,7 +47,6 @@ export class RadioPlaybackBackend implements PlaybackBackend {
   }
 
   async seek(): Promise<void> {
-    // Radio streams cannot seek
     return;
   }
 
