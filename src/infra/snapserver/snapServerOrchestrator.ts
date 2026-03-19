@@ -1,6 +1,6 @@
 import { SnapserverClient } from "./snapserverClient"
 import { flattenClients } from "./speakerMapper"
-import type { SnapserverStatus, SnapClient, SnapGroup } from "./types"
+import type { SnapClient, SnapGroup,SnapserverStatus } from "./types"
 
 export class SnapserverOrchestrator {
   constructor(private snap = new SnapserverClient()) {}

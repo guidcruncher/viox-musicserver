@@ -1,5 +1,4 @@
 import { SnapserverOrchestrator } from "./snapserverOrchestrator"
-import type { SnapClient } from "./types"
 
 export interface SpeakerStatus {
   id: string

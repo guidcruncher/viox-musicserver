@@ -1,9 +1,10 @@
 import axios, { AxiosInstance } from "axios"
+
 import {
   JsonRpcRequest,
   JsonRpcResponse,
-  SnapserverStatus,
   SnapserverSetVolumeParams,
+  SnapserverStatus,
 } from "./types"
 
 export class SnapserverClient {
