@@ -5,7 +5,7 @@ import Fastify from "fastify"
 
 import { getConfig } from "@/config"
 import { createVioxBackend } from "@/core/createBackend"
-// import { registerEventBus } from "@/infra/eventbus/registerEventBus"
+import { registerEventBus } from "@/infra/eventbus/registerEventBus"
 import { getLogger } from "@/logger"
 import { registerAllRoutes } from "@/routes"
 import { registerSchemas } from "@/schemas"
@@ -19,7 +19,6 @@ export const createServer = async () => {
   })
 
   registerSchemas(app)
-  //  registerEventBus(app)
 
   if (getConfig("nodeEnv") == "production") {
     logger.info("Registering client UI")
@@ -77,6 +76,10 @@ export const createServer = async () => {
 
   logger.info("Registering routes")
   await registerAllRoutes(app, backend)
+
+  logger.info("Registering eventbus")
+  await registerEventBus(app)
+  logger.info("Registered eventbus")
 
   return app
 }
