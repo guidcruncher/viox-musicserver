@@ -9,6 +9,7 @@ import { registerEventBus } from "@/infra/eventbus/registerEventBus"
 import { getLogger } from "@/logger"
 import { registerAllRoutes } from "@/routes"
 import { version } from "@/version"
+import { registerSchemas } from "@/schemas"
 
 export const createServer = async () => {
   const logger = getLogger()
@@ -17,6 +18,7 @@ export const createServer = async () => {
     logger: (getConfig("nodeEnv") || "development").toString() == "development",
   })
 
+  registerSchemas(app)
   registerEventBus(app)
 
   if (getConfig("nodeEnv") == "production") {

@@ -9,7 +9,7 @@ import {
   PlaybackStateSchema,
 } from "./index"
 
-export const registerSchema = (fastify: FastifyInstance) => {
+export const registerSchemas = (fastify: FastifyInstance) => {
   fastify.addSchema(MediaSourceRefSchema)
   fastify.addSchema(MediaItemSchema)
   fastify.addSchema(PlaylistMetadataSchema)
