@@ -2,6 +2,7 @@
 import WebSocket from "ws"
 
 import { getLogger } from "@/logger"
+
 import { eventBus } from "../eventBus"
 
 export class GoLibrespotListener {
@@ -16,7 +17,7 @@ export class GoLibrespotListener {
 
       ws.on("message", (data) => {
         const raw = JSON.parse(data.toString())
-        let payload = undefined
+        const payload = undefined
 
         switch (raw.event ?? raw.type) {
           case "active":

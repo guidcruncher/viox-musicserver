@@ -3,9 +3,9 @@ import type { FastifyInstance } from "fastify"
 import {
   SpeakerAllVolumeSchema,
   SpeakerParamsSchema,
+  SpeakersResponseSchema,
   SpeakerVolumeSchema,
   SuccessResponseOnlySchema,
-  SpeakersResponseSchema,
 } from "@/schemas"
 import type { VioxBackend } from "@/types"
 

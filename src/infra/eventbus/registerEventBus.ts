@@ -1,9 +1,9 @@
 import fastifyWebsocket from "@fastify/websocket" // Import the plugin correctly
 import { FastifyInstance } from "fastify"
 
-import { eventBus } from "./eventBus"
-import { GoLibrespotListener } from "./listeners/goLibrespotListener"
 import { getLogger } from "@/logger"
+
+import { eventBus } from "./eventBus"
 
 export async function registerEventBus(fastify: FastifyInstance) {
   const logger = getLogger()
