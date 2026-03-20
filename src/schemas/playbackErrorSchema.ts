@@ -1,5 +1,5 @@
 export const PlaybackErrorSchema = {
-$id: "PlaybackError",
+  $id: "PlaybackError",
   type: "object",
   required: ["code", "message"], //
   properties: {

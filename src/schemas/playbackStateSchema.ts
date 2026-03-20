@@ -1,4 +1,3 @@
-
 export const PlaybackStateSchema = {
   $id: "PlaybackState",
   oneOf: [
@@ -45,7 +44,7 @@ export const PlaybackStateSchema = {
       type: "object",
       properties: {
         type: { const: "error" },
-        error: {$ref: "PlaybackErrorSchema#"},
+        error: { $ref: "PlaybackErrorSchema#" },
       },
       required: ["type", "error"],
     },
