@@ -50,18 +50,18 @@ export function createVioxBackend(): VioxBackend {
 
   //
   // ────────────────────────────────────────────────
-  // 4. Playback controller (unifies all backends)
-  // ────────────────────────────────────────────────
-  //
-  const playback = new PlaybackController(backendRouter)
-
-  //
-  // ────────────────────────────────────────────────
-  // 5. Library + playlist stores
+  // 4. Library + playlist stores
   // ────────────────────────────────────────────────
   //
   const library = new SqliteLibraryStore()
   const playlists = new SqlitePlaylistStore(library)
+
+  //
+  // ────────────────────────────────────────────────
+  // 5. Playback controller (unifies all backends)
+  // ────────────────────────────────────────────────
+  //
+  const playback = new PlaybackController(library, backendRouter)
 
   //
   // ────────────────────────────────────────────────

@@ -2,17 +2,23 @@
 import type { MediaItem } from "@/types"
 import type { PlaybackBackend } from "@/types"
 import type { BackendRouter } from "@/types"
+import { LibraryStore } from "@/types"
 
 export class PlaybackController {
   private currentBackend: PlaybackBackend | null = null
   private currentItem: MediaItem | null = null
 
-  constructor(private readonly router: BackendRouter) {}
+  constructor(
+    private readonly library: LibraryStore,
+    private readonly router: BackendRouter,
+  ) {}
 
-  async play(_id: string): Promise<void> {
-    // You’ll likely look up the MediaItem from the library here.
-    // For now, assume router can resolve from an item you already have.
-    throw new Error("PlaybackController.play(id) needs MediaItem lookup wiring")
+  async play(id: string): Promise<void> {
+    const item = await this.library.get(id)
+    if (!item) {
+      throw new Error(`MediaItem ${id} not found in library`)
+    }
+    return this.playItem(item)
   }
 
   async playItem(item: MediaItem): Promise<void> {
