@@ -63,6 +63,7 @@ export class SpotifyImportService {
     }
 
     await this.library.upsert(items)
+    this.log.debug(`Imported ${items.length} tracks`)
   }
 
   async importUserAlbums(): Promise<void> {
@@ -84,6 +85,7 @@ export class SpotifyImportService {
     }
 
     await this.library.upsert(items)
+    this.log.debug(`Imported ${items.length} albums`)
   }
 
   async importUserShows(): Promise<void> {
@@ -105,6 +107,7 @@ export class SpotifyImportService {
     }
 
     await this.library.upsert(items)
+    this.log.debug(`Imported ${items.length} shows`)
   }
 
   async importUserEpiaodes(): Promise<void> {
@@ -126,6 +129,7 @@ export class SpotifyImportService {
     }
 
     await this.library.upsert(items)
+    this.log.debug(`Imported ${items.length} episodes`)
   }
 
   async importFollowedArtists(): Promise<void> {
@@ -147,6 +151,7 @@ export class SpotifyImportService {
     }
 
     await this.library.upsert(items)
+    this.log.debug(`Imported ${items.length} followed artists`)
   }
 
   // ────────────────────────────────────────────────
