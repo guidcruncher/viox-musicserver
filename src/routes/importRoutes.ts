@@ -1,9 +1,10 @@
 import type { FastifyInstance } from "fastify"
 
+import { SpotifyImportSchema } from "@/schemas"
 import type { VioxBackend } from "@/types"
 
 export function registerImportRoutes(app: FastifyInstance, backend: VioxBackend) {
-  app.post("/api/import/spotify", async (_req, res) => {
+  app.post("/api/import/spotify", { schema: SpotifyImportSchema }, async (_req, res) => {
     await backend.importers.spotify.importUserLibrary()
     res.send({ ok: true })
   })

@@ -5,3 +5,9 @@ export const SuccessResponseSchema = {
     ok: { type: "boolean" },
   },
 }
+
+export const SuccessResponseOnlySchema = {
+  response: {
+    200: { $ref: "SuccessResponse#" },
+  },
+}

@@ -20,3 +20,15 @@ export const SpeakerVolumeSchema = {
   },
   response: { 200: { $ref: "SuccessResponse#" } },
 }
+
+export const SpeakerAllVolumeSchema = {
+  params: {
+    type: "object",
+    required: ["volume"],
+    properties: {
+      id: { type: "string" },
+      volume: { type: "string", pattern: "^[0-9]+$" },
+    },
+  },
+  response: { 200: { $ref: "SuccessResponse#" } },
+}

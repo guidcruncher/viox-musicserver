@@ -1,30 +1,31 @@
 import type { FastifyInstance } from "fastify"
 
+import { PlayRequestSchema, SeekRequestSchema, SuccessResponseOnlySchema } from "@/schemas"
 import type { VioxBackend } from "@/types"
 
 export function registerPlaybackRoutes(app: FastifyInstance, backend: VioxBackend) {
-  app.post("/api/play", async (req, res) => {
+  app.post("/api/play", { schema: PlayRequestSchema }, async (req, res) => {
     const body = req.body as { id: string }
     await backend.playback.play(body.id)
     res.send({ ok: true })
   })
 
-  app.post("/api/pause", async (_req, res) => {
+  app.post("/api/pause", { schema: SuccessResponseOnlySchema }, async (_req, res) => {
     await backend.playback.pause()
     res.send({ ok: true })
   })
 
-  app.post("/api/resume", async (_req, res) => {
+  app.post("/api/resume", { schema: SuccessResponseOnlySchema }, async (_req, res) => {
     await backend.playback.resume()
     res.send({ ok: true })
   })
 
-  app.post("/api/stop", async (_req, res) => {
+  app.post("/api/stop", { schema: SuccessResponseOnlySchema }, async (_req, res) => {
     await backend.playback.stop()
     res.send({ ok: true })
   })
 
-  app.post("/api/seek", async (req, res) => {
+  app.post("/api/seek", { schema: SeekRequestSchema }, async (req, res) => {
     const body = req.body as { position: number }
     await backend.playback.seek(body.position)
     res.send({ ok: true })

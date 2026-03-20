@@ -1,9 +1,10 @@
 import type { FastifyInstance } from "fastify"
 
+import {GetLibraryItemSchema,ListLibrarySchema } from "@/schemas"
 import type { VioxBackend } from "@/types"
 
 export function registerLibraryRoutes(app: FastifyInstance, backend: VioxBackend) {
-  app.get("/api/library", async (req, res) => {
+  app.get("/api/library",{ schema: ListLibrarySchema }, async (req, res) => {
     const { offset, limit } = req.query as any
     let items
 
@@ -16,7 +17,7 @@ export function registerLibraryRoutes(app: FastifyInstance, backend: VioxBackend
     res.send(items)
   })
 
-  app.get("/api/library/:id", async (req, res) => {
+  app.get("/api/library/:id", { schema: GetLibraryItemSchema  },async (req, res) => {
     const { id } = req.params as { id: string }
     const item = await backend.library.get(id)
     res.send(item)
