@@ -1,3 +1,5 @@
+import { PlaybackErrorSchema } from "./index"
+
 export const PlaybackStateSchema = {
   $id: "playbackState",
   oneOf: [

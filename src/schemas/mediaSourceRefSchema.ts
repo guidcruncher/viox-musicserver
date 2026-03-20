@@ -1,3 +1,5 @@
+import { AudioSourceSchema, AudioSourceItemTypeSchema } from "./index"
+
 export const MediaSourceRefSchema = {
   $id: "mediaSourceRef",
   type: "object",

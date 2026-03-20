@@ -10,4 +10,3 @@ export const PlaybackErrorSchema = {
     cause: { type: "object", additionalProperties: true },
   },
 }
-

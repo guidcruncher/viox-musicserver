@@ -1,4 +1,3 @@
-
 export const PlaylistMetadataSchema = {
   $id: "playlistMetadata",
   type: "object",

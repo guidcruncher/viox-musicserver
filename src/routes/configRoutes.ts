@@ -21,7 +21,7 @@ export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend
         },
       },
     },
-    async (request:any, reply:any) => {
+    async (request: any, reply: any) => {
       const cfg = request.body as any
       const logger = getLogger()
       if (!cfg || !cfg.config) {
@@ -48,7 +48,7 @@ export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend
         },
       },
     },
-    async (req: any, reply:any) => {
+    async (req: any, reply: any) => {
       const cfg = readFileConfig()
       return reply.send(cfg)
     },
