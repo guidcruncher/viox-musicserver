@@ -1,3 +1,12 @@
+const setVolumeSchema = {
+  type: "object",
+  required: ["volume"],
+  properties: {
+    volume: { type: "number" },
+  },
+  additionalProperties: false,
+}
+
 export const SpeakerParamsSchema = {
   params: {
     type: "object",
@@ -12,23 +21,16 @@ export const SpeakerParamsSchema = {
 export const SpeakerVolumeSchema = {
   params: {
     type: "object",
-    required: ["id", "volume"],
+    required: ["id"],
     properties: {
       id: { type: "string" },
-      volume: { type: "string", pattern: "^[0-9]+$" },
     },
   },
+  body: setVolumeSchema,
   response: { 200: { $ref: "SuccessResponse#" } },
 }
 
 export const SpeakerAllVolumeSchema = {
-  params: {
-    type: "object",
-    required: ["volume"],
-    properties: {
-      id: { type: "string" },
-      volume: { type: "string", pattern: "^[0-9]+$" },
-    },
-  },
+  body: setVolumeSchema,
   response: { 200: { $ref: "SuccessResponse#" } },
 }

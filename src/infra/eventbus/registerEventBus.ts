@@ -41,7 +41,7 @@ export async function registerEventBus(fastify: FastifyInstance) {
       }
     })
 
-//    new GoLibrespotListener().start()
+    //    new GoLibrespotListener().start()
   } catch (err) {
     logger.error("Error registering EventBus", err)
   }
