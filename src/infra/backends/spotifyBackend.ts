@@ -53,7 +53,10 @@ export class SpotifyPlaybackBackend implements PlaybackBackend {
     if (!this.currentItem || this.pausedAt !== null) return
     await this.api.player.pause()
     this.pausedAt = await this.getPosition()
-    eventBus.emit({ type: "track_pause", payload: { track: this.currentItem, position: this.pausedAt } })
+    eventBus.emit({
+      type: "track_pause",
+      payload: { track: this.currentItem, position: this.pausedAt },
+    })
   }
 
   async stop(): Promise<void> {

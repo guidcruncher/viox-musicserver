@@ -93,7 +93,10 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
     if (!this.ffmpeg || !this.pwcat || this.pausedAt !== null) return
     this.pausedAt = await this.getPosition()
     await this.stop()
-    eventBus.emit({ type: "track_pause", payload: { track: this.currentItem, position: this.pausedAt } })
+    eventBus.emit({
+      type: "track_pause",
+      payload: { track: this.currentItem, position: this.pausedAt },
+    })
   }
 
   async stop(): Promise<void> {

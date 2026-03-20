@@ -61,7 +61,10 @@ export class PodversePlaybackBackend implements PlaybackBackend {
     if (!this.currentItem || this.pausedAt !== null) return
     this.pausedAt = await this.getPosition()
     await this.stop()
-    eventBus.emit({ type: "track_pause", payload: { track: this.currentItem, position: this.pausedAt } })
+    eventBus.emit({
+      type: "track_pause",
+      payload: { track: this.currentItem, position: this.pausedAt },
+    })
   }
 
   async stop(): Promise<void> {

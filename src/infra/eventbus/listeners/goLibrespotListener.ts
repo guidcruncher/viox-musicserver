@@ -8,7 +8,7 @@ export class GoLibrespotListener {
   start() {
     const log = getLogger()
     try {
-      const ws = new WebSocket("ws://127.0.0.1/events")
+      const ws = new WebSocket("ws://127.0.0.1:3678/events")
 
       ws.addEventListener("error", (event) => {
         log.error("Websocket error in GoLibrespot Listener", event)
@@ -49,7 +49,7 @@ export class GoLibrespotListener {
       })
 
       ws.on("error", (err) => {
-        log.error("Websocket error in GoLibrespot Listener", event)
+        log.error("Websocket error in GoLibrespot Listener", err)
       })
 
       ws.on("close", () => setTimeout(() => this.start(), 2000))
