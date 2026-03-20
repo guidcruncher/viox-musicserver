@@ -1,4 +1,4 @@
-export const streamSchema = {
+export const StreamerSchema = {
   summary: "Smart Live Audio Stream",
   tags: ["Media"],
   querystring: {
