@@ -5,6 +5,14 @@ import type { VioxBackend } from "@/types"
 
 export function registerEqualizerRoutes(app: FastifyInstance, backend: VioxBackend) {
   app.get(
+    "/api/eq",
+    async (_req, res) => {
+      const levels = await backend.equalizer.getCurrentLevels()
+      res.send(levels)
+    },
+  )
+  
+  app.get(
     "/api/eq/presets",
     {
       schema: GetPresetsSchema,
