@@ -1,5 +1,5 @@
 export const PlaylistMetadataSchema = {
-  $id: "playlistMetadata",
+  $id: "PlaylistMetadata",
   type: "object",
   required: ["id", "sourceRef", "name", "totalItems"], //
   properties: {

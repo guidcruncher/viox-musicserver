@@ -1,7 +1,7 @@
 import { AudioSourceItemTypeSchema, AudioSourceSchema } from "./index"
 
 export const MediaSourceRefSchema = {
-  $id: "mediaSourceRef",
+  $id: "MediaSourceRef",
   type: "object",
   required: ["source", "itemType", "sourceId"], //
   properties: {

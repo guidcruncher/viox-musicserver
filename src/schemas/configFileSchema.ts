@@ -1,4 +1,5 @@
 export const ConfigFileSchema = {
+  $id: "ConfigFile",
   type: "object",
   required: ["backEndLimit", "maxCacheSize", "radioProvider", "enableCache"],
   properties: {

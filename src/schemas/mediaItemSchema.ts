@@ -1,5 +1,5 @@
 export const MediaItemSchema = {
-  $id: "mediaItem",
+  $id: "MediaItem",
   type: "object",
   required: ["id", "sourceRef", "title"], //
   properties: {
