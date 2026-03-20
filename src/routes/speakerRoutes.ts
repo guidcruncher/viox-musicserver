@@ -24,25 +24,25 @@ export function registerSpeakerRoutes(app: FastifyInstance, backend: VioxBackend
     res.send({ ok: true })
   })
 
-  app.post("/api/speakers/:volume", { schema: SpeakerAllVolumeSchema }, async (req, res) => {
+  app.post("/api/speakers/volume/:volume", { schema: SpeakerAllVolumeSchema }, async (req, res) => {
     const { volume } = req.params as any
     await backend.speakers.setVolumeAll(volume)
     res.send({ ok: true })
   })
 
-  app.post("/api/speakers/:id/mute", { schema: SpeakerParamsSchema }, async (req, res) => {
+  app.post("/api/speaker/mute/:id", { schema: SpeakerParamsSchema }, async (req, res) => {
     const { id } = req.params as any
     await backend.speakers.mute(id)
     res.send({ ok: true })
   })
 
-  app.post("/api/speakers/:id/unmute", { schema: SpeakerParamsSchema }, async (req, res) => {
+  app.post("/api/speaker/unmute/:id", { schema: SpeakerParamsSchema }, async (req, res) => {
     const { id } = req.params as any
     await backend.speakers.unmute(id)
     res.send({ ok: true })
   })
 
-  app.post("/api/speakers/:id/:volume", { schema: SpeakerVolumeSchema }, async (req, res) => {
+  app.post("/api/speaker/:id/:volume", { schema: SpeakerVolumeSchema }, async (req, res) => {
     const { id, volume } = req.params as any
     await backend.speakers.setVolume(id, volume)
     res.send({ ok: true })
