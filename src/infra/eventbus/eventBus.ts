@@ -1,7 +1,8 @@
-import { VioxEvent } from "./types"
 import { WebSocket } from "ws" // Import from 'ws' instead
 
 import { getLogger } from "@/logger"
+
+import { VioxEvent } from "./types"
 
 // Store raw WebSocket objects
 const clients: Set<WebSocket> = new Set()

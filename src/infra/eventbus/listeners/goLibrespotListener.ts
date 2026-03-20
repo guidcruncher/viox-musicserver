@@ -4,6 +4,7 @@ import WebSocket from "ws"
 import { getLogger } from "@/logger"
 
 import { eventBus } from "../eventBus"
+import { VioxEvent } from "../types"
 
 export class GoLibrespotListener {
   start() {
@@ -12,12 +13,12 @@ export class GoLibrespotListener {
       const ws = new WebSocket("ws://127.0.0.1:3678/events")
 
       ws.addEventListener("error", (event) => {
-        log.error("Websocket error in GoLibrespot Listener", event)
+        log.error("Websocket error in golibrespot event listener", event)
       })
 
       ws.on("message", (data) => {
         const raw = JSON.parse(data.toString())
-        const payload = undefined
+        const evt: VioxEvent | undefined = undefined
 
         switch (raw.event ?? raw.type) {
           case "active":
@@ -44,18 +45,18 @@ export class GoLibrespotListener {
             break
         }
 
-        if (payload) {
-          eventBus.emit(payload)
+        if (evt) {
+          eventBus.emit(evt)
         }
       })
 
       ws.on("error", (err) => {
-        log.error("Websocket error in GoLibrespot Listener", err)
+        log.error("Websocket error in golibrespot event listener", err)
       })
 
       ws.on("close", () => setTimeout(() => this.start(), 2000))
     } catch (err) {
-      log.error("Error starting GoLibrespot Listener", err)
+      log.error("Error starting golibrespot event listener", err)
     }
   }
 }
