@@ -1,44 +1,33 @@
-import { randomUUID } from "node:crypto"
-
-import websocket from "@fastify/websocket"
+import fastifyWebsocket from "@fastify/websocket" // Import the plugin correctly
 import { FastifyInstance } from "fastify"
 
-import { getLogger } from "@/logger"
+import { eventBus } from "./eventBus"
 
-import { EVENT_KEYS, eventBus } from "./eventBus"
+export async function registerEventBus(fastify: FastifyInstance) {
+  // 1. Register the plugin directly on the main instance
+  // The 'websocket' property becomes available on routes after this
+  await fastify.register(fastifyWebsocket, {
+    options: {
+      maxPayload: 1048576,
+      clientTracking: true,
+    },
+  })
 
-export const registerEventBus = async (app: FastifyInstance) => {
-  app.register(websocket)
+  // 2. Define the WebSocket route
+  // We use the 'connection' object which contains the raw socket
+  fastify.get("/api/events", { websocket: true }, (connection) => {
+    const socket = connection
 
-  app.get("/api/events", { websocket: true }, (connection, _req) => {
-    const ws = connection
-    const connectionId = randomUUID()
-    const logger = getLogger()
+    // Register the raw socket with our event bus
+    eventBus.registerClient(socket)
 
-    ws.on("message", (message: Buffer) => {
-      logger.info(`Received message from client: ${message.toString()}`)
+    // Handle incoming messages (typed as Buffer by the 'ws' library)
+    socket.on("message", (message: Buffer) => {
+      fastify.log.info(`Received message from client: ${message.toString()}`)
     })
 
-    for (const eventName of EVENT_KEYS) {
-      eventBus.subscribe(connectionId, eventName, (data: any) => {
-        if (ws.readyState === ws.OPEN) {
-          ws.send(
-            JSON.stringify({
-              type: eventName,
-              payload: data,
-            }),
-          )
-        }
-      })
-    }
-
-    ws.on("error", (err: any) => {
-      logger.error("WebSocket error", err)
-    })
-
-    ws.on("close", () => {
-      logger.info("Client closed connection")
-      eventBus.cleanup(connectionId)
+    socket.on("error", (err: any) => {
+      fastify.log.error(err, "WebSocket error")
     })
   })
 }

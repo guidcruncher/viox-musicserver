@@ -1,38 +1,42 @@
-import { EventEmitter } from "node:events"
+import { WebSocket } from "ws" // Import from 'ws' instead
 
-import { EVENT_DEFINITIONS } from "./appEvents"
+import { getLogger } from "@/logger"
 
-export type AppEvents = typeof EVENT_DEFINITIONS
-export type EventKey = keyof AppEvents
-export const EVENT_KEYS = Object.keys(EVENT_DEFINITIONS) as EventKey[]
+import { VioxEvent } from "./types"
+
+// Store raw WebSocket objects
+const clients: Set<WebSocket> = new Set()
 
 class EventBus {
-  private bus = new EventEmitter()
-  private clientListeners = new Map<string, Map<EventKey, (...args: any[]) => void>>()
+  registerClient(socket: WebSocket) {
+    const log = getLogger()
+    log.info("Registering WebSocket client")
+    clients.add(socket)
 
-  subscribe<K extends EventKey>(
-    connectionId: string,
-    event: K,
-    callback: (data: AppEvents[K]) => void,
-  ) {
-    this.bus.on(event, callback)
+    socket.on("close", () => {
+      log.info("De-registering WebSocket client")
+      clients.delete(socket)
+    })
 
-    if (!this.clientListeners.has(connectionId)) {
-      this.clientListeners.set(connectionId, new Map())
-    }
-    this.clientListeners.get(connectionId)!.set(event, callback)
+    socket.on("error", (err: Error) => {
+      log.error(`WebSocket error: ${err.message}`)
+      clients.delete(socket)
+    })
   }
 
-  cleanup(connectionId: string) {
-    const listeners = this.clientListeners.get(connectionId)
-    if (listeners) {
-      listeners.forEach((cb, ev) => this.bus.off(ev, cb as any))
-      this.clientListeners.delete(connectionId)
-    }
-  }
+  emit(event: VioxEvent) {
+    const payload = JSON.stringify(event)
 
-  emit<K extends EventKey>(event: K, data: AppEvents[K]) {
-    this.bus.emit(event, data)
+    if (clients.size > 0) {
+      for (const socket of clients) {
+        if (socket.readyState === 1) {
+          // 1 is OPEN
+          socket.send(payload)
+        } else {
+          clients.delete(socket)
+        }
+      }
+    }
   }
 }
 
