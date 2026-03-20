@@ -1,6 +1,6 @@
 import { SnapserverClient } from "./snapServerClient"
 import { flattenClients } from "./speakerMapper"
-import type { SnapClient, SnapGroup, SnapserverStatus } from "./types"
+import type {   SnapserverStatus } from "./types"
 
 export class SnapserverOrchestrator {
   constructor(private snap = new SnapserverClient()) {}
@@ -30,11 +30,10 @@ export class SnapserverOrchestrator {
   }
 
   async muteAllClients() {
-    const status = await this.snap.getStatus()
-    const clients = status.server.groups.flatMap((g: SnapGroup) => g.clients)
+    const clients = await this.getSpeakers()
 
     await Promise.all(
-      clients.map((c: SnapClient) =>
+      clients.map((c: any) =>
         this.snap.setClientVolume({
           id: c.id,
           volume: { percent: c.config.volume.percent, muted: true },
@@ -46,14 +45,13 @@ export class SnapserverOrchestrator {
   }
 
   async unmuteAllClients() {
-    const status = await this.snap.getStatus()
-    const clients = status.server.groups.flatMap((g: SnapGroup) => g.clients)
+    const clients = await this.getSpeakers()
 
     await Promise.all(
-      clients.map((c: SnapClient) =>
+      clients.map((c: any) =>
         this.snap.setClientVolume({
           id: c.id,
-          volume: { percent: c.config.volume.percent, muted: false },
+          volume: { percent: c.volume, muted: false },
         }),
       ),
     )
@@ -62,14 +60,13 @@ export class SnapserverOrchestrator {
   }
 
   async setAllVolume(percent: number) {
-    const status = await this.snap.getStatus()
-    const clients = status.server.groups.flatMap((g: SnapGroup) => g.clients)
+    const clients = await this.getSpeakers()
 
     await Promise.all(
-      clients.map((c: SnapClient) =>
+      clients.map((c: any) =>
         this.snap.setClientVolume({
           id: c.id,
-          volume: { percent, muted: c.config.volume.muted },
+          volume: { percent: percent, muted: c.muted },
         }),
       ),
     )
