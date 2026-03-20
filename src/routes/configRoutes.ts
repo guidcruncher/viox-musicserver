@@ -6,7 +6,6 @@ import type { VioxBackend } from "@/types"
 import { getLogger } from "../../logger"
 
 export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend) {
-
   fastify.post(
     "/config",
     {
@@ -54,5 +53,4 @@ export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend
       return reply.send(cfg)
     },
   )
-
 }

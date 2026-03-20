@@ -6,6 +6,6 @@ export const ConfigFileSchema = {
     maxCacheSize: { type: "number" },
     radioProvider: { type: "string" },
     enableCache: { type: "boolean" },
-    visualization: {type: "string" },
+    visualization: { type: "string" },
   },
 }
