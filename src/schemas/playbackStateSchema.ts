@@ -1,7 +1,6 @@
-import { PlaybackErrorSchema } from "./index"
 
 export const PlaybackStateSchema = {
-  $id: "playbackState",
+  $id: "PlaybackState",
   oneOf: [
     {
       type: "object",
@@ -12,7 +11,7 @@ export const PlaybackStateSchema = {
       type: "object",
       properties: {
         type: { const: "loading" },
-        item: { $ref: "mediaItem#" },
+        item: { $ref: "MediaItem#" },
       },
       required: ["type", "item"],
     },
@@ -20,7 +19,7 @@ export const PlaybackStateSchema = {
       type: "object",
       properties: {
         type: { const: "playing" },
-        item: { $ref: "mediaItem#" },
+        item: { $ref: "MediaItem#" },
         positionMs: { type: "number" },
       },
       required: ["type", "item", "positionMs"],
@@ -29,7 +28,7 @@ export const PlaybackStateSchema = {
       type: "object",
       properties: {
         type: { const: "paused" },
-        item: { $ref: "mediaItem#" },
+        item: { $ref: "MediaItem#" },
         positionMs: { type: "number" },
       },
       required: ["type", "item", "positionMs"],
@@ -38,7 +37,7 @@ export const PlaybackStateSchema = {
       type: "object",
       properties: {
         type: { const: "ended" },
-        item: { $ref: "mediaItem#" },
+        item: { $ref: "MediaItem#" },
       },
       required: ["type", "item"],
     },
@@ -46,7 +45,7 @@ export const PlaybackStateSchema = {
       type: "object",
       properties: {
         type: { const: "error" },
-        error: PlaybackErrorSchema,
+        error: {$ref: "PlaybackErrorSchema#"},
       },
       required: ["type", "error"],
     },

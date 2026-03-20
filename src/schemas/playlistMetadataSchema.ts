@@ -4,7 +4,7 @@ export const PlaylistMetadataSchema = {
   required: ["id", "sourceRef", "name", "totalItems"], //
   properties: {
     id: { type: "string" },
-    sourceRef: { $ref: "mediaSourceRef#" },
+    sourceRef: { $ref: "MediaSourceRef#" },
     name: { type: "string" },
     description: { type: "string" },
     imageUrl: { type: "string" },

@@ -4,7 +4,7 @@ export const MediaItemSchema = {
   required: ["id", "sourceRef", "title"], //
   properties: {
     id: { type: "string" },
-    sourceRef: { $ref: "mediaSourceRef#" },
+    sourceRef: { $ref: "MediaSourceRef#" },
     title: { type: "string" },
     subtitle: { type: "string" },
     artist: { type: "string" },
