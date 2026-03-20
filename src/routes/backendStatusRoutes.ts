@@ -1,6 +1,6 @@
 import type { FastifyInstance } from "fastify"
 
-import { BackendsListSchema, BackendStatusSchema } from "@/schenas"
+import { BackendsListSchema, BackendStatusSchema } from "@/schemas"
 import type { VioxBackend } from "@/types"
 
 export function registerBackendStatusRoutes(app: FastifyInstance, backend: VioxBackend) {
