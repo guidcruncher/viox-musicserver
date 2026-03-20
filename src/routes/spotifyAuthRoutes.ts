@@ -7,7 +7,7 @@ import { spotifyAuthClient } from "@/infra/spotify/spotifyAuthClient"
 import { spotifyTokenStore } from "@/infra/spotify/spotifyTokenStore"
 import type { VioxBackend } from "@/types"
 
-export function registerSpotifyAuthRoutes(app: FastifyInstance, backend: VioxBackend) {
+export function registerSpotifyAuthRoutes(app: FastifyInstance, _backend: VioxBackend) {
   app.get("/api/spotify/login", async (req: any, reply: any) => {
     const params = querystring.stringify({
       client_id: getConfig("spotifyClientId"),

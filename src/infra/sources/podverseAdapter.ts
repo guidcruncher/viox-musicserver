@@ -9,7 +9,7 @@ export class PodverseSourceAdapter implements AudioSourceAdapter {
   private readonly api = new PodverseWebClient()
   private readonly normalize = new PodverseNormalizer()
 
-  async search(query: string): Promise<MediaItem[]> {
+  async search(_query: string): Promise<MediaItem[]> {
     return []
   }
 

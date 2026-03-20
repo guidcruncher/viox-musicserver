@@ -50,7 +50,7 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
     })
 
     this.pwcat = spawn(
-      "pw-cat",
+      pwCatPath,
       [
         "--target",
         "streamer",

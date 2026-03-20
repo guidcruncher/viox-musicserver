@@ -1,6 +1,6 @@
 import crypto from "crypto"
 
-import { MediaStore, MediaSourceRef } from "@/types"
+import { MediaSourceRef, MediaStore } from "@/types"
 
 export const makeVioxId = (ref: MediaSourceRef | string, type: MediaStore): string => {
   const json = JSON.stringify(ref).trim()

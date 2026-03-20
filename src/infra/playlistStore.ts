@@ -1,6 +1,6 @@
+import { makeVioxId } from "@/core/normalizers/makeVioxId"
 import { db } from "@/infra/db"
 import type { LibraryStore, MediaItem, Playlist, PlaylistStore } from "@/types"
-import { makeVioxId } from "@/core/normalizers/makeVioxId"
 
 export class SqlitePlaylistStore implements PlaylistStore {
   private readonly conn = db

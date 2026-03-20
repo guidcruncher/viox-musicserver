@@ -9,7 +9,7 @@ export class PlaybackController {
 
   constructor(private readonly router: BackendRouter) {}
 
-  async play(id: string): Promise<void> {
+  async play(_id: string): Promise<void> {
     // You’ll likely look up the MediaItem from the library here.
     // For now, assume router can resolve from an item you already have.
     throw new Error("PlaybackController.play(id) needs MediaItem lookup wiring")

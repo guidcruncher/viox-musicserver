@@ -8,7 +8,7 @@ import { EVENT_KEYS, eventBus } from "./eventBus"
 export const registerEventBus = async (app: FastifyInstance) => {
   app.register(websocket)
 
-  app.get("/api/events", { websocket: true }, (connection, req) => {
+  app.get("/api/events", { websocket: true }, (connection, _req) => {
     const connectionId = randomUUID()
 
     for (const eventName of EVENT_KEYS) {
