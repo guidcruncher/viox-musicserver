@@ -2,6 +2,7 @@ import fastifyWebsocket from "@fastify/websocket" // Import the plugin correctly
 import { FastifyInstance } from "fastify"
 
 import { eventBus } from "./eventBus"
+import { GoLibrespotListener } from "./listeners/goLibrespotListener"
 
 export async function registerEventBus(fastify: FastifyInstance) {
   // 1. Register the plugin directly on the main instance
@@ -32,4 +33,5 @@ export async function registerEventBus(fastify: FastifyInstance) {
   })
 
   // 3. Initialize listeners
+  new GoLibrespotListener().start()
 }
