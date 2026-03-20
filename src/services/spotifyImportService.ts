@@ -166,7 +166,7 @@ export class SpotifyImportService {
       return
     }
 
-    for (const raw of res.items) {
+    for (const raw of res) {
       if (!raw?.id) continue
       await this.importPlaylist(raw.id)
     }
