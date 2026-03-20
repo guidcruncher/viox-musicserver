@@ -1,12 +1,13 @@
 import { FastifyInstance } from "fastify"
+
 import {
-  MediaSourceRefSchema,
-  MediaItemSchema,
-  PlaylistMetadataSchema,
-  AudioSourceSchema,
   AudioSourceItemTypeSchema,
+  AudioSourceSchema,
+  MediaItemSchema,
+  MediaSourceRefSchema,
   PlaybackErrorSchema,
   PlaybackStateSchema,
+  PlaylistMetadataSchema,
 } from "./index"
 
 export const registerSchemas = (fastify: FastifyInstance) => {

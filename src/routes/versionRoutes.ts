@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify"
-import { version as appversion } from "@/version"
 
 import type { VioxBackend } from "@/types"
+import { version as appversion } from "@/version"
 
 export function registerVersionRoutes(app: FastifyInstance, _backend: VioxBackend) {
   app.get("/version", async (_req: any, reply: any) => {

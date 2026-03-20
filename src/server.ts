@@ -8,8 +8,8 @@ import { createVioxBackend } from "@/core/createBackend"
 import { registerEventBus } from "@/infra/eventbus/registerEventBus"
 import { getLogger } from "@/logger"
 import { registerAllRoutes } from "@/routes"
-import { version } from "@/version"
 import { registerSchemas } from "@/schemas"
+import { version } from "@/version"
 
 export const createServer = async () => {
   const logger = getLogger()
