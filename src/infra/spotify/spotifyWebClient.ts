@@ -165,7 +165,7 @@ export class SpotifyWebClient {
   getMyFollowedArtists(after?: string) {
     return this.safeGet(() =>
       this.http.get("/me/following", {
-        params: { type: "artist", after, limit:20 },
+        params: { type: "artist", after, limit: 20 },
       }),
     )
   }

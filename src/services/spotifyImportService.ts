@@ -47,7 +47,7 @@ export class SpotifyImportService {
   async importUserTracks(): Promise<void> {
     const res: any = await fetchAllOffsetPages((offset) => this.client.getMySavedTracks(offset))
 
-    if (!res || !res.items) {
+    if (!res) {
       this.log.warn("[SpotifyImport] No saved tracks returned from Spotify")
       return
     }
@@ -69,7 +69,7 @@ export class SpotifyImportService {
   async importUserAlbums(): Promise<void> {
     const res: any = await fetchAllOffsetPages((offset) => this.client.getMySavedAlbums(offset))
 
-    if (!res || !res.items) {
+    if (!res) {
       this.log.warn("[SpotifyImport] No saved albums returned from Spotify")
       return
     }
@@ -91,7 +91,7 @@ export class SpotifyImportService {
   async importUserShows(): Promise<void> {
     const res: any = await fetchAllOffsetPages((offset) => this.client.getMySavedShows(offset))
 
-    if (!res || !res.items) {
+    if (!res) {
       this.log.warn("[SpotifyImport] No saved shows returned from Spotify")
       return
     }
@@ -113,7 +113,7 @@ export class SpotifyImportService {
   async importUserEpiaodes(): Promise<void> {
     const res: any = await fetchAllOffsetPages((offset) => this.client.getMySavedEpisodes(offset))
 
-    if (!res || !res.items) {
+    if (!res) {
       this.log.warn("[SpotifyImport] No saved episodes returned from Spotify")
       return
     }
@@ -135,7 +135,7 @@ export class SpotifyImportService {
   async importFollowedArtists(): Promise<void> {
     const res: any = await fetchAllOffsetPages((offset) => this.client.getMyFollowedArtists(offset))
 
-    if (!res || !res.items) {
+    if (!res) {
       this.log.warn("[SpotifyImport] No followed artists returned from Spotify")
       return
     }
@@ -161,7 +161,7 @@ export class SpotifyImportService {
   async importUserPlaylists(): Promise<void> {
     const res: any = await fetchAllOffsetPages((offset) => this.client.getMyPlaylists(offset))
 
-    if (!res || !res.items) {
+    if (!res) {
       this.log.warn("[SpotifyImport] No playlists returned from Spotify")
       return
     }
