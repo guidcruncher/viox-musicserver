@@ -5,11 +5,12 @@ import {
   SpeakerParamsSchema,
   SpeakerVolumeSchema,
   SuccessResponseOnlySchema,
+  SpeakersResponseSchema,
 } from "@/schemas"
 import type { VioxBackend } from "@/types"
 
 export function registerSpeakerRoutes(app: FastifyInstance, backend: VioxBackend) {
-  app.get("/api/speakers", async (_req, res) => {
+  app.get("/api/speakers", { schema: SpeakersResponseSchema }, async (_req, res) => {
     const speakers = await backend.speakers.getAllSpeakers()
     res.send(speakers)
   })
