@@ -8,9 +8,11 @@ import {
   PlaybackErrorSchema,
   PlaybackStateSchema,
   PlaylistMetadataSchema,
+  SuccessResponseSchema,
 } from "./index"
 
 export const registerSchemas = (fastify: FastifyInstance) => {
+  fastify.addSchema(SuccessResponseSchema)
   fastify.addSchema(MediaSourceRefSchema)
   fastify.addSchema(MediaItemSchema)
   fastify.addSchema(PlaylistMetadataSchema)
