@@ -22,6 +22,7 @@ export const fetchAllOffsetPages = async <T, A extends any[] = any[]>(
 ): Promise<T[] | undefined> => {
   const results: T[] = []
   let offset = 0
+  let iteration = 0
 
   while (true) {
     let page: { items: T[]; next: string | null } | undefined
@@ -35,14 +36,21 @@ export const fetchAllOffsetPages = async <T, A extends any[] = any[]>(
 
     // If no page or no items → assume finished
     if (!page || !Array.isArray(page.items) || page.items.length === 0) {
+      if (iteration == 0) {
+        log.warn(`Finished fetchAllOffsetPages after ${iteration} pages`)
+      } else {
+        log.debug(`Finished fetchAllOffsetPages after ${iteration} pages`)
+      }
       return results
     }
 
     results.push(...page.items)
-
+    iteration += 1
     // Spotify returns `next: null` when done
-    if (!page.next) return results
-
+    if (!page.next) {
+      log.debug(`Finished fetchAllOffsetPages after ${iteration} pages`)
+      return results
+    }
     offset += pageSize
   }
 }
