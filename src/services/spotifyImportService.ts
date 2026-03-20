@@ -20,6 +20,18 @@ export class SpotifyImportService {
       this.log.warn("[SpotifyImport] No saved tracks returned from Spotify")
       return
     }
+
+    const items: MediaItem[] = []
+
+    for (const entry of res) {
+      const track = entry?.track
+      if (!track) continue
+
+      const normalized = this.normalize.normalize(track)
+      if (normalized) items.push(normalized)
+    }
+
+    await this.library.upsert(items)
   }
 
   async importUserAlbums(): Promise<void> {
