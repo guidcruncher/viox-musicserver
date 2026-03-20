@@ -2,7 +2,7 @@ import { ChildProcessWithoutNullStreams, spawn } from "child_process"
 
 import { getLogger } from "@/logger"
 
-export type AudioFormat = "raw" | "aac" | "mp3" | "mp4"
+export type AudioFormat = "aac" | "mp3" | "mp4"
 
 interface FormatConfig {
   mimeType: string
@@ -27,11 +27,6 @@ class StreamerService {
       primingFrame: Buffer.from([
         0xff, 0xfb, 0x90, 0x44, 0x00, 0x00, 0x00, 0x08, 0x00, 0x44, 0x00, 0x00,
       ]),
-    },
-    raw: {
-      mimeType: "audio/wav", // "audio/x-raw", // audio/L16
-      ffmpegArgs: [],
-      primingFrame: undefined,
     },
     mp4: {
       mimeType: "audio/mp4",
@@ -115,36 +110,10 @@ class StreamerService {
     }
   }
 
-  public createRawStream(): {
-    process: ChildProcessWithoutNullStreams
-    config: FormatConfig
-  } {
-    const config = this.configs["raw"]
-
-    const pwcat = spawn("pw-cat", [
-      "--playback",
-      "--target",
-      "output-http",
-      "--rate",
-      "48000",
-      "--channels",
-      "2",
-      "--format",
-      "s16",
-      "-",
-    ])
-
-    return { process: pwcat, config }
-  }
-
   public createStream(format: AudioFormat): {
     process: ChildProcessWithoutNullStreams
     config: FormatConfig
   } {
-    if (format == "raw") {
-      return this.createRawStream()
-    }
-
     const config = this.configs[format]
 
     const ffmpeg = spawn("ffmpeg", [
