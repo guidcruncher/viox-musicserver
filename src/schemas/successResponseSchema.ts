@@ -1,6 +1,6 @@
 export const SuccessResponseSchema = {
-  type: 'object',
+  type: "object",
   properties: {
-    ok: { type: 'boolean' }
-  }
-};
+    ok: { type: "boolean" },
+  },
+}

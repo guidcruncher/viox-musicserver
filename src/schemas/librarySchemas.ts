@@ -1,29 +1,28 @@
 export const ListLibrarySchema = {
   query: {
-    type: 'object',
+    type: "object",
     properties: {
-      offset: { type: 'string', pattern: '^[0-9]+$' },
-      limit: { type: 'string', pattern: '^[0-9]+$' }
-    }
+      offset: { type: "string", pattern: "^[0-9]+$" },
+      limit: { type: "string", pattern: "^[0-9]+$" },
+    },
   },
   response: {
     200: {
-      type: 'array',
-      items: { $ref: 'MediaItem#' }
-    }
-  }
-};
+      type: "array",
+      items: { $ref: "MediaItem#" },
+    },
+  },
+}
 
 export const GetLibraryItemSchema = {
   params: {
-    type: 'object',
-    required: ['id'],
+    type: "object",
+    required: ["id"],
     properties: {
-      id: { type: 'string' }
-    }
+      id: { type: "string" },
+    },
   },
   response: {
-    200: { $ref: 'MediaItem#' }
-  }
-};
-
+    200: { $ref: "MediaItem#" },
+  },
+}

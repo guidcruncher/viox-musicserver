@@ -1,12 +1,12 @@
 export const SpotifyImportSchema = {
   params: {
-    type: 'object',
+    type: "object",
     properties: {
-      itemType: { 
-        type: 'string', 
-        enum: ['playlist', 'track', 'album', 'episode', 'show'] 
-      }
-    }
+      itemType: {
+        type: "string",
+        enum: ["playlist", "track", "album", "episode", "show"],
+      },
+    },
   },
-  response: { 200: { $ref: 'SuccessResponse#' } }
-};
+  response: { 200: { $ref: "SuccessResponse#" } },
+}

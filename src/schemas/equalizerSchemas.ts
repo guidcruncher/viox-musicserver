@@ -1,31 +1,31 @@
 export const GetPresetsSchema = {
   response: {
     200: {
-      type: 'array',
-      items: { type: 'string' }
-    }
-  }
-};
+      type: "array",
+      items: { type: "string" },
+    },
+  },
+}
 
 export const LoadPresetSchema = {
   params: {
-    type: 'object',
-    required: ['name'],
+    type: "object",
+    required: ["name"],
     properties: {
-      name: { type: 'string' }
-    }
+      name: { type: "string" },
+    },
   },
-  response: { 200: { $ref: 'SuccessResponse#' } }
-};
+  response: { 200: { $ref: "SuccessResponse#" } },
+}
 
 export const SetBandSchema = {
   body: {
-    type: 'object',
-    required: ['band', 'gain'],
+    type: "object",
+    required: ["band", "gain"],
     properties: {
-      band: { type: 'string' },
-      gain: { type: 'number' }
-    }
+      band: { type: "string" },
+      gain: { type: "number" },
+    },
   },
-  response: { 200: { $ref: 'SuccessResponse#' } }
-};
+  response: { 200: { $ref: "SuccessResponse#" } },
+}
