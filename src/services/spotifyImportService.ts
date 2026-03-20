@@ -13,12 +13,106 @@ export class SpotifyImportService {
     private readonly playlists: PlaylistStore,
   ) {}
 
+  async importUserTracks(): Promise<void> {
+    const res: any = await fetchAllOffsetPages((offset) => this.client.getMySavedTracks(offset))
+
+    if (!res || !res.items) {
+      this.log.warn("[SpotifyImport] No saved tracks returned from Spotify")
+      return
+    }
+  }
+
+  async importUserAlbums(): Promise<void> {
+    const res: any = await fetchAllOffsetPages((offset) => this.client.getMySavedAlbums(offset))
+
+    if (!res || !res.items) {
+      this.log.warn("[SpotifyImport] No saved albums returned from Spotify")
+      return
+    }
+
+    const items: MediaItem[] = []
+
+    for (const entry of res) {
+      const album = entry?.album
+      if (!album) continue
+
+      const normalized = this.normalize.normalize(album)
+      if (normalized) items.push(normalized)
+    }
+
+    await this.library.upsert(items)
+  }
+
+  async importUserShows(): Promise<void> {
+    const res: any = await fetchAllOffsetPages((offset) => this.client.getMySavedShows(offset))
+
+    if (!res || !res.items) {
+      this.log.warn("[SpotifyImport] No saved shows returned from Spotify")
+      return
+    }
+
+    const items: MediaItem[] = []
+
+    for (const entry of res) {
+      const show = entry?.show
+      if (!show) continue
+
+      const normalized = this.normalize.normalize(show)
+      if (normalized) items.push(normalized)
+    }
+
+    await this.library.upsert(items)
+  }
+
+  async importUserEpiaodes(): Promise<void> {
+    const res: any = await fetchAllOffsetPages((offset) => this.client.getMySavedEpisodes(offset))
+
+    if (!res || !res.items) {
+      this.log.warn("[SpotifyImport] No saved episodes returned from Spotify")
+      return
+    }
+
+    const items: MediaItem[] = []
+
+    for (const entry of res) {
+      const episode = entry?.episode
+      if (!episode) continue
+
+      const normalized = this.normalize.normalize(episode)
+      if (normalized) items.push(normalized)
+    }
+
+    await this.library.upsert(items)
+  }
+
+  async importUserArtists(): Promise<void> {
+    const res: any = await fetchAllOffsetPages((offset) => this.client.getMyFollowedArtists(offset))
+
+    if (!res || !res.items) {
+      this.log.warn("[SpotifyImport] No followed artists returned from Spotify")
+      return
+    }
+
+    const items: MediaItem[] = []
+
+    for (const entry of res) {
+      const artist = entry?.artist
+      if (!artist) continue
+
+      const normalized = this.normalize.normalize(artist)
+      if (normalized) items.push(normalized)
+    }
+
+    await this.library.upsert(items)
+  }
+
   // ────────────────────────────────────────────────
   // IMPORT ALL USER PLAYLISTS
   // ────────────────────────────────────────────────
 
   async importUserPlaylists(): Promise<void> {
-    const res = await this.client.getMyPlaylists()
+    const res: any = await fetchAllOffsetPages((offset) => this.client.getMyPlaylists(offset))
+
     if (!res || !res.items) {
       this.log.warn("[SpotifyImport] No playlists returned from Spotify")
       return

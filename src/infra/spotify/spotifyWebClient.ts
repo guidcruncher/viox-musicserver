@@ -113,7 +113,7 @@ export class SpotifyWebClient {
   getPlaylistTracks(id: string, offset = 0) {
     return this.safeGet(() =>
       this.http.get(`/playlists/${id}/tracks`, {
-        params: { offset, limit: 100 },
+        params: { offset, limit: 50 },
       }),
     )
   }
