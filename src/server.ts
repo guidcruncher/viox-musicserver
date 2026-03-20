@@ -19,7 +19,7 @@ export const createServer = async () => {
   })
 
   registerSchemas(app)
-  registerEventBus(app)
+  // registerEventBus(app)
 
   if (getConfig("nodeEnv") == "production") {
     logger.info("Registering client UI")
