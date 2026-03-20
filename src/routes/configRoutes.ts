@@ -7,7 +7,7 @@ import type { VioxBackend } from "@/types"
 
 export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend) {
   app.post(
-    "/config",
+    "/api/config",
     {
       schema: {
         tags: ["Config"],
@@ -38,7 +38,7 @@ export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend
   )
 
   app.get(
-    "/config",
+    "/api/config",
     {
       schema: {
         tags: ["Config"],
