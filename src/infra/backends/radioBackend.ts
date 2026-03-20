@@ -1,6 +1,7 @@
 // infra/backends/podverse-backend.ts
 import { spawn } from "node:child_process"
 
+import { eventBus } from "@/infra/eventbus/eventBus"
 import type { MediaItem, PlaybackBackend } from "@/types"
 
 export class RadioPlaybackBackend implements PlaybackBackend {
@@ -53,12 +54,14 @@ export class RadioPlaybackBackend implements PlaybackBackend {
 
     this.startedAt = Date.now() - positionMs
     this.pausedAt = null
+    eventBus.emit({ type: "track_start", payload: { track: item, position: positionMs } })
   }
 
   async pause(): Promise<void> {
     if (!this.currentItem || this.pausedAt !== null) return
     this.pausedAt = await this.getPosition()
     await this.stop()
+    eventBus.emit({ type: "track_pause", payload: { track: item, position: this.pausedAt } })
   }
 
   async stop(): Promise<void> {
@@ -67,11 +70,13 @@ export class RadioPlaybackBackend implements PlaybackBackend {
     this.ffmpeg = undefined
     this.pwcat = undefined
     this.startedAt = null
+    eventBus.emit({ type: "track_stop", payload: {} })
   }
 
   async seek(positionMs: number): Promise<void> {
     if (!this.currentItem) return
     await this.play(this.currentItem, positionMs)
+    eventBus.emit({ type: "seek", payload: { track: this.currentItem, position: positionMs } })
   }
 
   async getPosition(): Promise<number> {
@@ -85,5 +90,6 @@ export class RadioPlaybackBackend implements PlaybackBackend {
     const position = this.pausedAt
     this.pausedAt = null
     await this.play(this.currentItem, position)
+    eventBus.emit({ type: "track_start", payload: { track: this.currentItem, position: position } })
   }
 }

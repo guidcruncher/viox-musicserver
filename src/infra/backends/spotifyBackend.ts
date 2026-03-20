@@ -1,3 +1,4 @@
+import { eventBus } from "@/infra/eventbus/eventBus"
 import { SpotifyWebClient } from "@/infra/spotify/spotifyWebClient"
 import type { MediaItem, PlaybackBackend } from "@/types"
 
@@ -16,6 +17,10 @@ export class SpotifyPlaybackBackend implements PlaybackBackend {
   async resume(): Promise<void> {
     if (!this.api.player) return
     await this.api.player.resume()
+    eventBus.emit({
+      type: "track_start",
+      payload: { track: this.currentItem, position: this.pausedAt },
+    })
   }
 
   async play(item: MediaItem, positionMs: number = 0): Promise<void> {
@@ -38,12 +43,17 @@ export class SpotifyPlaybackBackend implements PlaybackBackend {
     if (positionMs > 0) {
       await this.api.player.seek(positionMs)
     }
+    eventBus.emit({
+      type: "track_start",
+      payload: { track: this.currentItem, position: positionMs },
+    })
   }
 
   async pause(): Promise<void> {
     if (!this.currentItem || this.pausedAt !== null) return
     await this.api.player.pause()
     this.pausedAt = await this.getPosition()
+    eventBus.emit({ type: "track_pause", payload: { track: item, position: this.pausedAt } })
   }
 
   async stop(): Promise<void> {
@@ -52,6 +62,7 @@ export class SpotifyPlaybackBackend implements PlaybackBackend {
     this.currentItem = null
     this.startedAt = null
     this.pausedAt = null
+    eventBus.emit({ type: "track_stop", payload: {} })
   }
 
   async seek(positionMs: number): Promise<void> {
@@ -59,6 +70,7 @@ export class SpotifyPlaybackBackend implements PlaybackBackend {
     await this.api.player.seek(positionMs)
     this.startedAt = Date.now() - positionMs
     this.pausedAt = null
+    eventBus.emit({ type: "seek", payload: { track: this.currentItem, position: positionMs } })
   }
 
   async getPosition(): Promise<number> {

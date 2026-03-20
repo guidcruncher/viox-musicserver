@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process"
 
-import type { MediaItem, PlaybackBackend } from "@/types"
 import { eventBus } from "@/infra/eventbus/eventBus"
+import type { MediaItem, PlaybackBackend } from "@/types"
 
 export class LocalPlaybackBackend implements PlaybackBackend {
   readonly id = "local"
@@ -53,14 +53,14 @@ export class LocalPlaybackBackend implements PlaybackBackend {
     this.startedAt = Date.now() - positionMs
     this.pausedAt = null
     this.currentItem = item
-    eventBus.emit({type:"track_start", payload: {track:item, position:0} })
+    eventBus.emit({ type: "track_start", payload: { track: item, position: positionMs } })
   }
 
   async pause(): Promise<void> {
     if (!this.currentItem || this.pausedAt !== null) return
     this.pausedAt = await this.getPosition()
     await this.stop()
-    eventBus.emit({type:"track_pause", payload: {track:item, position: this.pausedAt} })
+    eventBus.emit({ type: "track_pause", payload: { track: item, position: this.pausedAt } })
   }
 
   async stop(): Promise<void> {
@@ -69,13 +69,13 @@ export class LocalPlaybackBackend implements PlaybackBackend {
     this.ffmpeg = undefined
     this.pwcat = undefined
     this.startedAt = null
-    eventBus.emit({type:"track_stop", payload: {} })
+    eventBus.emit({ type: "track_stop", payload: {} })
   }
 
   async seek(positionMs: number): Promise<void> {
     if (!this.currentItem) return
     await this.play(this.currentItem, positionMs)
-    eventBus.emit({type:"seek", payload: {track: this.currentItem, position: positionMs} })
+    eventBus.emit({ type: "seek", payload: { track: this.currentItem, position: positionMs } })
   }
 
   async getPosition(): Promise<number> {
@@ -89,6 +89,6 @@ export class LocalPlaybackBackend implements PlaybackBackend {
     const position = this.pausedAt
     this.pausedAt = null
     await this.play(this.currentItem, position)
-     eventBus.emit({type:"track_start", payload: {track: this.currentItem, position: position} })
+    eventBus.emit({ type: "track_start", payload: { track: this.currentItem, position: position } })
   }
 }

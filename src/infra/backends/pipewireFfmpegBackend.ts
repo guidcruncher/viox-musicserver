@@ -1,5 +1,6 @@
 import { ChildProcess, spawn } from "child_process"
 
+import { eventBus } from "@/infra/eventbus/eventBus"
 import type { MediaItem, PlaybackBackend } from "@/types"
 
 interface PipewireBackendOptions {
@@ -83,6 +84,8 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
     this.pwcat.on("exit", () => {
       this.cleanup()
     })
+
+    eventBus.emit({ type: "track_start", payload: { track: item, position: positionMs } })
   }
 
   async pause(): Promise<void> {
@@ -90,6 +93,7 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
     if (!this.ffmpeg || !this.pwcat || this.pausedAt !== null) return
     this.pausedAt = await this.getPosition()
     await this.stop()
+    eventBus.emit({ type: "track_pause", payload: { track: item, position: this.pausedAt } })
   }
 
   async stop(): Promise<void> {
@@ -102,6 +106,7 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
       this.pwcat = undefined
     }
     this.startedAt = null
+    eventBus.emit({ type: "track_stop", payload: {} })
   }
 
   async seek(positionMs: number): Promise<void> {
@@ -111,6 +116,7 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
     const lastItem = this.lastItem
     if (!lastItem) return
     await this.play(lastItem, positionMs)
+    eventBus.emit({ type: "seek", payload: { track: this.currentItem, position: positionMs } })
   }
 
   async getPosition(): Promise<number> {
@@ -124,6 +130,7 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
     const position = this.pausedAt
     this.pausedAt = null
     await this.play(this.currentItem, position)
+    eventBus.emit({ type: "track_start", payload: { track: this.currentItem, position: position } })
   }
 
   // ────────────────────────────────────────────────
