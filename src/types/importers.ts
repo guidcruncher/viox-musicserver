@@ -1,5 +1,5 @@
 export interface Importers {
   spotify: {
-    importUserPlaylists(): Promise<void>
+    importUserLibrary(itemType?: string): Promise<void>
   }
 }

@@ -16,30 +16,30 @@ export class SpotifyImportService {
   async importUserLibrary(itemType: string = ""): Promise<void> {
     switch (itemType) {
       case "track":
-        await importUserTracks()
+        await this.importUserTracks()
         break
       case "album":
-        await importUserAlbums()
+        await this.importUserAlbums()
         break
       case "show":
-        await importUserShows()
+        await this.importUserShows()
         break
       case "episode":
-        await importUserEpiaodes()
+        await this.importUserEpiaodes()
         break
       case "artist":
-        // await importFollowedArtists()
+        // await this.importFollowedArtists()
         break
       case "playlist":
-        await importUserPlaylists()
+        await this.importUserPlaylists()
         break
       default:
-        await importUserTracks()
-        await importUserAlbums()
-        await importUserShows()
-        await importUserEpiaodes()
-        // await importFollowedArtists()
-        await importUserPlaylists()
+        await this.importUserTracks()
+        await this.importUserAlbums()
+        await this.importUserShows()
+        await this.importUserEpiaodes()
+        // await this.importFollowedArtists()
+        await this.importUserPlaylists()
         break
     }
   }
