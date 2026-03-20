@@ -1,9 +1,9 @@
 import type { FastifyInstance } from "fastify"
 
 import { getLogger } from "@/logger"
+import { StreamerSchema } from "@/schemas"
 import { streamerService } from "@/services/streamerService"
 import type { VioxBackend } from "@/types"
-import { StreamerSchema } from "@/schemas"
 
 export function registerStreamerRoutes(app: FastifyInstance, _backend: VioxBackend) {
   app.get("/api/stream", { schema: StreamerSchema }, async (req: any, reply: any) => {
