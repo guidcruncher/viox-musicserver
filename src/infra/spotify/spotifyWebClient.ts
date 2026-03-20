@@ -85,7 +85,7 @@ export class SpotifyWebClient {
   search(query: string, types: string[]) {
     return this.safeGet(() =>
       this.http.get("/search", {
-        params: { q: query, type: types.join(","), limit: 50 },
+        params: { q: query, type: types.join(","), limit: 20 },
       }),
     )
   }
@@ -113,7 +113,7 @@ export class SpotifyWebClient {
   getPlaylistTracks(id: string, offset = 0) {
     return this.safeGet(() =>
       this.http.get(`/playlists/${id}/tracks`, {
-        params: { offset, limit: 50 },
+        params: { offset, limit: 20 },
       }),
     )
   }
@@ -121,7 +121,7 @@ export class SpotifyWebClient {
   getAlbumTracks(id: string, offset = 0) {
     return this.safeGet(() =>
       this.http.get(`/albums/${id}/tracks`, {
-        params: { offset, limit: 50 },
+        params: { offset, limit: 20 },
       }),
     )
   }
@@ -129,7 +129,7 @@ export class SpotifyWebClient {
   getShowEpisodes(id: string, offset = 0) {
     return this.safeGet(() =>
       this.http.get(`/shows/${id}/episodes`, {
-        params: { offset, limit: 50 },
+        params: { offset, limit: 20 },
       }),
     )
   }
@@ -143,34 +143,34 @@ export class SpotifyWebClient {
   }
 
   getMySavedTracks(offset = 0) {
-    return this.safeGet(() => this.http.get("/me/tracks", { params: { offset, limit: 50 } }))
+    return this.safeGet(() => this.http.get("/me/tracks", { params: { offset, limit: 20 } }))
   }
 
   getMySavedAlbums(offset = 0) {
-    return this.safeGet(() => this.http.get("/me/albums", { params: { offset, limit: 50 } }))
+    return this.safeGet(() => this.http.get("/me/albums", { params: { offset, limit: 20 } }))
   }
 
   getMySavedShows(offset = 0) {
-    return this.safeGet(() => this.http.get("/me/shows", { params: { offset, limit: 50 } }))
+    return this.safeGet(() => this.http.get("/me/shows", { params: { offset, limit: 20 } }))
   }
 
   getMySavedEpisodes(offset = 0) {
-    return this.safeGet(() => this.http.get("/me/episodes", { params: { offset, limit: 50 } }))
+    return this.safeGet(() => this.http.get("/me/episodes", { params: { offset, limit: 20 } }))
   }
 
   getMyPlaylists(offset = 0) {
-    return this.safeGet(() => this.http.get("/me/playlists", { params: { offset, limit: 50 } }))
+    return this.safeGet(() => this.http.get("/me/playlists", { params: { offset, limit: 20 } }))
   }
 
   getMyFollowedArtists(after?: string) {
     return this.safeGet(() =>
       this.http.get("/me/following", {
-        params: { type: "artist", after, limit: 50 },
+        params: { type: "artist", after, limit:20 },
       }),
     )
   }
 
-  getRecentlyPlayed(limit = 50) {
+  getRecentlyPlayed(limit = 20) {
     return this.safeGet(() =>
       this.http.get("/me/player/recently-played", {
         params: { limit },

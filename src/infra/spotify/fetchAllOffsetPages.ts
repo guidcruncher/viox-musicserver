@@ -17,7 +17,7 @@ export const fetchAllOffsetPages = async <T, A extends any[] = any[]>(
     offset: number,
     ...args: A
   ) => Promise<{ items: T[]; next: string | null } | undefined>,
-  pageSize = 50,
+  pageSize = 20,
   ...args: A
 ): Promise<T[] | undefined> => {
   const results: T[] = []
