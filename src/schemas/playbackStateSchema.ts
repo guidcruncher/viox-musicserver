@@ -44,7 +44,7 @@ export const PlaybackStateSchema = {
       type: "object",
       properties: {
         type: { const: "error" },
-        error: { $ref: "PlaybackErrorSchema#" },
+        error: { $ref: "PlaybackError#" },
       },
       required: ["type", "error"],
     },

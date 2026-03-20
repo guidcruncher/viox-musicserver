@@ -20,5 +20,4 @@ export const registerSchemas = (fastify: FastifyInstance) => {
   fastify.addSchema(AudioSourceItemTypeSchema)
   fastify.addSchema(PlaybackErrorSchema)
   fastify.addSchema(PlaybackStateSchema)
-  // Now you can use { $ref: 'mediaItem#' } in other schemas safely.
 }

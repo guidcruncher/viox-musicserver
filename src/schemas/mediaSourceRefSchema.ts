@@ -3,8 +3,8 @@ export const MediaSourceRefSchema = {
   type: "object",
   required: ["source", "itemType", "sourceId"], //
   properties: {
-    source: { $ref: "AudioSourceSchema#" },
-    itemType: { $ref: "AudioSourceItemTypeSchema#" },
+    source: { $ref: "AudioSource#" },
+    itemType: { $ref: "AudioSourceItemType#" },
     sourceId: { type: "string" },
     parentSourceId: { type: "string" },
     uri: { type: "string" },
