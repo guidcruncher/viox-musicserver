@@ -4,7 +4,13 @@ import type { VioxBackend } from "@/types"
 
 export function registerImportRoutes(app: FastifyInstance, backend: VioxBackend) {
   app.post("/api/import/spotify", async (_req, res) => {
-    await backend.importers.spotify.importUserPlaylists()
+    await backend.importers.spotify.importUserLibrary()
+    res.send({ ok: true })
+  })
+
+  app.post("/api/import/spotify/:itemType", async (req, res) => {
+    const { itemType } = req.params as any
+    await backend.importers.spotify.importUserLibrary(itemType)
     res.send({ ok: true })
   })
 }

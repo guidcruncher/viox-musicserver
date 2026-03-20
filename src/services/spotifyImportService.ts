@@ -13,6 +13,37 @@ export class SpotifyImportService {
     private readonly playlists: PlaylistStore,
   ) {}
 
+  async importUserLibrary(itemType: string = ""): Promise<void> {
+    switch (itemType) {
+      case "track":
+        await importUserTracks()
+        break
+      case "album":
+        await importUserAlbums()
+        break
+      case "show":
+        await importUserShows()
+        break
+      case "episode":
+        await importUserEpiaodes()
+        break
+      case "artist":
+        // await importFollowedArtists()
+        break
+      case "playlist":
+        await importUserPlaylists()
+        break
+      default:
+        await importUserTracks()
+        await importUserAlbums()
+        await importUserShows()
+        await importUserEpiaodes()
+        // await importFollowedArtists()
+        await importUserPlaylists()
+        break
+    }
+  }
+
   async importUserTracks(): Promise<void> {
     const res: any = await fetchAllOffsetPages((offset) => this.client.getMySavedTracks(offset))
 
@@ -97,7 +128,7 @@ export class SpotifyImportService {
     await this.library.upsert(items)
   }
 
-  async importUserArtists(): Promise<void> {
+  async importFollowedArtists(): Promise<void> {
     const res: any = await fetchAllOffsetPages((offset) => this.client.getMyFollowedArtists(offset))
 
     if (!res || !res.items) {
