@@ -1,7 +1,8 @@
 import type { FastifyInstance } from "fastify"
+
 import { getLogger } from "@/logger"
-import type { VioxBackend } from "@/types"
 import { streamerService } from "@/services/streamerService"
+import type { VioxBackend } from "@/types"
 
 export function registerStreamerRoutes(app: FastifyInstance, _backend: VioxBackend) {
   app.get("/api/stream", async (req: any, reply: any) => {
