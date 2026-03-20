@@ -1,5 +1,5 @@
 import type { FastifyInstance } from "fastify"
-import { version as appversion } from "../../version"
+import { version as appversion } from "@/version"
 
 import type { VioxBackend } from "@/types"
 

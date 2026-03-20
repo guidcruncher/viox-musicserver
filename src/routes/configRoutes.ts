@@ -1,12 +1,12 @@
 import type { FastifyInstance } from "fastify"
-import { version as appversion } from "../../version"
+import { version as appversion } from "@/version"
 import { readFileConfig, saveConfig } from "@/config"
 import { ConfigFileSchema } from "@/schemas"
 import type { VioxBackend } from "@/types"
-import { getLogger } from "../../logger"
+import { getLogger } from "@/logger"
 
 export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend) {
-  fastify.post(
+  app.post(
     "/config",
     {
       schema: {
@@ -21,7 +21,7 @@ export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend
         },
       },
     },
-    async (request, reply) => {
+    async (request:any, reply:any) => {
       const cfg = request.body as any
       const logger = getLogger()
       if (!cfg || !cfg.config) {
@@ -37,7 +37,7 @@ export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend
     },
   )
 
-  fastify.get(
+  app.get(
     "/config",
     {
       schema: {
@@ -48,7 +48,7 @@ export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend
         },
       },
     },
-    async (req, reply) => {
+    async (req: any, reply:any) => {
       const cfg = readFileConfig()
       return reply.send(cfg)
     },
