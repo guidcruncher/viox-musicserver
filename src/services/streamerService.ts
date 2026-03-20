@@ -29,7 +29,7 @@ class StreamerService {
       ]),
     },
     raw: {
-      mimeType: "audio/x-raw", // audio/L16
+      mimeType: "audio/wav", // "audio/x-raw", // audio/L16
       ffmpegArgs: [],
       primingFrame: undefined,
     },
@@ -122,16 +122,16 @@ class StreamerService {
     const config = this.configs["raw"]
 
     const pwcat = spawn("pw-cat", [
+      "--playback",
       "--target",
       "output-http",
-      "--playback",
-      "--raw",
       "--rate",
       "48000",
-      "-channels",
+      "--channels",
       "2",
       "--format",
       "s16",
+      "-",
     ])
 
     return { process: pwcat, config }
@@ -141,6 +141,10 @@ class StreamerService {
     process: ChildProcessWithoutNullStreams
     config: FormatConfig
   } {
+    if (format == "raw") {
+      return this.createRawStream()
+    }
+
     const config = this.configs[format]
 
     const ffmpeg = spawn("ffmpeg", [
