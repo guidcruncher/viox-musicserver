@@ -1,7 +1,6 @@
-import axios, { AxiosError, AxiosInstance } from "axios"
+import axios, { AxiosInstance } from "axios"
 
-import { getLogger } from "@/logger"
-
+import { BaseClient } from "../baseClient"
 import { PlayerApi } from "./playerApi"
 import { spotifyAuthClient } from "./spotifyAuthClient"
 
@@ -9,15 +8,13 @@ interface SpotifyWebClientOptions {
   librespotBaseUrl?: string
 }
 
-export class SpotifyWebClient {
-  private http: AxiosInstance
+export class SpotifyWebClient extends BaseClient {
   private librespot: AxiosInstance
-  private log = getLogger()
 
   public player: PlayerApi
 
   constructor(opts: SpotifyWebClientOptions = {}) {
-    this.http = axios.create({
+    super({
       baseURL: "https://api.spotify.com/v1",
       timeout: 8000,
     })
@@ -35,47 +32,6 @@ export class SpotifyWebClient {
     })
 
     this.player = new PlayerApi(this.librespot, this.http)
-  }
-
-  // ────────────────────────────────────────────────
-  // Helpers
-  // ────────────────────────────────────────────────
-
-  private unwrap<T>(data: T | undefined | null): T | undefined {
-    if (!data) {
-      this.log.warn("[Spotify] No data returned")
-      return undefined
-    }
-    return data
-  }
-
-  private async safeGet<T>(fn: () => Promise<any>): Promise<T | undefined> {
-    try {
-      const res = await fn()
-      return this.unwrap(res.data)
-    } catch (err) {
-      this.handleError(err)
-      return undefined
-    }
-  }
-
-  private handleError(err: unknown) {
-    if (axios.isAxiosError(err)) {
-      const e = err as AxiosError
-
-      if (e.response) {
-        this.log.error(
-          `[Spotify] HTTP ${e.response.status} – ${e.response.statusText}`,
-          e.response.data,
-        )
-      } else if (e.request) {
-        this.log.error("[Spotify] No response received", e.message)
-      } else {
-        this.log.error("[Spotify] Request setup error", e.message)
-      }
-    } else {
-      this.log.error("[Spotify] Unknown error", err)
-    }
   }
 
   // ────────────────────────────────────────────────

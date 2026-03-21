@@ -9,12 +9,7 @@ export async function exponentialBackoff<T>(
   fn: () => Promise<T>,
   opts: BackoffOptions = {},
 ): Promise<T> {
-  const {
-    retries = 3,
-    baseDelayMs = 200,
-    maxDelayMs = 5000,
-    shouldRetry = () => true,
-  } = opts
+  const { retries = 3, baseDelayMs = 200, maxDelayMs = 5000, shouldRetry = () => true } = opts
 
   let attempt = 0
 
