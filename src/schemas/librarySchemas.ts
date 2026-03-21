@@ -5,22 +5,17 @@ export const ListLibrarySchema = {
       offset: { type: "string", pattern: "^[0-9]+$" },
       limit: { type: "string", pattern: "^[0-9]+$" },
       type: {
-        oneOf: [
-          { $ref: "AudioSourceItemType#" },
-          {
-            type: "array",
-            items: { $ref: "AudioSourceItemType#" },
-          },
-        ],
-      },
-    },
+        type: "array",
+        items: { $ref: "AudioSourceItemType#" }
+      }
+    }
   },
   response: {
     200: {
       type: "array",
-      items: { $ref: "MediaItem#" },
-    },
-  },
+      items: { $ref: "MediaItem#" }
+    }
+  }
 }
 
 export const GetLibraryItemSchema = {

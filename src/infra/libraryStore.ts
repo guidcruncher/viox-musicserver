@@ -52,7 +52,7 @@ export class SqliteLibraryStore implements LibraryStore {
   }
 
   async list(): Promise<MediaItem[]> {
-    const rows = this.conn.prepare(`SELECT * FROM media_items ORDER BY name ASC`).all()
+    const rows = this.conn.prepare(`SELECT * FROM media_items ORDER BY title ASC`).all()
     return rows.map((r: any) => this.fromRow(r))
   }
 
@@ -60,7 +60,7 @@ export class SqliteLibraryStore implements LibraryStore {
     const rows = this.conn
       .prepare(
         `SELECT * FROM media_items
-       ORDER BY nane ASC
+       ORDER BY title ASC
        LIMIT @limit OFFSET @offset`,
       )
       .all({ limit, offset })
@@ -82,7 +82,7 @@ export class SqliteLibraryStore implements LibraryStore {
       SELECT *
       FROM media_items
       WHERE item_type IN (${placeholders})
-      ORDER BY name ASC
+      ORDER BY title ASC
     `,
       )
       .all(...itemTypes)
@@ -106,7 +106,7 @@ export class SqliteLibraryStore implements LibraryStore {
       SELECT *
       FROM media_items
       WHERE item_type IN (${placeholders})
-      ORDER BY name ASC
+      ORDER BY title ASC
       LIMIT ? OFFSET ?
     `,
       )
