@@ -1,7 +1,6 @@
 import { db } from "@/infra/db"
-import { toArray } from "@/utils"
-
 import type { AudioSourceItemType, LibraryStore, MediaItem, MediaSourceRef } from "@/types"
+import { toArray } from "@/utils"
 
 export class SqliteLibraryStore implements LibraryStore {
   private readonly conn = db

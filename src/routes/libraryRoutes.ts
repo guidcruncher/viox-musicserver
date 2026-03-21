@@ -2,32 +2,37 @@ import type { FastifyInstance } from "fastify"
 
 import { GetLibraryItemSchema, ListLibrarySchema } from "@/schemas"
 import type { VioxBackend } from "@/types"
+import { normalizeType } from "@/utils"
 
 export function registerLibraryRoutes(app: FastifyInstance, backend: VioxBackend) {
-  app.get("/api/library", { schema: ListLibrarySchema }, async (req, res) => {
-    const { type, offset, limit } = req.query as any
-    let items
+  app.get(
+    "/api/library",
+    { schema: ListLibrarySchema, preHandler: normalizeType },
+    async (req, res) => {
+      const { type, offset, limit } = req.query as any
+      let items
 
-    if (type) {
-      if (offset) {
-        items = await backend.library.listByItemTypesWithPaging(
-          type,
-          Number(offset),
-          Number(limit ?? 100),
-        )
+      if (type) {
+        if (offset) {
+          items = await backend.library.listByItemTypesWithPaging(
+            type,
+            Number(offset),
+            Number(limit ?? 100),
+          )
+        } else {
+          items = await backend.library.listByItemTypes(type)
+        }
       } else {
-        items = await backend.library.listByItemTypes(type)
+        if (offset) {
+          items = await backend.library.listWithPaging(Number(offset), Number(limit ?? 100))
+        } else {
+          items = await backend.library.list()
+        }
       }
-    } else {
-      if (offset) {
-        items = await backend.library.listWithPaging(Number(offset), Number(limit ?? 100))
-      } else {
-        items = await backend.library.list()
-      }
-    }
 
-    res.send(items)
-  })
+      res.send(items)
+    },
+  )
 
   app.get("/api/library/:id", { schema: GetLibraryItemSchema }, async (req, res) => {
     const { id } = req.params as { id: string }

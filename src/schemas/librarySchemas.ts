@@ -6,16 +6,16 @@ export const ListLibrarySchema = {
       limit: { type: "string", pattern: "^[0-9]+$" },
       type: {
         type: "array",
-        items: { $ref: "AudioSourceItemType#" }
-      }
-    }
+        items: { $ref: "AudioSourceItemType#" },
+      },
+    },
   },
   response: {
     200: {
       type: "array",
-      items: { $ref: "MediaItem#" }
-    }
-  }
+      items: { $ref: "MediaItem#" },
+    },
+  },
 }
 
 export const GetLibraryItemSchema = {

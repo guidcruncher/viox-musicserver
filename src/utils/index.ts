@@ -1,2 +1,2 @@
-export * from "./toArray"
 export * from "./normalizeType"
+export * from "./toArray"
