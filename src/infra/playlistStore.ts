@@ -52,7 +52,7 @@ export class SqlitePlaylistStore implements PlaylistStore {
     return rows.map((r: any) => this.fromRow(r))
   }
 
-  async listPaged(limit: number, offset: number): Promise<Playlist[]> {
+  async listPaged(offset: number, limit: number): Promise<Playlist[]> {
     const rows = this.conn
       .prepare(
         `
@@ -228,7 +228,7 @@ export class SqlitePlaylistStore implements PlaylistStore {
     )
   }
 
-  async getItemsPaged(playlistId: string, limit: number, offset: number): Promise<MediaItem[]> {
+  async getItemsPaged(playlistId: string, offset: number, limit: number): Promise<MediaItem[]> {
     const rows = this.conn
       .prepare(
         `
