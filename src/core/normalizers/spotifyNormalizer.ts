@@ -43,6 +43,8 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       album: raw.album?.name,
       imageUrl: raw.album?.images?.[0]?.url,
       durationMs: raw.duration_ms,
+      isrc: raw.external_ids.isrc ?? "",
+      mbid: "",
       isLive: false,
       explicit: raw.explicit,
       releaseDate: raw.album?.release_date,
@@ -72,6 +74,8 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       imageUrl: raw.images?.[0]?.url,
       durationMs: undefined,
       isLive: false,
+      isrc: raw.external_ids.isrc ?? "",
+      mbid: "",
       releaseDate: raw.release_date,
     }
   }
@@ -99,6 +103,8 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       imageUrl: raw.images?.[0]?.url,
       durationMs: undefined,
       isLive: false,
+      mbid: "",
+      isrc: "",
       description: raw.description,
     }
   }
@@ -129,6 +135,8 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       isLive: false,
       description: raw.description,
       releaseDate: raw.release_date,
+      mbid:"",
+      isrc:"",
       explicit: raw.explicit,
     }
   }

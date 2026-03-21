@@ -10,12 +10,14 @@ export class SqliteLibraryStore implements LibraryStore {
       const stmt = this.conn.prepare(`
       INSERT INTO media_items (
         id, source, item_type, source_id, parent_source_id, source_uri,
-        title, subtitle, artist, album, image_url, duration_ms, is_live
+        title, subtitle, artist, album, image_url, duration_ms, is_live, mbid, isrc
       ) VALUES (
         @id, @source, @item_type, @source_id, @parent_source_id, @source_uri,
-        @title, @subtitle, @artist, @album, @image_url, @duration_ms, @is_live
+        @title, @subtitle, @artist, @album, @image_url, @duration_ms, @is_live, @mbid, @isrc
       )
       ON CONFLICT(id) DO UPDATE SET
+        mbid = excluded.mbid,
+        isrc = excluded.isrc,
         source = excluded.source,
         item_type = excluded.item_type,
         source_id = excluded.source_id,
@@ -173,7 +175,9 @@ export class SqliteLibraryStore implements LibraryStore {
       album: item.album ?? null,
       image_url: item.imageUrl ?? null,
       duration_ms: item.durationMs ?? null,
-      is_live: item.isLive ? 1 : 0, // <— FIXED
+      is_live: item.isLive ? 1 : 0,
+      mbid: item.mbid ?? "",
+      isrc: item.isrc ?? "",
     }
   }
 
@@ -196,6 +200,8 @@ export class SqliteLibraryStore implements LibraryStore {
       imageUrl: row.image_url ?? undefined,
       durationMs: row.duration_ms ?? undefined,
       isLive: row.is_live === 1,
+      mbid: row.mbid ?? "",
+      isrc: row.isrc ?? "",
     }
   }
 }
