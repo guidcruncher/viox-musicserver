@@ -48,7 +48,22 @@ export class SqlitePlaylistStore implements PlaylistStore {
   }
 
   async list(): Promise<Playlist[]> {
-    const rows = this.conn.prepare(`SELECT * FROM playlists`).all()
+    const rows = this.conn.prepare(`SELECT * FROM playlists ORDER BY name ASC`).all()
+    return rows.map((r: any) => this.fromRow(r))
+  }
+
+  async listPaged(limit: number, offset: number): Promise<Playlist[]> {
+    const rows = this.conn
+      .prepare(
+        `
+      SELECT *
+      FROM playlists
+      ORDER BY name ASC
+      LIMIT ? OFFSET ?
+    `,
+      )
+      .all(limit, offset)
+
     return rows.map((r: any) => this.fromRow(r))
   }
 
@@ -207,6 +222,25 @@ export class SqlitePlaylistStore implements PlaylistStore {
       `,
       )
       .all(playlistId)
+
+    return rows.map((r: any) =>
+      (this.library as any).fromRow ? (this.library as any).fromRow(r) : (r as MediaItem),
+    )
+  }
+
+  async getItemsPaged(playlistId: string, limit: number, offset: number): Promise<MediaItem[]> {
+    const rows = this.conn
+      .prepare(
+        `
+      SELECT m.*
+      FROM playlist_items pi
+      JOIN media_items m ON m.id = pi.media_item_id
+      WHERE pi.playlist_id = ?
+      ORDER BY pi.position ASC
+      LIMIT ? OFFSET ?
+    `,
+      )
+      .all(playlistId, limit, offset)
 
     return rows.map((r: any) =>
       (this.library as any).fromRow ? (this.library as any).fromRow(r) : (r as MediaItem),

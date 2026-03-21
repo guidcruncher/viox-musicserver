@@ -11,6 +11,7 @@ export interface PlaylistStore {
   // Playlist retrieval
   get(id: string): Promise<Playlist | undefined>
   list(): Promise<Playlist[]>
+  listPaged(limit: number, offset: number): Promise<Playlist[]>
 
   // Playlist items
   addItem(playlistId: string, itemId: string): Promise<void>
@@ -23,4 +24,5 @@ export interface PlaylistStore {
 
   // Retrieval
   getItems(playlistId: string): Promise<MediaItem[]>
+  getItemsPaged(playlistId: string, limit: number, offset: number): Promise<MediaItem[]>
 }
