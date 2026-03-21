@@ -1,4 +1,6 @@
 import { db } from "@/infra/db"
+import { toArray } from "@/utils"
+
 import type { AudioSourceItemType, LibraryStore, MediaItem, MediaSourceRef } from "@/types"
 
 export class SqliteLibraryStore implements LibraryStore {
@@ -66,10 +68,13 @@ export class SqliteLibraryStore implements LibraryStore {
     return rows.map((r: any) => this.fromRow(r))
   }
 
-  async listByItemTypes(itemTypes: AudioSourceItemType[]): Promise<MediaItem[]> {
-    if (itemTypes.length === 0) return []
+  async listByItemTypes(
+    itemTypes: AudioSourceItemType | AudioSourceItemType[],
+  ): Promise<MediaItem[]> {
+    const types = toArray(itemTypes)
+    if (types.length === 0) return []
 
-    const placeholders = itemTypes.map(() => "?").join(", ")
+    const placeholders = types.map(() => "?").join(", ")
 
     const rows = this.conn
       .prepare(
@@ -86,13 +91,14 @@ export class SqliteLibraryStore implements LibraryStore {
   }
 
   async listByItemTypesWithPaging(
-    itemTypes: AudioSourceItemType[],
+    itemTypes: AudioSourceItemType | AudioSourceItemType[],
     offset: number = 0,
     limit: number = 100,
   ): Promise<MediaItem[]> {
-    if (itemTypes.length === 0) return []
+    const types = toArray(itemTypes)
+    if (types.length === 0) return []
 
-    const placeholders = itemTypes.map(() => "?").join(", ")
+    const placeholders = types.map(() => "?").join(", ")
 
     const rows = this.conn
       .prepare(

@@ -8,9 +8,9 @@ export interface LibraryStore {
   search(query: string): Promise<MediaItem[]> // local search
   list(): Promise<MediaItem[]>
   listWithPaging(offset: number, limit: number): Promise<MediaItem[]>
-  listByItemTypes(itemTypes: AudioSourceItemType[]): Promise<MediaItem[]>
+  listByItemTypes(itemTypes: AudioSourceItemType | AudioSourceItemType[]): Promise<MediaItem[]>
   listByItemTypesWithPaging(
-    itemTypes: AudioSourceItemType[],
+    itemTypes: AudioSourceItemType | AudioSourceItemType[],
     offset: number,
     limit: number,
   ): Promise<MediaItem[]>

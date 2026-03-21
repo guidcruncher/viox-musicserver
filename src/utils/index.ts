@@ -1,1 +1,1 @@
-export * from "./toArrsy"
+export * from "./toArray"
