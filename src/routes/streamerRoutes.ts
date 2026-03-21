@@ -6,9 +6,10 @@ import { streamerService } from "@/services/streamerService"
 import type { VioxBackend } from "@/types"
 
 export function registerStreamerRoutes(app: FastifyInstance, _backend: VioxBackend) {
-  app.get("/api/stream", { schema: StreamerSchema }, async (req: any, reply: any) => {
-    const logger = getLogger()
+  const logger = getLogger()
+  logger.info("Registering version routes")
 
+  app.get("/api/stream", { schema: StreamerSchema }, async (req: any, reply: any) => {
     // 1. Identify format via smart negotiation
     const format = streamerService.negotiateFormat(
       (req.query as any).format,

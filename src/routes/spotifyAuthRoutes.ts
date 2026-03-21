@@ -5,9 +5,13 @@ import querystring from "querystring"
 import { getConfig, spotifyScopes } from "@/config"
 import { spotifyAuthClient } from "@/infra/spotify/spotifyAuthClient"
 import { spotifyTokenStore } from "@/infra/spotify/spotifyTokenStore"
+import { getLogger } from "@/logger"
 import type { VioxBackend } from "@/types"
 
 export function registerSpotifyAuthRoutes(app: FastifyInstance, _backend: VioxBackend) {
+  const logger = getLogger()
+  logger.info("Registering SPotify Auth routes")
+
   app.get("/api/spotify/login", async (req: any, reply: any) => {
     const params = querystring.stringify({
       client_id: getConfig("spotifyClientId"),

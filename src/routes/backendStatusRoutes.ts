@@ -1,9 +1,13 @@
 import type { FastifyInstance } from "fastify"
 
+import { getLogger } from "@/logger"
 import { BackendsListSchema, BackendStatusSchema } from "@/schemas"
 import type { VioxBackend } from "@/types"
 
 export function registerBackendStatusRoutes(app: FastifyInstance, backend: VioxBackend) {
+  const logger = getLogger()
+  logger.info("Registering Backend routes")
+
   app.get("/api/status", { schema: BackendStatusSchema }, async (_req, res) => {
     const status = await backend.status.get()
     res.send(status)

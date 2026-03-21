@@ -6,6 +6,9 @@ import { ConfigFileSchema } from "@/schemas"
 import type { VioxBackend } from "@/types"
 
 export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend) {
+  const logger = getLogger()
+  logger.info("Registering Config routes")
+
   app.post(
     "/api/config",
     {
@@ -23,7 +26,6 @@ export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend
     },
     async (request: any, reply: any) => {
       const cfg = request.body as any
-      const logger = getLogger()
       if (!cfg || !cfg.config) {
         logger.error("No configuration passed for saving")
         return reply.code(400).send({ ok: false })

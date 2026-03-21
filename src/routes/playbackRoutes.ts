@@ -1,9 +1,13 @@
 import type { FastifyInstance } from "fastify"
 
+import { getLogger } from "@/logger"
 import { PlayRequestSchema, SeekRequestSchema, SuccessResponseOnlySchema } from "@/schemas"
 import type { VioxBackend } from "@/types"
 
 export function registerPlaybackRoutes(app: FastifyInstance, backend: VioxBackend) {
+  const logger = getLogger()
+  logger.info("Registering Playback routes")
+
   app.post("/api/play", { schema: PlayRequestSchema }, async (req, res) => {
     const body = req.body as { id: string }
     await backend.playback.play(body.id)

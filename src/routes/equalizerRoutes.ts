@@ -1,9 +1,13 @@
 import type { FastifyInstance } from "fastify"
 
+import { getLogger } from "@/logger"
 import { GetPresetsSchema, LoadPresetSchema, SetBandSchema } from "@/schemas"
 import type { VioxBackend } from "@/types"
 
 export function registerEqualizerRoutes(app: FastifyInstance, backend: VioxBackend) {
+  const logger = getLogger()
+  logger.info("Registering equalizer routes")
+
   app.get("/api/eq", async (_req, res) => {
     const levels = await backend.equalizer.getCurrentLevels()
     res.send(levels)

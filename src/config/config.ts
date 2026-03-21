@@ -4,6 +4,8 @@ import { getLogger } from "../logger"
 import type { ConfigFile } from "./types"
 import { readFileConfig, readSecret } from "./utils"
 
+export const API_DEFAULT_PAGESIZE = 20
+
 /**
  * 1. Configuration Metadata Registry
  */
