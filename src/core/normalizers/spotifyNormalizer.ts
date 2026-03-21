@@ -135,8 +135,8 @@ export class SpotifyNormalizer implements MediaItemNormalizer {
       isLive: false,
       description: raw.description,
       releaseDate: raw.release_date,
-      mbid:"",
-      isrc:"",
+      mbid: "",
+      isrc: "",
       explicit: raw.explicit,
     }
   }
