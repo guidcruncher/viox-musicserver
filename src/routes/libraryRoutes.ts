@@ -51,7 +51,13 @@ export function registerLibraryRoutes(app: FastifyInstance, backend: VioxBackend
     res.send(playlists)
   })
 
-  app.get("/api/playlists/:id", async (req, res) => {
+  app.get("/api/playlist/:id", async (req, res) => {
+    const { id } = req.params as { id: string }
+    const item = await backend.playlists.get(id)
+    res.send(item)
+  })
+
+  app.get("/api/playlists/:id/items", async (req, res) => {
     const { id } = req.params as { id: string }
     const { offset, limit } = req.query as any
     let items
