@@ -61,7 +61,7 @@ export function createVioxBackend(): VioxBackend {
   // 5. Playback controller (unifies all backends)
   // ────────────────────────────────────────────────
   //
-  const playback = new PlaybackController(library, backendRouter)
+  const playback = new PlaybackController(library, playlists, backendRouter)
 
   //
   // ────────────────────────────────────────────────
