@@ -1,5 +1,5 @@
 import { db } from "@/infra/db"
-import type { LibraryStore, MediaItem, MediaSourceRef } from "@/types"
+import type { AudioSourceItemType, LibraryStore, MediaItem, MediaSourceRef } from "@/types"
 
 export class SqliteLibraryStore implements LibraryStore {
   private readonly conn = db
@@ -50,7 +50,7 @@ export class SqliteLibraryStore implements LibraryStore {
   }
 
   async list(): Promise<MediaItem[]> {
-    const rows = this.conn.prepare(`SELECT * FROM media_items ORDER BY updated_at DESC`).all()
+    const rows = this.conn.prepare(`SELECT * FROM media_items ORDER BY name ASC`).all()
     return rows.map((r: any) => this.fromRow(r))
   }
 
@@ -58,10 +58,53 @@ export class SqliteLibraryStore implements LibraryStore {
     const rows = this.conn
       .prepare(
         `SELECT * FROM media_items
-       ORDER BY updated_at DESC
+       ORDER BY nane ASC
        LIMIT @limit OFFSET @offset`,
       )
       .all({ limit, offset })
+
+    return rows.map((r: any) => this.fromRow(r))
+  }
+
+  async listByItemTypes(itemTypes: AudioSourceItemType[]): Promise<MediaItem[]> {
+    if (itemTypes.length === 0) return []
+
+    const placeholders = itemTypes.map(() => "?").join(", ")
+
+    const rows = this.conn
+      .prepare(
+        `
+      SELECT *
+      FROM media_items
+      WHERE item_type IN (${placeholders})
+      ORDER BY name ASC
+    `,
+      )
+      .all(...itemTypes)
+
+    return rows.map((r: any) => this.fromRow(r))
+  }
+
+  async listByItemTypesWithPaging(
+    itemTypes: AudioSourceItemType[],
+    offset: number = 0,
+    limit: number = 100,
+  ): Promise<MediaItem[]> {
+    if (itemTypes.length === 0) return []
+
+    const placeholders = itemTypes.map(() => "?").join(", ")
+
+    const rows = this.conn
+      .prepare(
+        `
+      SELECT *
+      FROM media_items
+      WHERE item_type IN (${placeholders})
+      ORDER BY name ASC
+      LIMIT ? OFFSET ?
+    `,
+      )
+      .all(...itemTypes, limit, offset)
 
     return rows.map((r: any) => this.fromRow(r))
   }

@@ -1,4 +1,4 @@
-import { MediaItem, MediaSourceRef } from "./index"
+import { AudioSourceItemType, MediaItem, MediaSourceRef } from "./index"
 
 export interface LibraryStore {
   upsert(items: MediaItem[]): Promise<void>
@@ -8,4 +8,10 @@ export interface LibraryStore {
   search(query: string): Promise<MediaItem[]> // local search
   list(): Promise<MediaItem[]>
   listWithPaging(offset: number, limit: number): Promise<MediaItem[]>
+  listByItemTypes(itemTypes: AudioSourceItemType[]): Promise<MediaItem[]>
+  listByItemTypesWithPaging(
+    itemTypes: AudioSourceItemType[],
+    offset: number,
+    limit: number,
+  ): Promise<MediaItem[]>
 }

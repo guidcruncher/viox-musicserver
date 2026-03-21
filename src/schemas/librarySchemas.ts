@@ -4,6 +4,15 @@ export const ListLibrarySchema = {
     properties: {
       offset: { type: "string", pattern: "^[0-9]+$" },
       limit: { type: "string", pattern: "^[0-9]+$" },
+      type: {
+        oneOf: [
+          { $ref: "AudioSourceItemType#" },
+          {
+            type: "array",
+            items: { $ref: "AudioSourceItemType#" },
+          },
+        ],
+      },
     },
   },
   response: {

@@ -5,13 +5,25 @@ import type { VioxBackend } from "@/types"
 
 export function registerLibraryRoutes(app: FastifyInstance, backend: VioxBackend) {
   app.get("/api/library", { schema: ListLibrarySchema }, async (req, res) => {
-    const { offset, limit } = req.query as any
+    const { type, offset, limit } = req.query as any
     let items
 
-    if (offset) {
-      items = await backend.library.listWithPaging(Number(offset), Number(limit ?? 100))
+    if (type) {
+      if (offset) {
+        items = await backend.library.listByItemTypesWithPaging(
+          type,
+          Number(offset),
+          Number(limit ?? 100),
+        )
+      } else {
+        items = await backend.library.listByItemTypes(type)
+      }
     } else {
-      items = await backend.library.list()
+      if (offset) {
+        items = await backend.library.listWithPaging(Number(offset), Number(limit ?? 100))
+      } else {
+        items = await backend.library.list()
+      }
     }
 
     res.send(items)
