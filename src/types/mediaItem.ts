@@ -13,6 +13,9 @@ export interface MediaItem {
   durationMs?: number // null for live
   isLive?: boolean // true for stations
 
+  isrc?: string
+  mbid?: string
+
   // Optional extended metadata
   description?: string
   releaseDate?: string

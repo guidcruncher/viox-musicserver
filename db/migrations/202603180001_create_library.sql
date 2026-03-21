@@ -14,6 +14,8 @@ CREATE TABLE media_items (
     title TEXT NOT NULL,
     subtitle TEXT,
     artist TEXT,
+    mbid TEXT,
+    isrc TEXT,
     album TEXT,
     image_url TEXT,
     duration_ms INTEGER,                 -- null for live stations
