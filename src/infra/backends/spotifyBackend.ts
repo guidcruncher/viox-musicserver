@@ -36,7 +36,11 @@ export class SpotifyPlaybackBackend implements PlaybackBackend {
       throw new Error("SpotifyPlaybackBackend: no Spotify URI on MediaItem")
     }
 
-    await this.api.player.play(uri, undefined, false)
+    if (parentSourceUri) {
+      await this.api.player.play(parentSourceUri, uri, false)
+    } else {
+      await this.api.player.play(uri, undefined, false)
+    }
 
     this.startedAt = Date.now() - positionMs
     this.pausedAt = null
