@@ -23,7 +23,7 @@ export class SpotifyPlaybackBackend implements PlaybackBackend {
     })
   }
 
-  async play(item: MediaItem, positionMs: number = 0): Promise<void> {
+  async play(item: MediaItem, parentSourceUri?:string, positionMs: number = 0): Promise<void> {
     this.currentItem = item
 
     const uri =

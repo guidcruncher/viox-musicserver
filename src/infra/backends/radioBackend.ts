@@ -13,7 +13,7 @@ export class RadioPlaybackBackend implements PlaybackBackend {
   private pausedAt: number | null = null
   private currentItem: MediaItem | null = null
 
-  async play(item: MediaItem, positionMs = 0): Promise<void> {
+  async play(item: MediaItem, parentSourceUri?: string, positionMs = 0): Promise<void> {
     await this.stop()
 
     this.currentItem = item

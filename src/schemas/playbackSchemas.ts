@@ -4,6 +4,7 @@ export const PlayRequestSchema = {
     required: ["id"],
     properties: {
       id: { type: "string" },
+      parent: { type: "string" },
     },
   },
   response: { 200: { $ref: "SuccessResponse#" } },

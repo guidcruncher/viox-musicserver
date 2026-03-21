@@ -130,6 +130,19 @@ export class SqliteLibraryStore implements LibraryStore {
     return row ? this.fromRow(row) : undefined
   }
 
+  async findBySourceId(id: string): Promise<MediaItem | undefined> {
+    const row = this.conn
+      .prepare(
+        `
+        SELECT * FROM media_items
+        WHERE source_id = ?
+      `,
+      )
+      .get(id)
+
+    return row ? this.fromRow(row) : undefined
+  }
+
   async search(query: string): Promise<MediaItem[]> {
     const like = `%${query}%`
     const rows = this.conn
