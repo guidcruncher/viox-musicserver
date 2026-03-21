@@ -9,6 +9,7 @@ export class SpotifyPlaybackBackend implements PlaybackBackend {
   private currentItem: MediaItem | null = null
   private startedAt: number | null = null
   private pausedAt: number | null = null
+  private currentParentSourceUri: string | undefined = undefined
 
   constructor() {
     this.api = new SpotifyWebClient()
@@ -23,9 +24,9 @@ export class SpotifyPlaybackBackend implements PlaybackBackend {
     })
   }
 
-  async play(item: MediaItem, parentSourceUri?:string, positionMs: number = 0): Promise<void> {
+  async play(item: MediaItem, parentSourceUri?: string, positionMs: number = 0): Promise<void> {
     this.currentItem = item
-
+    this.currentParentSourceUri = parentSourceUri
     const uri =
       item.sourceRef.uri ??
       item.sourceRef.sourceId ??
@@ -63,6 +64,7 @@ export class SpotifyPlaybackBackend implements PlaybackBackend {
     if (!this.currentItem) return
     await this.api.player.pause()
     this.currentItem = null
+    this.currentParentSourceUri = undefined
     this.startedAt = null
     this.pausedAt = null
     eventBus.emit({ type: "track_stop", payload: {} })

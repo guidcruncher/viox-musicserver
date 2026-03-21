@@ -16,12 +16,14 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
   private startedAt: number | null = null
   private pausedAt: number | null = null
   private currentItem: MediaItem | null = null
+  private currentParentSourceUri: string | undefined = undefined
 
   constructor(private readonly opts: PipewireBackendOptions = {}) {}
 
-  async play(item: MediaItem, parentSourceUri?:string, positionMs: number = 0): Promise<void> {
+  async play(item: MediaItem, parentSourceUri?: string, positionMs: number = 0): Promise<void> {
     await this.stop() // ensure clean state
 
+    this.currentParentSourceUri = parentSourceUri
     this.currentItem = item
     const ffmpegPath = this.opts.ffmpegPath ?? "ffmpeg"
     const pwCatPath = this.opts.pwCatPath ?? "pw-cat"
@@ -109,6 +111,8 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
       this.pwcat = undefined
     }
     this.startedAt = null
+    this.currentParentSourceUri = undefined
+    this.currentItem = null
     eventBus.emit({ type: "track_stop", payload: {} })
   }
 
@@ -118,7 +122,7 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
     if (!this.startedAt && this.pausedAt === null) return
     const lastItem = this.lastItem
     if (!lastItem) return
-    await this.play(lastItem, positionMs)
+    await this.play(lastItem, this.currentParentSourceUri, positionMs)
     eventBus.emit({ type: "seek", payload: { track: this.currentItem, position: positionMs } })
   }
 
@@ -132,7 +136,7 @@ export class PipewireFfmpegBackend implements PlaybackBackend {
     if (!this.currentItem || this.pausedAt === null) return
     const position = this.pausedAt
     this.pausedAt = null
-    await this.play(this.currentItem, position)
+    await this.play(this.currentItem, this.currentParentSourceUri, position)
     eventBus.emit({ type: "track_start", payload: { track: this.currentItem, position: position } })
   }
 

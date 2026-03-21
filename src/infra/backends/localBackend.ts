@@ -11,10 +11,11 @@ export class LocalPlaybackBackend implements PlaybackBackend {
   private startedAt: number | null = null
   private pausedAt: number | null = null
   private currentItem: MediaItem | null = null
+  private currentParentSourceUri: string | undefined = undefined
 
-  async play(item: MediaItem, parentUri?:string, positionMs = 0): Promise<void> {
+  async play(item: MediaItem, parentSourceUri?: string, positionMs = 0): Promise<void> {
     await this.stop()
-
+    this.currentParentSourceUri = parentSourceUri
     const filePath = item.sourceRef.uri
     if (!filePath) throw new Error("Local backend: no file path")
 
@@ -72,12 +73,14 @@ export class LocalPlaybackBackend implements PlaybackBackend {
     this.ffmpeg = undefined
     this.pwcat = undefined
     this.startedAt = null
+    this.currentParentSourceUri = undefined
+    this.currentItem = null
     eventBus.emit({ type: "track_stop", payload: {} })
   }
 
   async seek(positionMs: number): Promise<void> {
     if (!this.currentItem) return
-    await this.play(this.currentItem, positionMs)
+    await this.play(this.currentItem, this.currentParentSourceUri, positionMs)
     eventBus.emit({ type: "seek", payload: { track: this.currentItem, position: positionMs } })
   }
 
@@ -91,7 +94,7 @@ export class LocalPlaybackBackend implements PlaybackBackend {
     if (!this.currentItem || this.pausedAt === null) return
     const position = this.pausedAt
     this.pausedAt = null
-    await this.play(this.currentItem, position)
+    await this.play(this.currentItem, this.currentParentSourceUri, position)
     eventBus.emit({ type: "track_start", payload: { track: this.currentItem, position: position } })
   }
 }

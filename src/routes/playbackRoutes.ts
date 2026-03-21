@@ -9,7 +9,7 @@ export function registerPlaybackRoutes(app: FastifyInstance, backend: VioxBacken
   logger.info("Registering Playback routes")
 
   app.post("/api/play", { schema: PlayRequestSchema }, async (req, res) => {
-    const body = req.body as { id: string, parent: string }
+    const body = req.body as { id: string; parent: string }
     await backend.playback.play(body.id, body.parent)
     res.send({ ok: true })
   })
