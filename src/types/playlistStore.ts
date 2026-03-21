@@ -1,8 +1,10 @@
+import { MediaSourceRef } from "@/types"
+
 import { MediaItem, Playlist } from "./index"
 
 export interface PlaylistStore {
   // Playlist CRUD
-  create(name: string, description?: string): Promise<string>
+  create(name: string, description?: string, playlistRef?: MediaSourceRef): Promise<string>
   rename(id: string, name: string): Promise<void>
   updateDescription(id: string, description: string): Promise<void>
   updateImage(id: string, imageUrl: string): Promise<void>

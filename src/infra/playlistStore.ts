@@ -1,22 +1,22 @@
 import { makeVioxId } from "@/core/normalizers/makeVioxId"
 import { db } from "@/infra/db"
-import type { LibraryStore, MediaItem, Playlist, PlaylistStore } from "@/types"
+import type { LibraryStore, MediaItem, MediaSourceRef,Playlist, PlaylistStore } from "@/types"
 
 export class SqlitePlaylistStore implements PlaylistStore {
   private readonly conn = db
 
   constructor(private readonly library: LibraryStore) {}
 
-  async create(name: string, description?: string): Promise<string> {
+  async create(name: string, description?: string, playlistRef?: MediaSourceRef): Promise<string> {
     const id = makeVioxId(crypto.randomUUID(), "playlist")
     this.conn
       .prepare(
         `
-        INSERT INTO playlists (id, name, description, source, total_items)
-        VALUES (?, ?, ?, 'local', 0)
+        INSERT INTO playlists (id, name, description, source, source_id, source_uri, total_items)
+        VALUES (?, ?, ?, 'local', ?, ?, 0)
       `,
       )
-      .run(id, name, description ?? null)
+      .run(id, name, description ?? null, playlistRef?.sourceId, playlistRef?.uri)
     return id
   }
 

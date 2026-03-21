@@ -197,7 +197,7 @@ export class SpotifyImportService {
     // Create or update local playlist
     let localId = await this.findLocalPlaylistId(playlistRef)
     if (!localId) {
-      localId = await this.playlists.create(name, description)
+      localId = await this.playlists.create(name, description, playlistRef)
       if (image) await this.playlists.updateImage(localId, image)
     }
 
