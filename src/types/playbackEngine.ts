@@ -31,6 +31,6 @@ export interface PlaybackEngine {
   // Sources
   searchSource(source: string, query: string): Promise<MediaItem[]>
   browseSource(source: string, options: any): Promise<MediaItem[]>
-  resolveItem(ref: any): Promise<MediaItem | null>
-  resolvePlaybackUrl(ref: any): Promise<string | null>
+  resolveItem(ref: any): Promise<MediaItem | undefined>
+  resolvePlaybackUrl(ref: any): Promise<string | undefined>
 }

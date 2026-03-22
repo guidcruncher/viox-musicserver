@@ -148,11 +148,11 @@ export class DefaultPlaybackEngine implements PlaybackEngine {
     return this.sources.browse(source as any, options)
   }
 
-  async resolveItem(ref: any): Promise<MediaItem | null> {
+  async resolveItem(ref: any): Promise<MediaItem | undefined> {
     return this.sources.getById(ref)
   }
 
-  async resolvePlaybackUrl(ref: any): Promise<string | null> {
+  async resolvePlaybackUrl(ref: any): Promise<string | undefined> {
     return this.sources.getPlaybackUrl(ref)
   }
 }
