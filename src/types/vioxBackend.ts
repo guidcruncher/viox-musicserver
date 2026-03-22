@@ -2,6 +2,7 @@ import type { SpeakerControlService } from "@/infra//snapserver/speakerControlSe
 import type { BackendRegistry } from "@/infra/backends/backendRegistry"
 import type { EqualizerService } from "@/infra/equalizer/equalizerService"
 import type { PlaybackController } from "@/infra/playback/playbackController"
+import { SourceRegistry } from "@/infra/sources/sourceRegistry"
 import type { StatusService } from "@/infra/status/statusService"
 import { Importers } from "@/types"
 import type { LibraryStore } from "@/types/libraryStore"
@@ -16,4 +17,5 @@ export interface VioxBackend {
   speakers: SpeakerControlService
   status: StatusService
   importers: Importers
+  sources: SourceRegistry
 }

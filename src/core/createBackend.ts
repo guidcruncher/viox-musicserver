@@ -1,3 +1,5 @@
+
+import { getConfig } from "@/config"
 import { SimpleBackendRouter } from "@/infra/backendRouter"
 import { BackendRegistry } from "@/infra/backends/backendRegistry"
 import { LocalPlaybackBackend } from "@/infra/backends/localBackend"
@@ -6,9 +8,16 @@ import { RadioPlaybackBackend } from "@/infra/backends/radioBackend"
 import { SpotifyPlaybackBackend } from "@/infra/backends/spotifyBackend"
 import { EqualizerService } from "@/infra/equalizer/equalizerService"
 import { SqliteLibraryStore } from "@/infra/libraryStore"
+import { LocalFileSystemClient } from "@/infra/local/localFileSystemClient"
 import { PlaybackController } from "@/infra/playback/playbackController"
 import { SqlitePlaylistStore } from "@/infra/playlistStore"
 import { SpeakerControlService } from "@/infra/snapserver/speakerControlService"
+import { LocalSourceAdapter } from "@/infra/sources/localAdapter"
+import { PodverseSourceAdapter } from "@/infra/sources/podverseAdapter"
+import { RadioBrowserSourceAdapter } from "@/infra/sources/radioBrowserAdapter"
+import { SourceRegistry } from "@/infra/sources/sourceRegistry"
+import { SpotifySourceAdapter } from "@/infra/sources/spotifyAdapter"
+import { TuneInSourceAdapter } from "@/infra/sources/tuneInAdapter"
 import { SpotifyWebClient } from "@/infra/spotify/spotifyWebClient"
 import { StatusService } from "@/infra/status/statusService"
 import { SpotifyImportService } from "@/services/spotifyImportService"
@@ -36,6 +45,20 @@ export function createVioxBackend(): VioxBackend {
     tunein: radioBackend,
     radiobrowser: radioBackend,
     podverse: podverseBackend,
+  })
+
+  const spotifySource = new SpotifySourceAdapter()
+  const tuneInSource = new TuneInSourceAdapter()
+  const radioBrowserSource = new RadioBrowserSourceAdapter()
+  const podVerseSource = new PodverseSourceAdapter()
+  const localSource = new LocalSourceAdapter(new LocalFileSystemClient(getConfig("musicFolder")))
+
+  const sourceRegistry = new SourceRegistry({
+    spotify: spotifySource,
+    local: localSource,
+    tunein: tuneInSource,
+    radiobrowser: radioBrowserSource,
+    podverse: podVerseSource,
   })
 
   //
@@ -95,5 +118,6 @@ export function createVioxBackend(): VioxBackend {
     speakers,
     status,
     importers,
+    sources: sourceRegistry,
   }
 }

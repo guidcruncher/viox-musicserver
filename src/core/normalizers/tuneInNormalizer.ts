@@ -11,18 +11,18 @@ export class TuneInNormalizer {
     const ref: MediaSourceRef = {
       source: "tunein",
       itemType: "station",
-      sourceId: raw.id,
-      uri: raw.url,
+      sourceId: raw.guide_id,
+      uri: raw.guide_id,
     }
 
     return {
       id: makeVioxId(ref, "item"),
       sourceRef: ref,
       title: raw.text ?? "Unknown Station",
-      subtitle: raw.playing ?? raw.subtext ?? "",
-      artist: undefined,
+      subtitle: raw.subtext ?? "",
+      artist: raw.url ?? "",
       album: undefined,
-      imageUrl: raw.image,
+      imageUrl: raw.logo ?? raw.image,
       durationMs: undefined,
       isLive: true,
     }
