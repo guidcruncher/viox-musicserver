@@ -1,5 +1,6 @@
-import { getLogger } from "@/logger"
 import axios from "axios"
+
+import { getLogger } from "@/logger"
 
 const logger = getLogger()
 

@@ -10,6 +10,7 @@ import { registerEqualizerRoutes } from "@/routes/equalizerRoutes";
 import { registerImportRoutes } from "@/routes/importRoutes";
 import { registerLibraryRoutes } from "@/routes/libraryRoutes";
 import { registerPlaybackRoutes } from "@/routes/playbackRoutes";
+import { registerRadioRoutes } from "@/routes/radioRoutes";
 import { registerSpeakerRoutes } from "@/routes/speakerRoutes";
 import { registerSpotifyAuthRoutes } from "@/routes/spotifyAuthRoutes";
 import { registerStreamerRoutes } from "@/routes/streamerRoutes";
@@ -24,6 +25,7 @@ export const registerAllRoutes = async(app: FastifyInstance, backend: VioxBacken
   registerImportRoutes(app, backend);
   registerLibraryRoutes(app, backend);
   registerPlaybackRoutes(app, backend);
+  registerRadioRoutes(app, backend);
   registerSpeakerRoutes(app, backend);
   registerSpotifyAuthRoutes(app, backend);
   registerStreamerRoutes(app, backend);

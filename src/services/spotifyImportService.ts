@@ -1,8 +1,8 @@
 import { SpotifyNormalizer } from "@/core/normalizers/spotifyNormalizer"
+import { getMbidsFromIsrc } from "@/infra/musicbrainz/getMbidFromSpotifyUri"
 import { fetchAllOffsetPages } from "@/infra/spotify/fetchAllOffsetPages"
 import { getLogger } from "@/logger"
 import type { LibraryStore, MediaItem, MediaSourceRef, PlaylistStore } from "@/types"
-import { getMbidFromSpotifyUri, getMbidsFromIsrc } from "@/infra/musicbrainz/getMbidFromSpotifyUri"
 
 export class SpotifyImportService {
   private readonly normalize = new SpotifyNormalizer()

@@ -23,5 +23,4 @@ export function registerTuneInRoutes(app: FastifyInstance, backend: VioxBackend)
       reply.send([])
     },
   )
-  
 }
