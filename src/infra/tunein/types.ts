@@ -9,6 +9,7 @@ export interface TuneInItem {
   subtext?: string
   image?: string
   URL?: string
+  url?: string
   item?: string
 }
 

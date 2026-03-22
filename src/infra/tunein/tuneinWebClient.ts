@@ -67,7 +67,7 @@ export class TuneInWebClient extends BaseClient {
     )
 
     if (item && item.body.length > 0) {
-      return item.body[0]
+      return item.body[0] as TuneInShowDetail
     }
     return undefined
   }
@@ -80,7 +80,7 @@ export class TuneInWebClient extends BaseClient {
     )
 
     if (item && item.body.length > 0) {
-      return item.body[0]
+      return item.body[0] as TuneInStationDetail
     }
     return undefined
   }
@@ -90,7 +90,7 @@ export class TuneInWebClient extends BaseClient {
   // ────────────────────────────────────────────────
 
   async getStationUrl(id: string): Promise<string | undefined> {
-    const item = await this.safeGet(() =>
+    const item:any = await this.safeGet(() =>
       this.http.get<TuneInResponse>("/Tune.ashx", {
         params: { id },
       }),
