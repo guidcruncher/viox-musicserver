@@ -30,6 +30,7 @@ export class PodverseSourceAdapter implements AudioSourceAdapter {
   async getPlaybackUrl(ref: MediaSourceRef): Promise<string | null> {
     if (ref.itemType !== "episode") return null
     const raw = await this.api.getEpisode(ref.sourceId)
+if (!raw) return null
     return raw?.mediaUrl ?? null
   }
 

@@ -1,12 +1,15 @@
-import axios, { AxiosInstance } from "axios"
+// infra/tunein/TuneInWebClient.ts
+import { BaseClient } from "../baseClient"
+import type {
+  TuneInDescribeItem,
+  TuneInResponse,
+  TuneInResponseItem,
+  TuneInStation,
+} from "./types"
 
-import type { TuneInDescribeItem, TuneInResponse, TuneInResponseItem, TuneInStation } from "./types"
-
-export class TuneInWebClient {
-  private http: AxiosInstance
-
+export class TuneInWebClient extends BaseClient {
   constructor() {
-    this.http = axios.create({
+    super({
       baseURL: "https://opml.radiotime.com",
       timeout: 10000,
       params: {
@@ -19,51 +22,55 @@ export class TuneInWebClient {
   // ────────────────────────────────────────────────
   // Search
   // ────────────────────────────────────────────────
-  async search(keyword: string): Promise<TuneInStation[]> {
-    const { data } = await this.http.get<TuneInResponse<TuneInResponseItem>>("/Search.ashx", {
-      params: { query: keyword },
-    })
-
-    return this.extractStations(data)
+  search(keyword: string): Promise<TuneInStation[]> {
+    return this.safeGet<TuneInResponse<TuneInResponseItem>>(() =>
+      this.http.get("/Search.ashx", {
+        params: { query: keyword },
+      }),
+    ).then((data) => this.extractStations(data))
   }
 
   // ────────────────────────────────────────────────
   // Browse by country
   // ────────────────────────────────────────────────
-  async browseByCountry(countryCode: string): Promise<TuneInStation[]> {
-    const { data } = await this.http.get<TuneInResponse<TuneInResponseItem>>("/Browse.ashx", {
-      params: { id: countryCode },
-    })
-
-    return this.extractStations(data)
+  browseByCountry(countryCode: string): Promise<TuneInStation[]> {
+    return this.safeGet<TuneInResponse<TuneInResponseItem>>(() =>
+      this.http.get("/Browse.ashx", {
+        params: { id: countryCode },
+      }),
+    ).then((data) => this.extractStations(data))
   }
 
   // ────────────────────────────────────────────────
   // Station lookup
   // ────────────────────────────────────────────────
-  async getStation(id: string): Promise<TuneInStation | undefined> {
-    const { data } = await this.http.get<TuneInResponse<TuneInDescribeItem>>("/Describe.ashx", {
-      params: { id },
-    })
-
-    return this.extractStation(data)
+  getStation(id: string): Promise<TuneInStation | undefined> {
+    return this.safeGet<TuneInResponse<TuneInDescribeItem>>(() =>
+      this.http.get("/Describe.ashx", {
+        params: { id },
+      }),
+    ).then((data) => this.extractStation(data))
   }
 
   // ────────────────────────────────────────────────
   // Playback URL
   // ────────────────────────────────────────────────
-  async getPlaybackUrl(id: string): Promise<string | null> {
-    const { data } = await this.http.get<any>("/Tune.ashx", {
-      params: { id },
-    })
-
-    return data?.body?.[0]?.url ?? null
+  getPlaybackUrl(id: string): Promise<string | null> {
+    return this.safeGet<any>(() =>
+      this.http.get("/Tune.ashx", {
+        params: { id },
+      }),
+    ).then((data) => data?.body?.[0]?.url ?? null)
   }
 
   // ────────────────────────────────────────────────
   // Helpers
   // ────────────────────────────────────────────────
-  private extractStation(data: TuneInResponse<TuneInDescribeItem>): TuneInStation | undefined {
+  private extractStation(
+    data: TuneInResponse<TuneInDescribeItem> | undefined,
+  ): TuneInStation | undefined {
+if (!data) return undefined
+
     const src = data.body?.[0]
     if (!src) return undefined
 
@@ -79,7 +86,11 @@ export class TuneInWebClient {
     }
   }
 
-  private extractStations(data: TuneInResponse<TuneInResponseItem>): TuneInStation[] {
+  private extractStations(
+    data: TuneInResponse<TuneInResponseItem> | undefined,
+  ): TuneInStation[] {
+if (!data) return []
+
     const stations: TuneInStation[] = []
 
     const walk = (items: any[]) => {
@@ -108,3 +119,4 @@ export class TuneInWebClient {
     return stations
   }
 }
+
