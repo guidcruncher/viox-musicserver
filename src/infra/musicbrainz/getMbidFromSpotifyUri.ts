@@ -1,4 +1,7 @@
+import { getLogger } from "@/logger"
 import axios from "axios"
+
+const logger = getLogger()
 
 const client = axios.create({
   baseURL: "https://musicbrainz.org/ws/2",
@@ -43,9 +46,8 @@ export const getMbidFromSpotifyUri = async (uri: string): Promise<string[]> => {
       .filter(Boolean)
   } catch (err: any) {
     if (err.response?.status === 404) return []
-    const error = new Error(`MusicBrainz API Error: ${err.response?.status}`)
-    ;(error as any).cause = err
-    throw error
+    logger.error(`MusicBrainz API Error: ${err.response?.status}`, err)
+    return []
   }
 }
 
@@ -55,8 +57,7 @@ export const getMbidsFromIsrc = async (isrc: string): Promise<string[]> => {
     return data.recordings?.map((rec: any) => rec.id) ?? []
   } catch (err: any) {
     if (err.response?.status === 404) return []
-    const error = new Error(`MB API Error: ${err.response?.status}`)
-    ;(error as any).cause = err
-    throw error
+    logger.error(`MusicBrainz API Error: ${err.response?.status}`, err)
+    return []
   }
 }

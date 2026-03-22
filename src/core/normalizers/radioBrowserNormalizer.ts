@@ -12,7 +12,7 @@ export class RadioBrowserNormalizer {
       source: "radiobrowser",
       itemType: "station",
       sourceId: raw.stationuuid,
-      uri: raw.url_resolved ?? raw.url,
+      uri: "",
     }
 
     return {

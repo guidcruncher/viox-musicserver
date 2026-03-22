@@ -12,7 +12,7 @@ export class TuneInNormalizer {
       source: "tunein",
       itemType: "station",
       sourceId: raw.guide_id,
-      uri: raw.guide_id,
+      uri: "",
     }
 
     return {
