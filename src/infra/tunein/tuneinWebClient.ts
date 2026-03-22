@@ -1,5 +1,3 @@
-import { AxiosInstance } from "axios"
-
 import { BaseClient } from "../baseClient"
 import { flattenNodes, TuneInBrowseResponse, TuneInNode } from "./flattenTuneIn"
 import {
@@ -16,7 +14,6 @@ import {
 // ────────────────────────────────────────────────
 
 export class TuneInWebClient extends BaseClient {
-
   constructor(opts: TuneInWebClientOptions = {}) {
     super({
       baseURL: opts.baseUrl ?? "https://opml.radiotime.com",
