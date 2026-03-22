@@ -16,7 +16,6 @@ import {
 // ────────────────────────────────────────────────
 
 export class TuneInWebClient extends BaseClient {
-  private http: AxiosInstance
 
   constructor(opts: TuneInWebClientOptions = {}) {
     super({
@@ -91,7 +90,7 @@ export class TuneInWebClient extends BaseClient {
   // TUNE (stream resolution entrypoint)
   // ────────────────────────────────────────────────
 
-  async getStationUrl(id: string): Promise<string | undefined> {
+  async getPlaybackUrl(id: string): Promise<string | undefined> {
     const item: any = await this.safeGet(() =>
       this.http.get<TuneInResponse>("/Tune.ashx", {
         params: { id },
