@@ -67,7 +67,6 @@ function generateBarrelForDir(dir: string) {
   fs.writeFileSync(indexPath, content, "utf8");
 
   console.log(`Generated barrel for: ${absDir}`);
-  exportLines.forEach((l) => console.log("  " + l));
 }
 
 
