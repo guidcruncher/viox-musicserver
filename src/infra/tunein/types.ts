@@ -16,5 +16,3 @@ export interface TuneInResponse {
   head?: Record<string, any>
   body: TuneInItem[]
 }
-
-
