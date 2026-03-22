@@ -30,9 +30,6 @@ FROM guidcruncher/vioxbase:alpine-latest AS runtime
 # - procps provides the full 'ps' utility
 RUN apk add --no-cache \
     expat \
-    lsp-plugins-ladspa \
-    lsp-plugins-lv2 \
-    pipewire-lv2 \
     gettext \
     jq \
     procps
