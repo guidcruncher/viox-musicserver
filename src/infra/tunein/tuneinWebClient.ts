@@ -1,9 +1,11 @@
 import { AxiosInstance } from "axios"
 
 import { BaseClient } from "../baseClient"
-import { flattenNodes, TuneInNode } from "./flattenTuneIn"
+import { flattenNodes, TuneInBrowseResponse, TuneInNode } from "./flattenTuneIn"
 import {
   TuneInResponse,
+  TuneInShowDetail,
+  TuneInShowDetailResponse,
   TuneInStationDetail,
   TuneInStationDetailResponse,
   TuneInWebClientOptions,
@@ -35,9 +37,9 @@ export class TuneInWebClient extends BaseClient {
   // SEARCH + DIRECTORY
   // ────────────────────────────────────────────────
 
-  async search(query: string): Promise<TuneInNode> {
-    const items = awaitwthis.safeGet(() =>
-      this.http.get<TuneInResponse>("/Search.ashx", {
+  async search(query: string): Promise<TuneInNode[]> {
+    const items: TuneInBrowseResponse | undefined = await this.safeGet(() =>
+      this.http.get<TuneInBrowseResponse>("/Search.ashx", {
         params: { query },
       }),
     )
@@ -47,9 +49,9 @@ export class TuneInWebClient extends BaseClient {
     return []
   }
 
-  async browse(id: string): Promise<TuneInNode> {
-    const items = await this.safeGet(() =>
-      this.http.get<TuneInResponse>("/Browse.ashx", {
+  async browse(id: string): Promise<TuneInNode[]> {
+    const items: TuneInBrowseResponse | undefined = await this.safeGet(() =>
+      this.http.get<TuneInBrowseResponse>("/Browse.ashx", {
         params: { id },
       }),
     )
