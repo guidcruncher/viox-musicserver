@@ -64,22 +64,20 @@ export interface TuneInBrowseResponse {
 }
 
 export function detectNodeType(raw: any): TuneInNode["type"] | "category" {
-  if (raw.type === "audio") return "audio";
-  if (raw.type === "link") return "link";
-  if (!raw.type && raw.key) return "category";
-  return "category";
+  if (raw.type === "audio") return "audio"
+  if (raw.type === "link") return "link"
+  if (!raw.type && raw.key) return "category"
+  return "category"
 }
 
 export function convertToTuneInNode(raw: any): TuneInNode {
-  const nodeType = detectNodeType(raw);
+  const nodeType = detectNodeType(raw)
 
   const base: BaseNode = {
     element: "outline",
     text: raw.text ?? "",
-    children: Array.isArray(raw.children)
-      ? raw.children.map(convertToTuneInNode)
-      : undefined
-  };
+    children: Array.isArray(raw.children) ? raw.children.map(convertToTuneInNode) : undefined,
+  }
 
   switch (nodeType) {
     case "audio":
@@ -98,8 +96,8 @@ export function convertToTuneInNode(raw: any): TuneInNode {
         image: raw.image,
         current_track: raw.current_track,
         now_playing_id: raw.now_playing_id,
-        preset_id: raw.preset_id
-      };
+        preset_id: raw.preset_id,
+      }
 
     case "link":
       return {
@@ -107,35 +105,35 @@ export function convertToTuneInNode(raw: any): TuneInNode {
         type: "link",
         URL: raw.URL,
         guide_id: raw.guide_id,
-        key: raw.key
-      };
+        key: raw.key,
+      }
 
     case "category":
     default:
       return {
         ...base,
-        key: raw.key
-      };
+        key: raw.key,
+      }
   }
 }
 
 export function flattenNodes(response: TuneInBrowseResponse): TuneInNode[] {
-  const result: TuneInNode[] = [];
+  const result: TuneInNode[] = []
 
   function walk(raw: any) {
-    const node = convertToTuneInNode(raw);
-    result.push(node);
+    const node = convertToTuneInNode(raw)
+    result.push(node)
 
     if (node.children) {
       for (const child of node.children) {
-        walk(child);
+        walk(child)
       }
     }
   }
 
   for (const item of response.body) {
-    walk(item);
+    walk(item)
   }
 
-  return result;
+  return result
 }

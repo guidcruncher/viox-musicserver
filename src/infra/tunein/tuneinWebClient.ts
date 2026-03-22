@@ -1,13 +1,20 @@
-import axios, { AxiosInstance } from "axios"
+import { AxiosInstance } from "axios"
+
 import { BaseClient } from "../baseClient"
-import { TuneInWebClientOptions, TuneInItem, TuneInResponse } from "./types"
+import { flattenNodes, TuneInNode } from "./flattenTuneIn"
+import {
+  TuneInResponse,
+  TuneInStationDetail,
+  TuneInStationDetailResponse,
+  TuneInWebClientOptions,
+} from "./types"
 
 // ────────────────────────────────────────────────
 // MAIN CLIENT (merged API)
 // ────────────────────────────────────────────────
 
 export class TuneInWebClient extends BaseClient {
-  private http2: AxiosInstance
+  private http: AxiosInstance
 
   constructor(opts: TuneInWebClientOptions = {}) {
     super({
@@ -19,18 +26,7 @@ export class TuneInWebClient extends BaseClient {
     this.http.interceptors.request.use((config) => {
       config.params = config.params ?? {}
       config.params.partnerId = opts.partnerId ?? "none"
-      return config
-    })
-
-    // Secondary instance (mirrors Spotify librespot pattern)
-    this.http2 = axios.create({
-      baseURL: opts.baseUrl ?? "https://opml.radiotime.com",
-      timeout: 8000,
-    })
-
-    this.http2.interceptors.request.use((config) => {
-      config.params = config.params ?? {}
-      config.params.partnerId = opts.partnerId ?? "none"
+      config.params.render = "json"
       return config
     })
   }
@@ -39,39 +35,70 @@ export class TuneInWebClient extends BaseClient {
   // SEARCH + DIRECTORY
   // ────────────────────────────────────────────────
 
-  search(query: string) {
-    return this.safeGet(() =>
-      this.http2.get<TuneInResponse>("/Search.ashx", {
-        params: { query, render: "json" },
+  async search(query: string): Promise<TuneInNode> {
+    const items = awaitwthis.safeGet(() =>
+      this.http.get<TuneInResponse>("/Search.ashx", {
+        params: { query },
       }),
     )
+
+    if (items) return flattenNodes(items)
+
+    return []
   }
 
-  browse(id: string) {
-    return this.safeGet(() =>
-      this.http2.get<TuneInResponse>("/Browse.ashx", {
-        params: { id, render: "json" },
+  async browse(id: string): Promise<TuneInNode> {
+    const items = await this.safeGet(() =>
+      this.http.get<TuneInResponse>("/Browse.ashx", {
+        params: { id },
       }),
     )
+
+    if (items) return flattenNodes(items)
+
+    return []
   }
 
-  describe(id: string) {
-    return this.safeGet(() =>
-      this.http2.get<TuneInResponse>("/Describe.ashx", {
-        params: { id, render: "json" },
+  async getShow(id: string): Promise<TuneInShowDetail | undefined> {
+    const item: TuneInShowDetailResponse = await this.safeGet(() =>
+      this.http.get<TuneInShowDetailResponse>("/Describe.ashx", {
+        params: { id },
       }),
     )
+
+    if (item && item.body.length > 0) {
+      return item.body[0]
+    }
+    return undefined
+  }
+
+  async getStation(id: string): Promise<TuneInStationDetail | undefined> {
+    const item: TuneInStationDetailResponse = await this.safeGet(() =>
+      this.http.get<TuneInStationDetailResponse>("/Describe.ashx", {
+        params: { id },
+      }),
+    )
+
+    if (item && item.body.length > 0) {
+      return item.body[0]
+    }
+    return undefined
   }
 
   // ────────────────────────────────────────────────
   // TUNE (stream resolution entrypoint)
   // ────────────────────────────────────────────────
 
-  tuneStation(id: string) {
-    return this.safeGet(() =>
+  async getStationUrl(id: string): Promise<string | undefined> {
+    const item = await this.safeGet(() =>
       this.http.get<TuneInResponse>("/Tune.ashx", {
-        params: { id, render: "json" },
+        params: { id },
       }),
     )
+
+    if (item && item.body.length > 0) {
+      return item.body[0].url
+    }
+    return undefined
   }
 }
