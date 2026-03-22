@@ -9,7 +9,7 @@ export function registerTuneInRoutes(app: FastifyInstance, backend: VioxBackend)
   logger.info("Registering version routes")
 
   app.get(
-    "/api/tunein/browse/:guideId",
+    "/api/radio/browse/tunein/:guideId",
     { schema: BrowseTuneInSchema },
     async (req: any, reply: any) => {
       const { guideId } = req.params as any
