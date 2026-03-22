@@ -31,6 +31,8 @@ FROM guidcruncher/vioxbase:alpine-latest AS runtime
 RUN apk add --no-cache \
     expat \
     lsp-plugins-ladspa \
+    lsp-plugins-lv2 \
+    pipewire-lv2 \
     gettext \
     jq \
     procps
