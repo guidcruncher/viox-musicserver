@@ -13,7 +13,7 @@ export class PodverseSourceAdapter implements AudioSourceAdapter {
     return []
   }
 
-  async getById(ref: MediaSourceRef): Promise<MediaItem | null> {
+  async getById(ref: MediaSourceRef): Promise<MediaItem | undefined> {
     let raw: any
 
     if (ref.itemType === "podcast") {
@@ -21,17 +21,17 @@ export class PodverseSourceAdapter implements AudioSourceAdapter {
     } else if (ref.itemType === "episode") {
       raw = await this.api.getEpisode(ref.sourceId)
     } else {
-      return null
+      return undefined
     }
 
     return this.normalize.normalize(raw)
   }
 
-  async getPlaybackUrl(ref: MediaSourceRef): Promise<string | null> {
-    if (ref.itemType !== "episode") return null
+  async getPlaybackUrl(ref: MediaSourceRef): Promise<string | undefined> {
+    if (ref.itemType !== "episode") return undefined
     const raw = await this.api.getEpisode(ref.sourceId)
-    if (!raw) return null
-    return raw?.mediaUrl ?? null
+    if (!raw) return undefined
+    return raw?.mediaUrl ?? undefined
   }
 
   async browse(options: BrowseOptions): Promise<MediaItem[]> {

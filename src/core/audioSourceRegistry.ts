@@ -58,14 +58,14 @@ export class AudioSourceRegistry {
   /**
    * Fetch metadata for a specific item.
    */
-  async getById(ref: MediaSourceRef): Promise<MediaItem | null> {
+  async getById(ref: MediaSourceRef): Promise<MediaItem | undefined> {
     return this.getAdapterForRef(ref).getById(ref)
   }
 
   /**
    * Get playback URL for a specific item.
    */
-  async getPlaybackUrl(ref: MediaSourceRef): Promise<string | null> {
+  async getPlaybackUrl(ref: MediaSourceRef): Promise<string | undefined> {
     return this.getAdapterForRef(ref).getPlaybackUrl(ref)
   }
 

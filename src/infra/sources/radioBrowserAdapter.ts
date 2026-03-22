@@ -14,14 +14,14 @@ export class RadioBrowserSourceAdapter implements AudioSourceAdapter {
     return raw.map((s) => this.normalize.normalize(s))
   }
 
-  async getById(ref: MediaSourceRef): Promise<MediaItem | null> {
+  async getById(ref: MediaSourceRef): Promise<MediaItem | undefined> {
     const station = await this.api.getStation(ref.sourceId)
-    return station ? this.normalize.normalize(station) : null
+    return station ? this.normalize.normalize(station) : undefined
   }
 
-  async getPlaybackUrl(ref: MediaSourceRef): Promise<string | null> {
+  async getPlaybackUrl(ref: MediaSourceRef): Promise<string | undefined> {
     const station = await this.api.getStation(ref.sourceId)
-    return station?.url_resolved ?? station?.url ?? null
+    return station?.url_resolved ?? station?.url ?? undefined
   }
 
   async browse(): Promise<MediaItem[]> {

@@ -5,9 +5,9 @@ export interface AudioSourceAdapter {
 
   search(query: string): Promise<MediaItem[]>
 
-  getById(ref: MediaSourceRef): Promise<MediaItem | null>
+  getById(ref: MediaSourceRef): Promise<MediaItem | undefined>
 
-  getPlaybackUrl(ref: MediaSourceRef): Promise<string | null>
+  getPlaybackUrl(ref: MediaSourceRef): Promise<string | undefined>
 
   browse?(options: BrowseOptions): Promise<MediaItem[]>
 }

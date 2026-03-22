@@ -1,6 +1,6 @@
 import { TuneInNormalizer } from "@/core/normalizers/tuneInNormalizer"
 import { TuneInWebClient } from "@/infra/tunein/tuneinWebClient"
-import type { AudioSourceAdapter, BrowseOptions,MediaItem, MediaSourceRef } from "@/types"
+import type { AudioSourceAdapter, BrowseOptions, MediaItem, MediaSourceRef } from "@/types"
 
 import { TuneInNode } from "../tunein/flattenTuneIn"
 
@@ -28,11 +28,13 @@ export class TuneInSourceAdapter implements AudioSourceAdapter {
     return url
   }
 
-  async browse(options: BrowseOptions): Promise<TuneInNode[]> {
+  async browse(options: BrowseOptions): Promise<MediaItem[]> {
     const items = await this.api.browse(options.cursor ?? "")
 
     if (!items) return []
 
-    return items
+    return items.map((t: any) => {
+      return this.normalize.normalize(t)
+    })
   }
 }

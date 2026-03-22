@@ -21,7 +21,7 @@ export class LocalSourceAdapter implements AudioSourceAdapter {
     return results
   }
 
-  async getById(ref: MediaSourceRef): Promise<MediaItem | null> {
+  async getById(ref: MediaSourceRef): Promise<MediaItem | undefined> {
     const fullPath = path.join(this.fsClient["root"], ref.sourceId)
     const entry = {
       id: ref.sourceId,
@@ -33,7 +33,7 @@ export class LocalSourceAdapter implements AudioSourceAdapter {
     return this.toMediaItem(entry)
   }
 
-  async getPlaybackUrl(ref: MediaSourceRef): Promise<string | null> {
+  async getPlaybackUrl(ref: MediaSourceRef): Promise<string | undefined> {
     return path.join(this.fsClient["root"], ref.sourceId)
   }
 

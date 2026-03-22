@@ -22,7 +22,7 @@ export class SpotifySourceAdapter implements AudioSourceAdapter {
     return items.map((i) => this.normalize.normalize(i))
   }
 
-  async getById(ref: MediaSourceRef): Promise<MediaItem | null> {
+  async getById(ref: MediaSourceRef): Promise<MediaItem | undefined> {
     let raw: any
 
     switch (ref.itemType) {
@@ -42,14 +42,14 @@ export class SpotifySourceAdapter implements AudioSourceAdapter {
         raw = await this.api.getPlaylist(ref.sourceId)
         break
       default:
-        return null
+        return undefined
     }
 
     return this.normalize.normalize(raw)
   }
 
-  async getPlaybackUrl(): Promise<string | null> {
-    return null // Spotify uses SDK, not URLs
+  async getPlaybackUrl(): Promise<string | undefined> {
+    return undefined // Spotify uses SDK, not URLs
   }
 
   async browse(options: BrowseOptions): Promise<MediaItem[]> {
