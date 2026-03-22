@@ -60,7 +60,7 @@ export class TuneInWebClient extends BaseClient {
   }
 
   async getShow(id: string): Promise<TuneInShowDetail | undefined> {
-    const item: TuneInShowDetailResponse = await this.safeGet(() =>
+    const item: TuneInShowDetailResponse | undefined = await this.safeGet(() =>
       this.http.get<TuneInShowDetailResponse>("/Describe.ashx", {
         params: { id },
       }),
@@ -73,7 +73,7 @@ export class TuneInWebClient extends BaseClient {
   }
 
   async getStation(id: string): Promise<TuneInStationDetail | undefined> {
-    const item: TuneInStationDetailResponse = await this.safeGet(() =>
+    const item: TuneInStationDetailResponse | undefined = await this.safeGet(() =>
       this.http.get<TuneInStationDetailResponse>("/Describe.ashx", {
         params: { id },
       }),
@@ -90,7 +90,7 @@ export class TuneInWebClient extends BaseClient {
   // ────────────────────────────────────────────────
 
   async getStationUrl(id: string): Promise<string | undefined> {
-    const item:any = await this.safeGet(() =>
+    const item: any = await this.safeGet(() =>
       this.http.get<TuneInResponse>("/Tune.ashx", {
         params: { id },
       }),
