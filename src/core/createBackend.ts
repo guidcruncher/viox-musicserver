@@ -1,4 +1,3 @@
-
 import { getConfig } from "@/config"
 import { SimpleBackendRouter } from "@/infra/backendRouter"
 import { BackendRegistry } from "@/infra/backends/backendRegistry"

@@ -1,13 +1,14 @@
 import type { FastifyInstance } from "fastify"
 
 import { getLogger } from "@/logger"
+import { BrowseTuneInSchema } from "@/schemas"
 import type { VioxBackend } from "@/types"
 
 export function registerTuneInRoutes(app: FastifyInstance, backend: VioxBackend) {
   const logger = getLogger()
   logger.info("Registering version routes")
 
-  app.get("/api/tunein/browse/:guideId", async (req: any, reply: any) => {
+  app.get("/api/tunein/browse/:guideId", BrowseTuneInSchema, async (req: any, reply: any) => {
     const { guideId } = req.params as any
     const source = backend.sources.get("tunein")
 
