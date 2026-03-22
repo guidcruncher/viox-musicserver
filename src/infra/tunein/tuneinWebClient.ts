@@ -1,114 +1,78 @@
-// infra/tunein/TuneInWebClient.ts
+import axios, { AxiosInstance } from "axios"
 import { BaseClient } from "../baseClient"
-import type { TuneInDescribeItem, TuneInResponse, TuneInResponseItem, TuneInStation } from "./types"
+import { TuneInWebClientOptions, TuneInItem, TuneInResponse } from "./types"
+
+// ────────────────────────────────────────────────
+// MAIN CLIENT (merged API)
+// ────────────────────────────────────────────────
 
 export class TuneInWebClient extends BaseClient {
-  constructor() {
+  private http2: AxiosInstance
+
+  constructor(opts: TuneInWebClientOptions = {}) {
     super({
-      baseURL: "https://opml.radiotime.com",
-      timeout: 10000,
-      params: {
-        render: "json",
-        partnerId: "none",
-      },
+      baseURL: opts.baseUrl ?? "https://opml.radiotime.com",
+      timeout: 8000,
+    })
+
+    // Inject partnerId into all requests
+    this.http.interceptors.request.use((config) => {
+      config.params = config.params ?? {}
+      config.params.partnerId = opts.partnerId ?? "none"
+      return config
+    })
+
+    // Secondary instance (mirrors Spotify librespot pattern)
+    this.http2 = axios.create({
+      baseURL: opts.baseUrl ?? "https://opml.radiotime.com",
+      timeout: 8000,
+    })
+
+    this.http2.interceptors.request.use((config) => {
+      config.params = config.params ?? {}
+      config.params.partnerId = opts.partnerId ?? "none"
+      return config
     })
   }
 
   // ────────────────────────────────────────────────
-  // Search
+  // SEARCH + DIRECTORY
   // ────────────────────────────────────────────────
-  search(keyword: string): Promise<TuneInStation[]> {
-    return this.safeGet<TuneInResponse<TuneInResponseItem>>(() =>
-      this.http.get("/Search.ashx", {
-        params: { query: keyword },
+
+  search(query: string) {
+    return this.safeGet(() =>
+      this.http2.get<TuneInResponse>("/Search.ashx", {
+        params: { query, render: "json" },
       }),
-    ).then((data) => this.extractStations(data))
+    )
   }
 
-  // ────────────────────────────────────────────────
-  // Browse by country
-  // ────────────────────────────────────────────────
-  browseByCountry(countryCode: string): Promise<TuneInStation[]> {
-    return this.safeGet<TuneInResponse<TuneInResponseItem>>(() =>
-      this.http.get("/Browse.ashx", {
-        params: { id: countryCode },
+  browse(id: string) {
+    return this.safeGet(() =>
+      this.http2.get<TuneInResponse>("/Browse.ashx", {
+        params: { id, render: "json" },
       }),
-    ).then((data) => this.extractStations(data))
+    )
   }
 
-  // ────────────────────────────────────────────────
-  // Station lookup
-  // ────────────────────────────────────────────────
-  getStation(id: string): Promise<TuneInStation | undefined> {
-    return this.safeGet<TuneInResponse<TuneInDescribeItem>>(() =>
-      this.http.get("/Describe.ashx", {
-        params: { id },
+  describe(id: string) {
+    return this.safeGet(() =>
+      this.http2.get<TuneInResponse>("/Describe.ashx", {
+        params: { id, render: "json" },
       }),
-    ).then((data) => this.extractStation(data))
+    )
   }
 
   // ────────────────────────────────────────────────
-  // Playback URL
+  // TUNE (stream resolution entrypoint)
   // ────────────────────────────────────────────────
-  getPlaybackUrl(id: string): Promise<string | null> {
-    return this.safeGet<any>(() =>
-      this.http.get("/Tune.ashx", {
-        params: { id },
+
+  tuneStation(id: string) {
+    return this.safeGet(() =>
+      this.http.get<TuneInResponse>("/Tune.ashx", {
+        params: { id, render: "json" },
       }),
-    ).then((data) => data?.body?.[0]?.url ?? null)
-  }
-
-  // ────────────────────────────────────────────────
-  // Helpers
-  // ────────────────────────────────────────────────
-  private extractStation(
-    data: TuneInResponse<TuneInDescribeItem> | undefined,
-  ): TuneInStation | undefined {
-    if (!data) return undefined
-
-    const src = data.body?.[0]
-    if (!src) return undefined
-
-    return {
-      id: src.guide_id,
-      text: src.text,
-      subtext: src.subtext,
-      url: src.URL,
-      image: src.image || src.playing_image,
-      bitrate: src.bitrate,
-      reliability: src.reliability,
-      playing: src.playing,
-    }
-  }
-
-  private extractStations(data: TuneInResponse<TuneInResponseItem> | undefined): TuneInStation[] {
-    if (!data) return []
-
-    const stations: TuneInStation[] = []
-
-    const walk = (items: any[]) => {
-      for (const item of items) {
-        const id = item.guide_id || item.URL?.match(/id=(s\d+)/)?.[1]
-
-        if (item.type === "audio" && id && item.URL) {
-          stations.push({
-            id,
-            text: item.text,
-            subtext: item.subtext,
-            url: item.URL,
-            image: item.image || item.logo,
-            bitrate: item.bitrate,
-            reliability: item.reliability,
-            playing: item.playing,
-          })
-        }
-
-        if (item.outline) walk(item.outline)
-        if (item.children) walk(item.children)
-      }
-    }
-
-    walk(data.body ?? [])
-    return stations
+    )
   }
 }
+
