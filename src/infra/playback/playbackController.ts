@@ -4,6 +4,9 @@ import type { PlaybackBackend } from "@/types"
 import type { BackendRouter } from "@/types"
 import { LibraryStore } from "@/types"
 
+import { RadioBrowserSourceAdapter } from "../sources/radioBrowserAdapter"
+import { TuneInSourceAdapter } from "../sources/tuneInAdapter"
+
 export class PlaybackController {
   private currentBackend: PlaybackBackend | null = null
   private currentItem: MediaItem | null = null
@@ -27,11 +30,24 @@ export class PlaybackController {
         parentSourceUri = (await this.library.get(parent))?.sourceRef.uri
       }
     }
+
     return this.playItem(item, parentSourceUri)
   }
 
   async playItem(item: MediaItem, parentSourceUri?: string): Promise<void> {
     const backend = this.router.resolveBackendFor(item)
+
+    // Since Radiobrowser and TuneIn URL's are dynamic, we need to get them at point of playback.
+    switch (item.sourceRef.source) {
+      case "radiobrowser":
+        const radioBrowser = new RadioBrowserSourceAdapter()
+        item.sourceRef.uri = await radioBrowser.getPlaybackUrl(item.sourceRef)
+        break
+      case "tunein":
+        const tuneIn = new TuneInSourceAdapter()
+        item.sourceRef.uri = await tuneIn.getPlaybackUrl(item.sourceRef)
+        break
+    }
 
     if (this.currentBackend && this.currentBackend !== backend) {
       await this.currentBackend.stop().catch(() => {})
