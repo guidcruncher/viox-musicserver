@@ -32,18 +32,14 @@ export class RadioBrowserWebClient extends BaseClient {
     offset?: number
     hidebroken?: boolean
   }) {
-    return this.safeGet<any[]>(() =>
-      this.http.get("/json/stations/search", { params }),
-    )
+    return this.safeGet<any[]>(() => this.http.get("/json/stations/search", { params }))
   }
 
   // ────────────────────────────────────────────────
   // Station lookup
   // ────────────────────────────────────────────────
   async getStation(id: string) {
-    const stations = await this.safeGet<any[]>(() =>
-      this.http.get(`/json/stations/byuuid/${id}`),
-    )
+    const stations = await this.safeGet<any[]>(() => this.http.get(`/json/stations/byuuid/${id}`))
 
     return stations?.[0]
   }
@@ -52,11 +48,9 @@ export class RadioBrowserWebClient extends BaseClient {
   // Countries
   // ────────────────────────────────────────────────
   async getCountries(): Promise<Array<{ code: string; name: string }>> {
-    const countries = await this.safeGet<any[]>(() =>
-      this.http.get("/json/countries"),
-    )
+    const countries = await this.safeGet<any[]>(() => this.http.get("/json/countries"))
 
-if (!countries) return []
+    if (!countries) return []
 
     return countries
       .map((c) => ({

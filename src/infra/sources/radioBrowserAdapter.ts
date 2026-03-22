@@ -10,7 +10,7 @@ export class RadioBrowserSourceAdapter implements AudioSourceAdapter {
 
   async search(query: string): Promise<MediaItem[]> {
     const raw = await this.api.search({ name: query, hidebroken: true })
-if (!raw) return []
+    if (!raw) return []
     return raw.map((s) => this.normalize.normalize(s))
   }
 

@@ -1,11 +1,6 @@
 // infra/tunein/TuneInWebClient.ts
 import { BaseClient } from "../baseClient"
-import type {
-  TuneInDescribeItem,
-  TuneInResponse,
-  TuneInResponseItem,
-  TuneInStation,
-} from "./types"
+import type { TuneInDescribeItem, TuneInResponse, TuneInResponseItem, TuneInStation } from "./types"
 
 export class TuneInWebClient extends BaseClient {
   constructor() {
@@ -69,7 +64,7 @@ export class TuneInWebClient extends BaseClient {
   private extractStation(
     data: TuneInResponse<TuneInDescribeItem> | undefined,
   ): TuneInStation | undefined {
-if (!data) return undefined
+    if (!data) return undefined
 
     const src = data.body?.[0]
     if (!src) return undefined
@@ -86,10 +81,8 @@ if (!data) return undefined
     }
   }
 
-  private extractStations(
-    data: TuneInResponse<TuneInResponseItem> | undefined,
-  ): TuneInStation[] {
-if (!data) return []
+  private extractStations(data: TuneInResponse<TuneInResponseItem> | undefined): TuneInStation[] {
+    if (!data) return []
 
     const stations: TuneInStation[] = []
 
@@ -119,4 +112,3 @@ if (!data) return []
     return stations
   }
 }
-
