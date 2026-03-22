@@ -1,4 +1,5 @@
 import { db } from "@/infra/db"
+import { getMbidsFromIsrc } from "@/infra/musicbrainz/getMbidFromSpotifyUri"
 import type { AudioSourceItemType, LibraryStore, MediaItem, MediaSourceRef } from "@/types"
 import { toArray } from "@/utils"
 
@@ -49,7 +50,21 @@ export class SqliteLibraryStore implements LibraryStore {
 
   async get(id: string): Promise<MediaItem | undefined> {
     const row = this.conn.prepare(`SELECT * FROM media_items WHERE id = ?`).get(id)
-    return row ? this.fromRow(row) : undefined
+    if (!row) return undefined
+
+    const mediaItem = this.fromRow(row)
+
+    if (mediaItem.isrc && mediaItem.isrc != "") {
+      if (!mediaItem.mbid || mediaItem.mbid == "") {
+        const mbids = await getMbidsFromIsrc(mediaItem.isrc ?? "")
+        if (mbids) {
+          mediaItem.mbid = mbids.join(",")
+          await this.upsert([mediaItem])
+        }
+      }
+    }
+
+    return mediaItem
   }
 
   async list(): Promise<MediaItem[]> {

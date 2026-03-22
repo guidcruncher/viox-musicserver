@@ -1,5 +1,4 @@
 import { SpotifyNormalizer } from "@/core/normalizers/spotifyNormalizer"
-import { getMbidsFromIsrc } from "@/infra/musicbrainz/getMbidFromSpotifyUri"
 import { fetchAllOffsetPages } from "@/infra/spotify/fetchAllOffsetPages"
 import { getLogger } from "@/logger"
 import type { LibraryStore, MediaItem, MediaSourceRef, PlaylistStore } from "@/types"
@@ -61,11 +60,6 @@ export class SpotifyImportService {
 
       const normalized = this.normalize.normalize(track)
 
-      if (normalized && normalized.isrc && normalized.isrc != "") {
-        const mbids = await getMbidsFromIsrc(normalized.isrc ?? "")
-        if (mbids) normalized.mbid = mbids.join(",")
-      }
-
       if (normalized) items.push(normalized)
     }
 
@@ -88,11 +82,6 @@ export class SpotifyImportService {
       if (!album) continue
 
       const normalized = this.normalize.normalize(album)
-
-      if (normalized && normalized.isrc && normalized.isrc != "") {
-        const mbids = await getMbidsFromIsrc(normalized.isrc ?? "")
-        if (mbids) normalized.mbid = mbids.join(",")
-      }
 
       if (normalized) items.push(normalized)
     }
@@ -236,11 +225,6 @@ export class SpotifyImportService {
       if (!track) continue
 
       const normalized = this.normalize.normalize(track)
-
-      if (normalized && normalized.isrc && normalized.isrc != "") {
-        const mbids = await getMbidsFromIsrc(normalized.isrc ?? "")
-        if (mbids) normalized.mbid = mbids.join(",")
-      }
 
       if (normalized) items.push(normalized)
     }
