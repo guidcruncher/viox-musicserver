@@ -32,7 +32,7 @@ export class TuneInSourceAdapter implements AudioSourceAdapter {
     if (!items) return []
 
     return items
-      .filter((t: any) => !t.guide_id)
+      .filter((t: any) => t.guide_id)
       .map((t: any) => {
         return this.normalize.normalize(t)
       })
