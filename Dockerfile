@@ -1,7 +1,7 @@
 ###############################################
 # 1. Builder Stage
 ###############################################
-FROM guidcruncher/vioxbase:alpine-latest AS builder
+FROM guidcruncher/vioxbase:latest AS builder
 
 WORKDIR /build
 
