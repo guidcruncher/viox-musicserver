@@ -53,6 +53,7 @@ ENV RADIO_PROVIDER=radiobrowser \
 # Create required directories
 RUN mkdir -p \
     /app/api \
+    /app/ir-files \
     /etc/pipewire/pipewire.conf.d/ \
     /etc/pipewire/pipewire-pulse.conf.d/ \
     /usr/share/wireplumber/scripts/ \
@@ -90,6 +91,7 @@ COPY ./docker-items/config.yml /app/librespot/config.yml
 COPY ./docker-items/config/asound.conf /app/alsa/asound.conf
 COPY ./docker-items/config/pipewire/ /etc/pipewire/
 COPY ./docker-items/config/dsp/* /app/dsp/
+COPY ./docker-items/ir-files/*  /app/ir-files/
 RUN mv /etc/pipewire/pipewire.conf.d/* /app/pipewire/
 
 COPY ./docker-items/config/snapserver.conf /app/snapserver/snapserver.conf
