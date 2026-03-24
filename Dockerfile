@@ -91,8 +91,7 @@ RUN mkdir -p /etc/alsa/conf.d && \
 ###############################################
 COPY ./docker-items/scripts/entrypoint.sh /app/entrypoint.sh
 
-RUN chmod +x /etc/profile.d/profile.sh \
-    && chmod +x /app/*.sh \
+RUN chmod +x /app/*.sh \
     && chmod +x /usr/local/bin/*.sh
 
 EXPOSE 8080 1705 1704
