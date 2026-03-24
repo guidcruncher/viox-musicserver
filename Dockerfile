@@ -29,21 +29,8 @@ FROM guidcruncher/vioxbase:alpine-latest AS runtime
 ENV RADIO_PROVIDER=radiobrowser \
     PODCAST_CACHE=/data/podcastcache \
     MUSIC_CACHE=/data/musiccache \
-    SPOTIFY_DEVICE_NAME="Speaker" \
-    SNAPCLIENT_ALSA_DEVICE="hw:CARD=AUDIO,DEV=0" \
-    AUDIO_BACKEND=pulseaudio \
-    AUDIO_DEVICE=librespot \
-    INITIAL_VOLUME=75 \
-  
-    AUDIO_BITRATE=320 \
-    AUDIO_RATE=48000 \
-    AUDIO_SAMPLERATE=16 \
-    AUDIO_BYTE_ORDER=LE \
-    AUDIO_CHANNELS=2 \
-    AUDIO_POSITION=FL,FR \
     CACHE_FOLDER=/cache \
     MUSIC_FOLDER=/music \
-
     SEARCH_BACKEND_LIMIT=50 \
     SEARCH_CACHE_SIZE=2000 \
     NODE_ENV=production
@@ -85,12 +72,12 @@ RUN chmod 700 /run/user/1000 /run/user/1000/pulse
 # Copy configs
 ###############################################
 COPY ./docker-items/config/server-config.json /app/
+COPY ./docker-items/config/asound.conf /etc/asound.conf
 COPY ./docker-items/config/config.yml /app/librespot/config.yml
 COPY ./docker-items/config/pipewire/ /etc/pipewire/
 COPY ./docker-items/ir-files/*  /app/ir-files/
-RUN mv /etc/pipewire/pipewire.conf.d/* /app/pipewire/
 
-COPY ./docker-items/config/snapserver.conf /app/snapserver/snapserver.conf
+COPY ./docker-items/config/snapserver.conf /etc/snapserver.conf
 
 ###############################################
 # ALSA compatibility
