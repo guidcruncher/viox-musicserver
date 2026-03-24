@@ -29,7 +29,8 @@ FROM guidcruncher/vioxbase:latest AS runtime
 ENV RADIO_PROVIDER=radiobrowser \
     PODCAST_CACHE=/data/podcastcache \
     MUSIC_CACHE=/data/musiccache \
-    CACHE_FOLDER=/cache \
+    
+CACHE_FOLDER=/cache \
     MUSIC_FOLDER=/music \
     SEARCH_BACKEND_LIMIT=50 \
     SEARCH_CACHE_SIZE=2000 \
@@ -73,7 +74,7 @@ RUN chmod 700 /run/user/1000 /run/user/1000/pulse
 ###############################################
 COPY ./docker-items/config/server-config.json /app/
 COPY ./docker-items/config/asound.conf /etc/asound.conf
-COPY ./docker-items/config/config.yml /data/librespot/config.template
+COPY ./docker-items/config/config.yml /app/golibrespot-config.template
 COPY ./docker-items/config/pipewire/ /etc/pipewire/
 COPY ./docker-items/ir-files/*  /app/ir-files/
 
