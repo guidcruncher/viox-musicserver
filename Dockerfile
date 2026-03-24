@@ -23,7 +23,7 @@ RUN npm run build
 ###############################################
 # 2. Runtime Stage
 ###############################################
-FROM guidcruncher/vioxbase:alpine-latest AS runtime
+FROM guidcruncher/vioxbase:latest AS runtime
 
 # Environment variables
 ENV RADIO_PROVIDER=radiobrowser \
