@@ -34,6 +34,7 @@ ENV RADIO_PROVIDER=radiobrowser \
     AUDIO_BACKEND=pulseaudio \
     AUDIO_DEVICE=librespot \
     INITIAL_VOLUME=75 \
+  
     AUDIO_BITRATE=320 \
     AUDIO_RATE=48000 \
     AUDIO_SAMPLERATE=16 \
@@ -42,10 +43,7 @@ ENV RADIO_PROVIDER=radiobrowser \
     AUDIO_POSITION=FL,FR \
     CACHE_FOLDER=/cache \
     MUSIC_FOLDER=/music \
-    SNAPSERVER_DATADIR=/cache/snapserver/ \
-    SNAPSERVER_CODEC=flac \
-    SNAPSERVER_CHUNK_MS=26 \
-    SNAPSERVER_BUFFER=1000 \
+
     SEARCH_BACKEND_LIMIT=50 \
     SEARCH_CACHE_SIZE=2000 \
     NODE_ENV=production
@@ -87,10 +85,8 @@ RUN chmod 700 /run/user/1000 /run/user/1000/pulse
 # Copy configs
 ###############################################
 COPY ./docker-items/config/server-config.json /app/
-COPY ./docker-items/config.yml /app/librespot/config.yml
-COPY ./docker-items/config/asound.conf /app/alsa/asound.conf
+COPY ./docker-items/config/config.yml /app/librespot/config.yml
 COPY ./docker-items/config/pipewire/ /etc/pipewire/
-COPY ./docker-items/config/dsp/* /app/dsp/
 COPY ./docker-items/ir-files/*  /app/ir-files/
 RUN mv /etc/pipewire/pipewire.conf.d/* /app/pipewire/
 
