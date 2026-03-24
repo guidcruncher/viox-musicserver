@@ -38,7 +38,7 @@ ENV RADIO_PROVIDER=radiobrowser \
 # Create required directories
 RUN mkdir -p \
     /app/api \
-    /app/ir-files \
+    /app/ir-files /data/golibrespot /data/snapserver /run/dbus /config /music \
     /etc/pipewire/pipewire.conf.d/ \
     /etc/pipewire/pipewire-pulse.conf.d/ \
     /usr/share/wireplumber/scripts/ \
@@ -73,7 +73,7 @@ RUN chmod 700 /run/user/1000 /run/user/1000/pulse
 ###############################################
 COPY ./docker-items/config/server-config.json /app/
 COPY ./docker-items/config/asound.conf /etc/asound.conf
-COPY ./docker-items/config/config.yml /app/librespot/config.yml
+COPY ./docker-items/config/config.yml /data/librespot/config.template
 COPY ./docker-items/config/pipewire/ /etc/pipewire/
 COPY ./docker-items/ir-files/*  /app/ir-files/
 
