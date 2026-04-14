@@ -10,5 +10,5 @@ export const hashAudioFilename = (url: string): string => {
 
 export const hashImageFilename = (url: string): string => {
   const hash = crypto.createHash("sha256").update(url).digest("hex")
-  return path.join(getConfig("cacheFolder"), `albumart_cache_${hash}.mp3`)
+  return path.join(getConfig("cacheFolder"), `albumart_cache_${hash}`)
 }
