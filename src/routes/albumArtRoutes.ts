@@ -3,6 +3,7 @@ import type { FastifyInstance } from "fastify"
 import { logger } from "@/logger"
 import { ImageCacheService } from "@/services/imageCacheService"
 import type { VioxBackend } from "@/types"
+import { isSafeExternalUrl } from "@/utils/urlValidator"
 
 export function registerAlbumArtRoutes(app: FastifyInstance, _backend: VioxBackend) {
   logger.info("Registering Album Art routes")
@@ -13,6 +14,10 @@ export function registerAlbumArtRoutes(app: FastifyInstance, _backend: VioxBacke
 
     if (!url) {
       return res.code(400).send({ error: "Missing url query parameter" })
+    }
+
+    if (!isSafeExternalUrl(url)) {
+      return res.code(400).send({ error: "Invalid or disallowed URL" })
     }
 
     try {

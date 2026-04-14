@@ -46,9 +46,10 @@ export function registerMediaRoutes(app: FastifyInstance, backend: VioxBackend) 
     if (items) {
       await backend.cache.upsert(items)
       reply.send(items)
+      return
     }
 
     logger.warn(`No items found for item with id ${id}`)
-    return []
+    reply.send([])
   })
 }

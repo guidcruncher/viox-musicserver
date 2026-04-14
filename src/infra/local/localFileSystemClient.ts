@@ -13,7 +13,13 @@ export class LocalFileSystemClient {
   constructor(private root: string) {}
 
   async listDirectory(relPath = ""): Promise<LocalFileEntry[]> {
-    const dir = path.join(this.root, relPath)
+    const dir = path.resolve(this.root, relPath)
+
+    // Prevent path traversal outside the root directory
+    if (!dir.startsWith(path.resolve(this.root))) {
+      throw new Error("Path traversal attempt blocked")
+    }
+
     const entries = await fs.readdir(dir, { withFileTypes: true })
 
     return entries.map((e) => {

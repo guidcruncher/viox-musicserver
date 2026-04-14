@@ -22,23 +22,35 @@ export class NullDownload implements FileDownloader {
   }
 }
 
+function isRetryableError(err: unknown): boolean {
+  if (err instanceof TypeError) return true // fetch network failures
+  if (err instanceof Error) {
+    const msg = err.message
+    if (msg.startsWith("HTTP 5")) return true // server errors
+    if (msg === "No response body") return true
+    if (
+      msg.includes("ECONNRESET") ||
+      msg.includes("ETIMEDOUT") ||
+      msg.includes("ENOTFOUND") ||
+      msg.includes("EAI_AGAIN") ||
+      msg.includes("fetch failed")
+    ) {
+      return true
+    }
+  }
+  return false
+}
+
 export class FileDownload implements FileDownloader {
   async downloadFile(url: string, opts: DownloadOptions = {}): Promise<void> {
     const destination = hashAudioFilename(url)
     const partPath = `${destination}.part`
 
-    if (fs.existsSync(destination)) {
-      logger.info(`URL ${url} already downloaded to ${destination}`)
-      return
-    }
-
-    const retries = opts.retries ?? 5
+    const maxRetries = opts.retries ?? 5
     const backoffMs = opts.backoffMs ?? 500
 
-    let attempt = 0
-
-    while (true) {
-      let fileStream: fs.WriteStream | null = null
+    for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
+      let fileStream: fs.WriteStream | undefined
       try {
         const existingSize = fs.existsSync(partPath) ? fs.statSync(partPath).size : 0
 
@@ -70,18 +82,41 @@ export class FileDownload implements FileDownloader {
         })
 
         fs.renameSync(partPath, destination)
+        logger.info(`Download complete for ${url} on attempt ${attempt}`)
         return
       } catch (err) {
         fileStream?.destroy()
-        logger.error(`Error during download of ${url} on attempt ${attempt}`, err)
-        attempt++
-        if (attempt > retries) {
+
+        if (!isRetryableError(err)) {
+          logger.error(
+            `Non-retryable error downloading ${url} on attempt ${attempt}, aborting`,
+            err,
+          )
           if (fs.existsSync(partPath)) {
             fs.unlinkSync(partPath)
           }
           throw err
         }
-        await delay(backoffMs * attempt)
+
+        const remaining = maxRetries + 1 - attempt
+        if (remaining <= 0) {
+          logger.error(
+            `Download of ${url} failed after ${maxRetries + 1} attempts, no retries remaining`,
+            err,
+          )
+          if (fs.existsSync(partPath)) {
+            fs.unlinkSync(partPath)
+          }
+          throw err
+        }
+
+        const delayMs = backoffMs * attempt
+        logger.warn(
+          `Retryable error downloading ${url} on attempt ${attempt}/${maxRetries + 1}` +
+            ` — retrying in ${delayMs}ms (${remaining} retries remaining)`,
+          err,
+        )
+        await delay(delayMs)
       }
     }
   }

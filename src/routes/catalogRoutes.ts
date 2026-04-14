@@ -46,6 +46,7 @@ export function registerCatalogRoutes(app: FastifyInstance, backend: VioxBackend
       if (items) {
         await backend.cache.upsert(items)
         reply.send(items)
+        return
       }
     }
 
