@@ -41,7 +41,11 @@ export const createServer = async () => {
     })
   }
 
-  await app.register(cors, {})
+  const allowedOrigin = getConfig<string>("baseUrl")
+  await app.register(cors, {
+    origin: allowedOrigin || false,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  })
 
   logger.info("Enabling Swagger/OpenAPI documentation")
   await app.register(swagger, {

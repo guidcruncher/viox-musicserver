@@ -80,6 +80,22 @@ export class PipewireReverbService {
       return
     }
 
+    // Validate numeric inputs to prevent command injection
+    if (typeof gain !== "number" || !Number.isFinite(gain)) {
+      logger.error(`Invalid gain value: ${gain}`)
+      return
+    }
+    if (typeof delay !== "number" || !Number.isFinite(delay)) {
+      logger.error(`Invalid delay value: ${delay}`)
+      return
+    }
+
+    // Sanitize filename: only allow alphanumeric, hyphens, underscores, dots
+    if (!/^[\w.-]+$/.test(filename)) {
+      logger.error(`Invalid IR filename: ${filename}`)
+      return
+    }
+
     const irPath = `${process.env.IR_RESPONSE_BASE}/${filename}`
 
     if (!fs.existsSync(irPath)) {

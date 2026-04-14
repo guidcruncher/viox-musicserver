@@ -4,6 +4,7 @@ import { getProxyService } from "@/infra/networking/proxyFactory"
 import { logger } from "@/logger"
 import { PlayRequestSchema, SeekRequestSchema, SuccessResponseOnlySchema } from "@/schemas"
 import type { VioxBackend } from "@/types"
+import { isSafeExternalUrl } from "@/utils/urlValidator"
 
 export function registerPlaybackRoutes(app: FastifyInstance, backend: VioxBackend) {
   logger.info("Registering Playback routes")
@@ -59,10 +60,8 @@ export function registerPlaybackRoutes(app: FastifyInstance, backend: VioxBacken
       return
     }
 
-    try {
-      new URL(url)
-    } catch {
-      reply.code(400).send("Invalid URL")
+    if (!isSafeExternalUrl(url)) {
+      reply.code(400).send("Invalid or disallowed URL")
       return
     }
 
