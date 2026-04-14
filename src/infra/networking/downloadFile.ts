@@ -45,11 +45,6 @@ export class FileDownload implements FileDownloader {
   async downloadFile(url: string, opts: DownloadOptions = {}): Promise<void> {
     const destination = hashAudioFilename(url)
 
-    if (fs.existsSync(destination)) {
-      logger.info(`URL ${url} already downloaded to ${destination}`)
-      return
-    }
-
     const maxRetries = opts.retries ?? 5
     const backoffMs = opts.backoffMs ?? 500
 
