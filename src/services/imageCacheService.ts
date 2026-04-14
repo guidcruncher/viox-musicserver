@@ -3,6 +3,7 @@ import { createHash } from "crypto"
 import { createReadStream, createWriteStream, existsSync, statSync } from "fs"
 import { mkdir } from "fs/promises"
 import path from "path"
+import { hashImageFilename } from "@/infra/networking/hashFilename"
 
 import { getConfig } from "@/config"
 
@@ -31,11 +32,6 @@ export class ImageCacheService {
     }
   }
 
-  private getCachedFilePath(url: string): string {
-    const hashed = `albumart_cache_${this.hashUrl(url)}`
-    return path.join(this.cacheDir, hashed)
-  }
-
   async getImage(url: string): Promise<{
     stream: NodeJS.ReadableStream
     mimeType: string
@@ -43,7 +39,7 @@ export class ImageCacheService {
   }> {
     await this.ensureCacheDir()
 
-    const filePath = this.getCachedFilePath(url)
+    const filePath = hashImageFilename(url)
     const originalFilename = this.extractOriginalFilename(url)
 
     // Serve from cache if exists

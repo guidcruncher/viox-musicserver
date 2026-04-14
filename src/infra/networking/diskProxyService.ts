@@ -1,4 +1,3 @@
-import crypto from "crypto"
 import fs, { promises as fsPromises } from "fs"
 import http from "http"
 import path from "path"
@@ -6,6 +5,7 @@ import { URL } from "url"
 
 import { getConfig } from "@/config"
 import { logger } from "@/logger"
+import { hashAudioFilename } from "./hashFilename"
 
 import { ProxyResult, ProxyService } from "./types/proxyService"
 import { getHttpClient } from "./utils"
@@ -30,16 +30,11 @@ export class DiskProxyService implements ProxyService {
     this.timeout = options.timeout ?? 20000
   }
 
-  private getHash(url: string): string {
-    return crypto.createHash("sha256").update(url).digest("hex")
-  }
-
   async stream(remoteUrl: string): Promise<ProxyResult> {
-    const hash = this.getHash(remoteUrl)
-    const finalPath = path.join(this.tempDir, `proxy_cache_${hash}.mp3`)
+    const finalPath = hashAudioFilename(remoteUrl)
     const partPath = `${finalPath}.part`
 
-    const logContext = { url: remoteUrl, hash }
+    const logContext = { url: remoteUrl }
     logger.info(`finalPath="${finalPath}" partPath="${partPath}"`)
     // --- STEP 1: Check for Cache Hit ---
     try {
