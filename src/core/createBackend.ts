@@ -8,6 +8,7 @@ import { SqliteHouseKeepingStore } from "@/infra/houseKeepingStore"
 import { SqliteLibraryStore } from "@/infra/libraryStore"
 import { MusicBrainzClient } from "@/infra/musicbrainz/musicBrainzClient"
 import { SqliteMusicBrainzStore } from "@/infra/musicBrainzStore"
+import { NullDownload } from "@/infra/networking/downloadFile"
 import { PlaybackController } from "@/infra/playback/playbackController"
 import { GlobalQueue } from "@/infra/playback/playbackQueue"
 import { SqlitePlaylistStore } from "@/infra/playlistStore"
@@ -58,7 +59,8 @@ export function createVioxBackend(): VioxBackend {
   // 5. Playback controller (unifies all backends)
   // ────────────────────────────────────────────────
   //
-  const podcastIndexer = new PodcastIndexer(subscriptions, episodes)
+  const downloader = new NullDownload()
+  const podcastIndexer = new PodcastIndexer(downloader, subscriptions, episodes)
   const queue = new GlobalQueue(queueStore)
   const playback = new PlaybackController(
     queue,

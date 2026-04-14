@@ -1,3 +1,4 @@
+import { FileDownloader,NullDownload } from "@/infra/networking/downloadFile"
 import { SqliteSubscriptionEpisodesStore } from "@/infra/subscriptionEpisodesStore"
 import { SqliteSubscriptionsStore } from "@/infra/subscriptionsStore"
 import { logger } from "@/logger"
@@ -7,6 +8,7 @@ import { podcastSourceRegistry } from "./podcastSourceRegistry"
 
 export class PodcastIndexer {
   constructor(
+    private readonly downloader: FileDownloader = new NullDownload(),
     private readonly subscriptions = new SqliteSubscriptionsStore(),
     private readonly episodes = new SqliteSubscriptionEpisodesStore(),
   ) {}
@@ -122,6 +124,11 @@ export class PodcastIndexer {
     }
 
     this.episodes.create(row)
+
+    if (this.downloader && row.source_uri) {
+      logger.info(`Downloading episode locally to cache.`)
+      await this.downloader.downloadFile(row.source_uri, {})
+    }
 
     logger.info("new episode indexed", { episodeId: episode.id, subscriptionId })
   }
