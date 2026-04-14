@@ -35,6 +35,14 @@ export class EqualizerService {
   // ────────────────────────────────────────────────
 
   setBand(band: string, gainDb: number): void {
+    if (!(band in validBands)) {
+      logger.warn(`Invalid EQ band requested: ${band}`)
+      return
+    }
+    if (typeof gainDb !== "number" || !Number.isFinite(gainDb)) {
+      logger.warn(`Invalid gain value: ${gainDb}`)
+      return
+    }
     const params: Record<string, number> = {}
     params[validBands[band]] = gainDb
     this.applyBands(params)
