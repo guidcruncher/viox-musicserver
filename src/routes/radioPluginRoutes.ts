@@ -26,6 +26,7 @@ export function registerRadioPluginRoutes(app: FastifyInstance, backend: VioxBac
         if (items) {
           await backend.cache.upsert(items)
           reply.send(items)
+          return
         }
       }
 

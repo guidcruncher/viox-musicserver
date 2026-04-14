@@ -29,6 +29,7 @@ export function registerLocalRoutes(app: FastifyInstance, backend: VioxBackend) 
       })
       if (items) {
         reply.send(items)
+        return
       }
     }
 
