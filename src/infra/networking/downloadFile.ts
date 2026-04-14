@@ -22,6 +22,25 @@ export class NullDownload implements FileDownloader {
   }
 }
 
+function isRetryableError(err: unknown): boolean {
+  if (err instanceof TypeError) return true // fetch network failures
+  if (err instanceof Error) {
+    const msg = err.message
+    if (msg.startsWith("HTTP 5")) return true // server errors
+    if (msg === "No response body") return true
+    if (
+      msg.includes("ECONNRESET") ||
+      msg.includes("ETIMEDOUT") ||
+      msg.includes("ENOTFOUND") ||
+      msg.includes("EAI_AGAIN") ||
+      msg.includes("fetch failed")
+    ) {
+      return true
+    }
+  }
+  return false
+}
+
 export class FileDownload implements FileDownloader {
   async downloadFile(url: string, opts: DownloadOptions = {}): Promise<void> {
     const destination = hashAudioFilename(url)
@@ -31,12 +50,11 @@ export class FileDownload implements FileDownloader {
       return
     }
 
-    const retries = opts.retries ?? 5
+    const maxRetries = opts.retries ?? 5
     const backoffMs = opts.backoffMs ?? 500
 
-    let attempt = 0
-
-    while (true) {
+    for (let attempt = 1; attempt <= maxRetries + 1; attempt++) {
+      let fileStream: fs.WriteStream | undefined
       try {
         const existingSize = fs.existsSync(destination) ? fs.statSync(destination).size : 0
 
@@ -51,7 +69,7 @@ export class FileDownload implements FileDownloader {
           throw new Error(`HTTP ${res.status} ${res.statusText}`)
         }
 
-        const fileStream = fs.createWriteStream(destination, {
+        fileStream = fs.createWriteStream(destination, {
           flags: existingSize > 0 ? "a" : "w",
         })
 
@@ -62,12 +80,35 @@ export class FileDownload implements FileDownloader {
         }
 
         fileStream.end()
+        logger.info(`Download complete for ${url} on attempt ${attempt}`)
         return
       } catch (err) {
-        logger.error(`Error during download of ${url} on attempt ${attempt}`, err)
-        attempt++
-        if (attempt > retries) throw err
-        await delay(backoffMs * attempt)
+        fileStream?.destroy()
+
+        if (!isRetryableError(err)) {
+          logger.error(
+            `Non-retryable error downloading ${url} on attempt ${attempt}, aborting`,
+            err,
+          )
+          throw err
+        }
+
+        const remaining = maxRetries + 1 - attempt
+        if (remaining <= 0) {
+          logger.error(
+            `Download of ${url} failed after ${maxRetries + 1} attempts, no retries remaining`,
+            err,
+          )
+          throw err
+        }
+
+        const delayMs = backoffMs * attempt
+        logger.warn(
+          `Retryable error downloading ${url} on attempt ${attempt}/${maxRetries + 1}` +
+            ` — retrying in ${delayMs}ms (${remaining} retries remaining)`,
+          err,
+        )
+        await delay(delayMs)
       }
     }
   }
