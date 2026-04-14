@@ -3,9 +3,9 @@ import { createHash } from "crypto"
 import { createReadStream, createWriteStream, existsSync, statSync } from "fs"
 import { mkdir } from "fs/promises"
 import path from "path"
-import { hashImageFilename } from "@/infra/networking/hashFilename"
 
 import { getConfig } from "@/config"
+import { hashImageFilename } from "@/infra/networking/hashFilename"
 
 export class ImageCacheService {
   private cacheDir: string

@@ -1,12 +1,11 @@
 import fs, { promises as fsPromises } from "fs"
 import http from "http"
-import path from "path"
 import { URL } from "url"
 
 import { getConfig } from "@/config"
 import { logger } from "@/logger"
-import { hashAudioFilename } from "./hashFilename"
 
+import { hashAudioFilename } from "./hashFilename"
 import { ProxyResult, ProxyService } from "./types/proxyService"
 import { getHttpClient } from "./utils"
 
