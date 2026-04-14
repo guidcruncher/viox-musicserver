@@ -53,7 +53,8 @@ export function registerSpotifyAuthRoutes(app: FastifyInstance, _backend: VioxBa
       username: user ? user.id : "",
     })
 
-    const callbackUrl = `${getConfig("callbackUrl")}?authenticated=true`
+//    const callbackUrl = `${getConfig("callbackUrl")}?authenticated=true`
+    const callbackUrl = `${getConfig("callbackUrl")}?token=${data.access_token}`
     reply.redirect(callbackUrl)
   })
 
