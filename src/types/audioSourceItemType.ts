@@ -1,0 +1,11 @@
+export type AudioSourceItemType =
+  | "playlist"
+  | "folder"
+  | "track"
+  | "album"
+  | "episode"
+  | "show"
+  | "podcast"
+  | "station"
+  | "metadata"
+  | "artist"

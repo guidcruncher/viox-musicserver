@@ -1,0 +1,908 @@
+{
+  "equalisers": [
+    {
+      "filename": "ZamEQ2-ladspa.so",
+      "plugin": "ZamEQ2-ladspa",
+      "label": "ZamEQ2",
+      "description": "2‑band EQ"
+    },
+    {
+      "filename": "ZamGEQ31-ladspa.so",
+      "plugin": "ZamGEQ31-ladspa",
+      "label": "ZamGEQ31",
+      "description": "31‑band graphic EQ"
+    },
+    {
+      "filename": "mbeq_1197.so",
+      "plugin": "mbeq_1197",
+      "label": "mbeq",
+      "description": "Multiband EQ"
+    },
+    {
+      "filename": "single_para_1203.so",
+      "plugin": "single_para_1203",
+      "label": "singlePara",
+      "description": "Single‑band parametric EQ"
+    },
+    {
+      "filename": "triple_para_1204.so",
+      "plugin": "triple_para_1204",
+      "label": "triplePara",
+      "description": "Triple‑band parametric EQ"
+    },
+    {
+      "filename": "hermes_filter_1200.so",
+      "plugin": "hermes_filter_1200",
+      "label": "hermesFilter",
+      "description": "Parametric filter"
+    },
+    {
+      "filename": "ls_filter_1908.so",
+      "plugin": "ls_filter_1908",
+      "label": "lsFilter",
+      "description": "Low‑shelf filter"
+    },
+    {
+      "filename": "dj_eq_1901.so",
+      "plugin": "dj_eq_1901",
+      "label": "dj_eq",
+      "description": "DJ EQ"
+    },
+    {
+      "filename": "dj_eq_1901.so",
+      "plugin": "dj_eq_1901",
+      "label": "dj_eq_mono",
+      "description": "DJ EQ (mono)"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "Eq10",
+      "description": "10‑band EQ"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "Eq10X2",
+      "description": "Stereo 10‑band EQ"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "Eq4p",
+      "description": "4‑band parametric EQ"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "EqFA4p",
+      "description": "4‑band parametric EQ (FA)"
+    }
+  ],
+  "compressors_limiters_dynamics": [
+    {
+      "filename": "ZamComp-ladspa.so",
+      "plugin": "ZamComp-ladspa",
+      "label": "ZamComp",
+      "description": "Compressor"
+    },
+    {
+      "filename": "ZamCompX2-ladspa.so",
+      "plugin": "ZamCompX2-ladspa",
+      "label": "ZamCompX2",
+      "description": "Stereo compressor"
+    },
+    {
+      "filename": "ZaMultiCompX2-ladspa.so",
+      "plugin": "ZaMultiCompX2-ladspa",
+      "label": "ZaMultiCompX2",
+      "description": "Multiband compressor"
+    },
+    {
+      "filename": "dyson_compress_1403.so",
+      "plugin": "dyson_compress_1403",
+      "label": "dysonCompress",
+      "description": "Compressor"
+    },
+    {
+      "filename": "sc1_1425.so",
+      "plugin": "sc1_1425",
+      "label": "sc1",
+      "description": "Compressor"
+    },
+    {
+      "filename": "sc2_1426.so",
+      "plugin": "sc2_1426",
+      "label": "sc2",
+      "description": "Compressor"
+    },
+    {
+      "filename": "sc3_1427.so",
+      "plugin": "sc3_1427",
+      "label": "sc3",
+      "description": "Compressor"
+    },
+    {
+      "filename": "sc4_1882.so",
+      "plugin": "sc4_1882",
+      "label": "sc4",
+      "description": "Compressor"
+    },
+    {
+      "filename": "sc4m_1916.so",
+      "plugin": "sc4m_1916",
+      "label": "sc4m",
+      "description": "Mono compressor"
+    },
+    {
+      "filename": "se4_1883.so",
+      "plugin": "se4_1883",
+      "label": "se4",
+      "description": "Envelope shaper"
+    },
+    {
+      "filename": "fast_lookahead_limiter_1913.so",
+      "plugin": "fast_lookahead_limiter_1913",
+      "label": "fastLookaheadLimiter",
+      "description": "Lookahead limiter"
+    },
+    {
+      "filename": "hard_limiter_1413.so",
+      "plugin": "hard_limiter_1413",
+      "label": "hardLimiter",
+      "description": "Hard limiter"
+    },
+    {
+      "filename": "tap_limiter.so",
+      "plugin": "tap_limiter",
+      "label": "tap_limiter",
+      "description": "TAP limiter"
+    },
+    {
+      "filename": "ZamGate-ladspa.so",
+      "plugin": "ZamGate-ladspa",
+      "label": "ZamGate",
+      "description": "Gate"
+    },
+    {
+      "filename": "ZamGateX2-ladspa.so",
+      "plugin": "ZamGateX2-ladspa",
+      "label": "ZamGateX2",
+      "description": "Stereo gate"
+    },
+    {
+      "filename": "gate_1410.so",
+      "plugin": "gate_1410",
+      "label": "gate",
+      "description": "Gate"
+    },
+    {
+      "filename": "transient_1206.so",
+      "plugin": "transient_1206",
+      "label": "transient",
+      "description": "Transient shaper"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "Noisegate",
+      "description": "Noise gate"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "Compress",
+      "description": "Compressor"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "CompressX2",
+      "description": "Stereo compressor"
+    }
+  ],
+  "saturation_distortion_overdrive": [
+    {
+      "filename": "ZamAutoSat-ladspa.so",
+      "plugin": "ZamAutoSat-ladspa",
+      "label": "ZamAutoSat",
+      "description": "Auto‑saturation"
+    },
+    {
+      "filename": "ZamTube-ladspa.so",
+      "plugin": "ZamTube-ladspa",
+      "label": "ZamTube",
+      "description": "Tube distortion"
+    },
+    {
+      "filename": "chebstortion_1430.so",
+      "plugin": "chebstortion_1430",
+      "label": "chebstortion",
+      "description": "Chebyshev distortion"
+    },
+    {
+      "filename": "foverdrive_1196.so",
+      "plugin": "foverdrive_1196",
+      "label": "foverdrive",
+      "description": "Overdrive"
+    },
+    {
+      "filename": "foldover_1213.so",
+      "plugin": "foldover_1213",
+      "label": "foldover",
+      "description": "Foldover distortion"
+    },
+    {
+      "filename": "shaper_1187.so",
+      "plugin": "shaper_1187",
+      "label": "shaper",
+      "description": "Waveshaper"
+    },
+    {
+      "filename": "valve_1209.so",
+      "plugin": "valve_1209",
+      "label": "valve",
+      "description": "Valve saturation"
+    },
+    {
+      "filename": "valve_rect_1405.so",
+      "plugin": "valve_rect_1405",
+      "label": "valveRect",
+      "description": "Valve rectifier"
+    },
+    {
+      "filename": "satan_maximiser_1408.so",
+      "plugin": "satan_maximiser_1408",
+      "label": "satanMaximiser",
+      "description": "Maximiser"
+    },
+    {
+      "filename": "tap_tubewarmth.so",
+      "plugin": "tap_tubewarmth",
+      "label": "tap_tubewarmth",
+      "description": "Tube warmth"
+    },
+    {
+      "filename": "alias_1407.so",
+      "plugin": "alias_1407",
+      "label": "alias",
+      "description": "Aliasing distortion"
+    },
+    {
+      "filename": "pointer_cast_1910.so",
+      "plugin": "pointer_cast_1910",
+      "label": "pointerCastDistortion",
+      "description": "Pointer‑based distortion"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "Saturate",
+      "description": "Nonlinear saturation"
+    }
+  ],
+  "delays_echo_reverb": [
+    {
+      "filename": "ZamDelay-ladspa.so",
+      "plugin": "ZamDelay-ladspa",
+      "label": "ZamDelay",
+      "description": "Delay"
+    },
+    {
+      "filename": "delay.so",
+      "plugin": "delay",
+      "label": "delay_5s",
+      "description": "Simple delay"
+    },
+    {
+      "filename": "delay_1898.so",
+      "plugin": "delay_1898",
+      "label": "delay_n",
+      "description": "Delay (non‑interp)"
+    },
+    {
+      "filename": "delay_1898.so",
+      "plugin": "delay_1898",
+      "label": "delay_l",
+      "description": "Delay (linear)"
+    },
+    {
+      "filename": "delay_1898.so",
+      "plugin": "delay_1898",
+      "label": "delay_c",
+      "description": "Delay (cubic)"
+    },
+    {
+      "filename": "delayorama_1402.so",
+      "plugin": "delayorama_1402",
+      "label": "delayorama",
+      "description": "Multi‑tap delay"
+    },
+    {
+      "filename": "fad_delay_1192.so",
+      "plugin": "fad_delay_1192",
+      "label": "fadDelay",
+      "description": "Fractional delay"
+    },
+    {
+      "filename": "mod_delay_1419.so",
+      "plugin": "mod_delay_1419",
+      "label": "modDelay",
+      "description": "Modulated delay"
+    },
+    {
+      "filename": "tape_delay_1211.so",
+      "plugin": "tape_delay_1211",
+      "label": "tapeDelay",
+      "description": "Tape delay"
+    },
+    {
+      "filename": "lcr_delay_1436.so",
+      "plugin": "lcr_delay_1436",
+      "label": "lcrDelay",
+      "description": "L‑C‑R delay"
+    },
+    {
+      "filename": "tap_echo.so",
+      "plugin": "tap_echo",
+      "label": "tap_stereo_echo",
+      "description": "Stereo echo"
+    },
+    {
+      "filename": "tap_reverb.so",
+      "plugin": "tap_reverb",
+      "label": "tap_reverb",
+      "description": "Reverb"
+    },
+    {
+      "filename": "gverb_1216.so",
+      "plugin": "gverb_1216",
+      "label": "gverb",
+      "description": "Algorithmic reverb"
+    },
+    {
+      "filename": "revdelay_1605.so",
+      "plugin": "revdelay_1605",
+      "label": "revdelay",
+      "description": "Reverse delay"
+    },
+    {
+      "filename": "plate_1423.so",
+      "plugin": "plate_1423",
+      "label": "plate",
+      "description": "Plate reverb"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "Plate",
+      "description": "Plate reverb"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "PlateX2",
+      "description": "Stereo plate reverb"
+    }
+  ],
+  "filters": [
+    {
+      "filename": "lowpass_iir_1891.so",
+      "plugin": "lowpass_iir_1891",
+      "label": "lowpass_iir",
+      "description": "Low‑pass filter"
+    },
+    {
+      "filename": "highpass_iir_1890.so",
+      "plugin": "highpass_iir_1890",
+      "label": "highpass_iir",
+      "description": "High‑pass filter"
+    },
+    {
+      "filename": "bandpass_iir_1892.so",
+      "plugin": "bandpass_iir_1892",
+      "label": "bandpass_iir",
+      "description": "Band‑pass filter"
+    },
+    {
+      "filename": "bandpass_a_iir_1893.so",
+      "plugin": "bandpass_a_iir_1893",
+      "label": "bandpass_a_iir",
+      "description": "Analog band‑pass filter"
+    },
+    {
+      "filename": "notch_iir_1894.so",
+      "plugin": "notch_iir_1894",
+      "label": "notch_iir",
+      "description": "Notch filter"
+    },
+    {
+      "filename": "allpass_1895.so",
+      "plugin": "allpass_1895",
+      "label": "allpass_n",
+      "description": "Allpass (non‑interp)"
+    },
+    {
+      "filename": "allpass_1895.so",
+      "plugin": "allpass_1895",
+      "label": "allpass_l",
+      "description": "Allpass (linear)"
+    },
+    {
+      "filename": "allpass_1895.so",
+      "plugin": "allpass_1895",
+      "label": "allpass_c",
+      "description": "Allpass (cubic)"
+    },
+    {
+      "filename": "butterworth_1902.so",
+      "plugin": "butterworth_1902",
+      "label": "bwxover_iir",
+      "description": "Butterworth crossover"
+    },
+    {
+      "filename": "butterworth_1902.so",
+      "plugin": "butterworth_1902",
+      "label": "buttlow_iir",
+      "description": "Butterworth lowpass"
+    },
+    {
+      "filename": "butterworth_1902.so",
+      "plugin": "butterworth_1902",
+      "label": "butthigh_iir",
+      "description": "Butterworth highpass"
+    },
+    {
+      "filename": "svf_1214.so",
+      "plugin": "svf_1214",
+      "label": "svf",
+      "description": "State‑variable filter"
+    },
+    {
+      "filename": "filter.so",
+      "plugin": "filter",
+      "label": "lpf",
+      "description": "Simple low‑pass"
+    },
+    {
+      "filename": "filter.so",
+      "plugin": "filter",
+      "label": "hpf",
+      "description": "Simple high‑pass"
+    },
+    {
+      "filename": "crossover_dist_1404.so",
+      "plugin": "crossover_dist_1404",
+      "label": "crossoverDist",
+      "description": "Crossover + distortion"
+    }
+  ],
+  "pitch_time_fx": [
+    {
+      "filename": "am_pitchshift_1433.so",
+      "plugin": "am_pitchshift_1433",
+      "label": "amPitchshift",
+      "description": "AM pitch shifter"
+    },
+    {
+      "filename": "pitch_scale_1193.so",
+      "plugin": "pitch_scale_1193",
+      "label": "pitchScale",
+      "description": "Pitch scaler"
+    },
+    {
+      "filename": "pitch_scale_1194.so",
+      "plugin": "pitch_scale_1194",
+      "label": "pitchScaleHQ",
+      "description": "High‑quality pitch scaler"
+    },
+    {
+      "filename": "rate_shifter_1417.so",
+      "plugin": "rate_shifter_1417",
+      "label": "rateShifter",
+      "description": "Rate shifter"
+    },
+    {
+      "filename": "bode_shifter_1431.so",
+      "plugin": "bode_shifter_1431",
+      "label": "bodeShifter",
+      "description": "Bode frequency shifter"
+    },
+    {
+      "filename": "bode_shifter_cv_1432.so",
+      "plugin": "bode_shifter_cv_1432",
+      "label": "bodeShifterCV",
+      "description": "CV Bode shifter"
+    },
+    {
+      "filename": "tap_pitch.so",
+      "plugin": "tap_pitch",
+      "label": "tap_pitch",
+      "description": "TAP pitch shifter"
+    }
+  ],
+  "modulation": [
+    {
+      "filename": "multivoice_chorus_1201.so",
+      "plugin": "multivoice_chorus_1201",
+      "label": "multivoiceChorus",
+      "description": "Chorus"
+    },
+    {
+      "filename": "tap_chorusflanger.so",
+      "plugin": "tap_chorusflanger",
+      "label": "tap_chorusflanger",
+      "description": "Chorus/flanger"
+    },
+    {
+      "filename": "flanger_1191.so",
+      "plugin": "flanger_1191",
+      "label": "flanger",
+      "description": "Flanger"
+    },
+    {
+      "filename": "retro_flange_1208.so",
+      "plugin": "retro_flange_1208",
+      "label": "retroFlange",
+      "description": "Retro flanger"
+    },
+    {
+      "filename": "giant_flange_1437.so",
+      "plugin": "giant_flange_1437",
+      "label": "giantFlange",
+      "description": "Giant flanger"
+    },
+    {
+      "filename": "phasers_1217.so",
+      "plugin": "phasers_1217",
+      "label": "lfoPhaser",
+      "description": "LFO phaser"
+    },
+    {
+      "filename": "phasers_1217.so",
+      "plugin": "phasers_1217",
+      "label": "fourByFourPole",
+      "description": "4×4 pole allpass"
+    },
+    {
+      "filename": "phasers_1217.so",
+      "plugin": "phasers_1217",
+      "label": "autoPhaser",
+      "description": "Auto phaser"
+    },
+    {
+      "filename": "tap_tremolo.so",
+      "plugin": "tap_tremolo",
+      "label": "tap_tremolo",
+      "description": "Tremolo"
+    },
+    {
+      "filename": "tap_vibrato.so",
+      "plugin": "tap_vibrato",
+      "label": "tap_vibrato",
+      "description": "Vibrato"
+    },
+    {
+      "filename": "tap_autopan.so",
+      "plugin": "tap_autopan",
+      "label": "tap_autopan",
+      "description": "Autopan"
+    }
+  ],
+  "oscillators_generators_noise": [
+    {
+      "filename": "sine.so",
+      "plugin": "sine",
+      "label": "sine_faaa",
+      "description": "Sine osc (audio/audio)"
+    },
+    {
+      "filename": "sine.so",
+      "plugin": "sine",
+      "label": "sine_faac",
+      "description": "Sine osc (audio/control)"
+    },
+    {
+      "filename": "sine.so",
+      "plugin": "sine",
+      "label": "sine_fcaa",
+      "description": "Sine osc (control/audio)"
+    },
+    {
+      "filename": "sine.so",
+      "plugin": "sine",
+      "label": "sine_fcac",
+      "description": "Sine osc (control/control)"
+    },
+    {
+      "filename": "fm_osc_1415.so",
+      "plugin": "fm_osc_1415",
+      "label": "fmOsc",
+      "description": "FM oscillator"
+    },
+    {
+      "filename": "analogue_osc_1416.so",
+      "plugin": "analogue_osc_1416",
+      "label": "analogueOsc",
+      "description": "Analogue oscillator"
+    },
+    {
+      "filename": "sinus_wavewrapper_1198.so",
+      "plugin": "sinus_wavewrapper_1198",
+      "label": "sinusWavewrapper",
+      "description": "Wavewrapper"
+    },
+    {
+      "filename": "harmonic_gen_1220.so",
+      "plugin": "harmonic_gen_1220",
+      "label": "harmonicGen",
+      "description": "Harmonic generator"
+    },
+    {
+      "filename": "imp_1199.so",
+      "plugin": "imp_1199",
+      "label": "imp",
+      "description": "Impulse convolver"
+    },
+    {
+      "filename": "impulse_1885.so",
+      "plugin": "impulse_1885",
+      "label": "impulse_fc",
+      "description": "Impulse generator"
+    },
+    {
+      "filename": "noise.so",
+      "plugin": "noise",
+      "label": "noise_white",
+      "description": "White noise"
+    },
+    {
+      "filename": "tap_pinknoise.so",
+      "plugin": "tap_pinknoise",
+      "label": "tap_pinknoise",
+      "description": "Pink noise"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "Sin",
+      "description": "Sine generator"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "White",
+      "description": "Noise generator"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "Fractal",
+      "description": "Chaotic oscillator"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "Click",
+      "description": "Metronome"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "CEO",
+      "description": "Chief Executive Oscillator"
+    }
+  ],
+  "vocoders_special_fx": [
+    {
+      "filename": "vocoder_1337.so",
+      "plugin": "vocoder_1337",
+      "label": "vocoder",
+      "description": "Vocoder"
+    },
+    {
+      "filename": "karaoke_1409.so",
+      "plugin": "karaoke_1409",
+      "label": "karaoke",
+      "description": "Vocal remover"
+    },
+    {
+      "filename": "vynil_1905.so",
+      "plugin": "vynil_1905",
+      "label": "vynil",
+      "description": "Vinyl effect"
+    },
+    {
+      "filename": "gong_1424.so",
+      "plugin": "gong_1424",
+      "label": "gong",
+      "description": "Gong resonator"
+    },
+    {
+      "filename": "gong_beater_1439.so",
+      "plugin": "gong_beater_1439",
+      "label": "gongBeater",
+      "description": "Gong exciter"
+    },
+    {
+      "filename": "sifter_1210.so",
+      "plugin": "sifter_1210",
+      "label": "sifter",
+      "description": "Spectral sifter"
+    },
+    {
+      "filename": "wave_terrain_1412.so",
+      "plugin": "wave_terrain_1412",
+      "label": "waveTerrain",
+      "description": "Wave‑terrain oscillator"
+    }
+  ],
+  "utility_misc": [
+    {
+      "filename": "dc_remove_1207.so",
+      "plugin": "dc_remove_1207",
+      "label": "dcRemove",
+      "description": "DC remover"
+    },
+    {
+      "filename": "latency_1914.so",
+      "plugin": "latency_1914",
+      "label": "artificialLatency",
+      "description": "Latency injection"
+    },
+    {
+      "filename": "const_1909.so",
+      "plugin": "const_1909",
+      "label": "const",
+      "description": "Constant signal generator"
+    },
+    {
+      "filename": "inv_1429.so",
+      "plugin": "inv_1429",
+      "label": "inv",
+      "description": "Inverter"
+    },
+    {
+      "filename": "freq_tracker_1418.so",
+      "plugin": "freq_tracker_1418",
+      "label": "freqTracker",
+      "description": "Frequency tracker"
+    },
+    {
+      "filename": "hilbert_1440.so",
+      "plugin": "hilbert_1440",
+      "label": "hilbert",
+      "description": "Hilbert transform"
+    },
+    {
+      "filename": "split_1406.so",
+      "plugin": "split_1406",
+      "label": "split",
+      "description": "Mono→stereo splitter"
+    },
+    {
+      "filename": "step_muxer_1212.so",
+      "plugin": "step_muxer_1212",
+      "label": "stepMuxer",
+      "description": "Step demuxer"
+    },
+    {
+      "filename": "xfade_1915.so",
+      "plugin": "xfade_1915",
+      "label": "xfade",
+      "description": "Crossfade"
+    },
+    {
+      "filename": "xfade_1915.so",
+      "plugin": "xfade_1915",
+      "label": "xfade4",
+      "description": "4‑way crossfade"
+    },
+    {
+      "filename": "smooth_decimate_1414.so",
+      "plugin": "smooth_decimate_1414",
+      "label": "smoothDecimate",
+      "description": "Smooth decimator"
+    },
+    {
+      "filename": "decimator_1202.so",
+      "plugin": "decimator_1202",
+      "label": "decimator",
+      "description": "Decimator"
+    },
+    {
+      "filename": "declip_1195.so",
+      "plugin": "declip_1195",
+      "label": "declip",
+      "description": "Declipper"
+    },
+    {
+      "filename": "divider_1186.so",
+      "plugin": "divider_1186",
+      "label": "divider",
+      "description": "Sub‑octave generator"
+    },
+    {
+      "filename": "comb_1190.so",
+      "plugin": "comb_1190",
+      "label": "comb",
+      "description": "Comb filter"
+    },
+    {
+      "filename": "comb_1887.so",
+      "plugin": "comb_1887",
+      "label": "comb_l",
+      "description": "Comb filter (linear)"
+    },
+    {
+      "filename": "comb_1887.so",
+      "plugin": "comb_1887",
+      "label": "comb_n",
+      "description": "Comb filter (non‑interp)"
+    },
+    {
+      "filename": "comb_1887.so",
+      "plugin": "comb_1887",
+      "label": "comb_c",
+      "description": "Comb filter (cubic)"
+    },
+    {
+      "filename": "decay_1886.so",
+      "plugin": "decay_1886",
+      "label": "decay",
+      "description": "Exponential decay"
+    }
+  ],
+  "spatial_matrix_surround": [
+    {
+      "filename": "matrix_ms_st_1421.so",
+      "plugin": "matrix_ms_st_1421",
+      "label": "matrixMSSt",
+      "description": "MS → stereo"
+    },
+    {
+      "filename": "matrix_st_ms_1420.so",
+      "plugin": "matrix_st_ms_1420",
+      "label": "matrixStMS",
+      "description": "Stereo → MS"
+    },
+    {
+      "filename": "matrix_spatialiser_1422.so",
+      "plugin": "matrix_spatialiser_1422",
+      "label": "matrixSpatialiser",
+      "description": "Spatial widening"
+    },
+    {
+      "filename": "surround_encoder_1401.so",
+      "plugin": "surround_encoder_1401",
+      "label": "surroundEncoder",
+      "description": "Surround encoder"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "Wider",
+      "description": "Stereo widening"
+    },
+    {
+      "filename": "caps.so",
+      "plugin": "caps",
+      "label": "Narrower",
+      "description": "Stereo narrowing"
+    }
+  ],
+  "zam_special_fx": [
+    {
+      "filename": "ZamDynamicEQ-ladspa.so",
+      "plugin": "ZamDynamicEQ-ladspa",
+      "label": "ZamDynamicEQ",
+      "description": "Dynamic EQ"
+    },
+    {
+      "filename": "ZamGrains-ladspa.so",
+      "plugin": "ZamGrains-ladspa",
+      "label": "ZamGrains",
+      "description": "Granular effect"
+    }
+  ]
+}

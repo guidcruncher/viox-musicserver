@@ -1,0 +1,112 @@
+import type { MediaItem, MediaItemNormalizer, MediaSourceRef } from "@/types"
+
+import { makeVioxId } from "../makeVioxId"
+
+export class PodverseNormalizer implements MediaItemNormalizer {
+  normalize(raw: any): MediaItem {
+    if (!raw) {
+      throw new Error("PodverseNormalizer: cannot normalize empty object")
+    }
+
+    // Episode (API or RSS)
+    if ("mediaUrl" in raw) {
+      return this.fromEpisode(raw)
+    }
+
+    // Podcast
+    if ("feedUrls" in raw || raw.type === "podcast") {
+      return this.fromPodcast(raw)
+    }
+
+    throw new Error(`PodverseNormalizer: unsupported object type`)
+  }
+
+  fromCategory(raw: any): MediaItem {
+    const ref: MediaSourceRef = {
+      source: "podverse",
+      itemType: "folder",
+      sourceId: raw.id,
+      uri: raw.slug,
+    }
+
+    return {
+      id: makeVioxId(ref, "item"),
+      sourceRef: ref,
+      title: raw.title,
+      subtitle: "",
+      artist: "",
+      album: undefined,
+      imageUrl: "/img/folder.png",
+      durationMs: undefined,
+      isLive: false,
+    }
+  }
+
+  // ────────────────────────────────────────────────
+  // Podcast
+  // ────────────────────────────────────────────────
+  fromPodcast(podcast: any): MediaItem {
+    const ref: MediaSourceRef = {
+      source: "podverse",
+      itemType: "podcast",
+      sourceId: podcast.id,
+      uri: podcast.feedUrls?.[0]?.url ?? podcast.linkUrl ?? "",
+    }
+
+    return {
+      id: makeVioxId(ref, "item"),
+      sourceRef: ref,
+      title: podcast.title ?? "Untitled Podcast",
+      subtitle: podcast.description ?? "",
+      artist: podcast.authors?.map((a: any) => a.name).join(", "),
+      album: undefined,
+      imageUrl: podcast.imageUrl,
+      durationMs: undefined,
+      isLive: false,
+    }
+  }
+
+  // ────────────────────────────────────────────────
+  // Episode (API or RSS)
+  // ────────────────────────────────────────────────
+  private fromEpisode(ep: any): MediaItem {
+    const podcastId = ep.podcast?.id ?? ep.podcastId ?? this.extractPodcastIdFromEpisodeId(ep.id)
+
+    const ref: MediaSourceRef = {
+      source: "podverse",
+      itemType: "episode",
+      sourceId: ep.id,
+      parentSourceId: podcastId,
+      uri: ep.mediaUrl,
+    }
+
+    return {
+      id: makeVioxId(ref, "item"),
+      sourceRef: ref,
+      title: ep.title ?? "Untitled Episode",
+      subtitle: ep.description ?? "",
+      artist: ep.podcast?.title,
+      album: ep.podcast?.title,
+      imageUrl: ep.imageUrl ?? ep.podcast?.imageUrl,
+      durationMs: ep.duration ? ep.duration * 1000 : undefined,
+      isLive: false,
+    }
+  }
+
+  // ────────────────────────────────────────────────
+  // Helpers
+  // ────────────────────────────────────────────────
+
+  private buildMediaRefUri(ref: any): string {
+    const episodeId = ref.episode?.id ?? "unknown"
+    const start = ref.startTime ?? 0
+    return `mediaref:${ref.id}:episode:${episodeId}:start:${start}`
+  }
+
+  private extractPodcastIdFromEpisodeId(id: string): string | undefined {
+    // Example: podverse:episode:123 → 123
+    if (!id) return undefined
+    const parts = id.split(":")
+    return parts.length >= 3 ? parts[2] : undefined
+  }
+}
