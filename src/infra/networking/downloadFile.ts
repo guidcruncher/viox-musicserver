@@ -25,6 +25,7 @@ export class NullDownload implements FileDownloader {
 export class FileDownload implements FileDownloader {
   async downloadFile(url: string, opts: DownloadOptions = {}): Promise<void> {
     const destination = hashAudioFilename(url)
+    const partPath = `${destination}.part`
 
     if (fs.existsSync(destination)) {
       logger.info(`URL ${url} already downloaded to ${destination}`)
@@ -37,8 +38,9 @@ export class FileDownload implements FileDownloader {
     let attempt = 0
 
     while (true) {
+      let fileStream: fs.WriteStream | null = null
       try {
-        const existingSize = fs.existsSync(destination) ? fs.statSync(destination).size : 0
+        const existingSize = fs.existsSync(partPath) ? fs.statSync(partPath).size : 0
 
         const headers: Record<string, string> = {}
         if (existingSize > 0) {
@@ -51,7 +53,7 @@ export class FileDownload implements FileDownloader {
           throw new Error(`HTTP ${res.status} ${res.statusText}`)
         }
 
-        const fileStream = fs.createWriteStream(destination, {
+        fileStream = fs.createWriteStream(partPath, {
           flags: existingSize > 0 ? "a" : "w",
         })
 
@@ -61,12 +63,24 @@ export class FileDownload implements FileDownloader {
           fileStream.write(chunk)
         }
 
-        fileStream.end()
+        await new Promise<void>((resolve, reject) => {
+          fileStream!.on("finish", resolve)
+          fileStream!.on("error", reject)
+          fileStream!.end()
+        })
+
+        fs.renameSync(partPath, destination)
         return
       } catch (err) {
+        fileStream?.destroy()
         logger.error(`Error during download of ${url} on attempt ${attempt}`, err)
         attempt++
-        if (attempt > retries) throw err
+        if (attempt > retries) {
+          if (fs.existsSync(partPath)) {
+            fs.unlinkSync(partPath)
+          }
+          throw err
+        }
         await delay(backoffMs * attempt)
       }
     }

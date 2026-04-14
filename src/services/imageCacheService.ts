@@ -1,5 +1,4 @@
 import axios from "axios"
-import { createHash } from "crypto"
 import { createReadStream, createWriteStream, existsSync, statSync } from "fs"
 import { mkdir } from "fs/promises"
 import path from "path"
@@ -16,10 +15,6 @@ export class ImageCacheService {
 
   private async ensureCacheDir() {
     await mkdir(this.cacheDir, { recursive: true })
-  }
-
-  private hashUrl(url: string): string {
-    return createHash("sha256").update(url).digest("hex")
   }
 
   private extractOriginalFilename(url: string): string {

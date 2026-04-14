@@ -2,7 +2,6 @@ import fs, { promises as fsPromises } from "fs"
 import http from "http"
 import { URL } from "url"
 
-import { getConfig } from "@/config"
 import { logger } from "@/logger"
 
 import { hashAudioFilename } from "./hashFilename"
@@ -12,7 +11,6 @@ import { getHttpClient } from "./utils"
 export class DiskProxyService implements ProxyService {
   private readonly maxRedirects: number
   private readonly maxRetries: number
-  private readonly tempDir: string
   private readonly timeout: number
 
   constructor(
@@ -25,7 +23,6 @@ export class DiskProxyService implements ProxyService {
   ) {
     this.maxRedirects = options.maxRedirects ?? 5
     this.maxRetries = options.maxRetries ?? 3
-    this.tempDir = getConfig("cacheFolder")
     this.timeout = options.timeout ?? 20000
   }
 
@@ -52,6 +49,7 @@ export class DiskProxyService implements ProxyService {
     let finalContentType = "audio/mpeg"
     let currentUrl = remoteUrl
     let attempts = 0
+    let redirectCount = 0
 
     const downloadToDisk = async (): Promise<void> => {
       while (attempts <= this.maxRetries) {
@@ -70,6 +68,11 @@ export class DiskProxyService implements ProxyService {
               const status = res.statusCode ?? 0
 
               if (status >= 300 && status < 400 && res.headers.location) {
+                redirectCount++
+                if (redirectCount > this.maxRedirects) {
+                  res.resume()
+                  return reject(new Error(`Too many redirects (max ${this.maxRedirects})`))
+                }
                 currentUrl = new URL(res.headers.location, currentUrl).toString()
                 res.resume()
                 return resolve(downloadToDisk())
