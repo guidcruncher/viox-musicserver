@@ -35,6 +35,7 @@ export function registerPodverseRoutes(app: FastifyInstance, backend: VioxBacken
       if (items) {
         await backend.cache.upsert(items)
         reply.send(items)
+        return
       }
     }
 
