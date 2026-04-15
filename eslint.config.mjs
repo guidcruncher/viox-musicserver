@@ -18,7 +18,7 @@ export default tseslint.config(
     files: ['**/*.ts', '**/*.tsx'], // Only apply type-checking to TS files
     languageOptions: {
       parserOptions: {
-        project: true,
+        project: './tsconfig.eslint.json',
         tsconfigRootDir: import.meta.dirname,
       },
     },
