@@ -2,38 +2,61 @@ import * as path from "path"
 
 import { logger } from "@/logger"
 
-import type { ConfigFile } from "./types"
+import type { AppConfig, ConfigFile } from "./types"
 import { readFileConfig, readSecret } from "./utils"
 
 export const API_DEFAULT_PAGESIZE = 20
 
-/**
- * 1. Configuration Metadata Registry
- */
-const CONFIG_REGISTRY: Record<string, [string, any]> = {
-  radioProvider: ["RADIO_PROVIDER", "radiobrowser"],
-  searchLimit: ["SEARCH_BACKEND_LIMIT", 50],
-  searchCacheSize: ["SEARCH_CACHE_SIZE", 2000],
-  nodeEnv: ["NODE_ENV", "development"],
-  cacheFolder: ["CACHE_FOLDER", "/data/cache"],
-  musicFolder: ["MUSIC_FOLDER", "/music"],
-  redisUrl: ["REDIS_URL", ""],
-  enableSpotifyCache: ["ENABLE_SPOTIFY_CACHE", false],
-  spotifyDeviceName: ["SPOTIFY_DEVICE_NAME", "VIOX"],
-  visualization: ["VISUALIZATION", "bar"],
-  downloadPodcasts: ["DOWNLOAD_PODCASTS", false],
+// ─── Env-var mapping ────────────────────────────────────────────────────────
+// Maps each AppConfig key to its corresponding environment variable name.
+// Keys not listed here are derived or come from Docker secrets / file only.
+const ENV_MAP: Partial<Record<keyof AppConfig, string>> = {
+  nodeEnv: "NODE_ENV",
+  baseUrl: "BASE_URL",
+  cacheFolder: "CACHE_FOLDER",
+  musicFolder: "MUSIC_FOLDER",
+  irResponseBase: "IR_RESPONSE_BASE",
+  redisUrl: "REDIS_URL",
+  radioProvider: "RADIO_PROVIDER",
+  searchLimit: "SEARCH_BACKEND_LIMIT",
+  searchCacheSize: "SEARCH_CACHE_SIZE",
+  enableSpotifyCache: "ENABLE_SPOTIFY_CACHE",
+  spotifyDeviceName: "SPOTIFY_DEVICE_NAME",
+  spotifyRefreshToken: "SPOTIFY_REFRESH_TOKEN",
+  visualization: "VISUALIZATION",
+  downloadPodcasts: "DOWNLOAD_PODCASTS",
 }
 
-const FILE_EXCLUSIONS = new Set(["cacheFolder", "musicFolder", "redisUrl", "nodeEnv"])
+// ─── Defaults ───────────────────────────────────────────────────────────────
+const DEFAULTS: AppConfig = {
+  nodeEnv: "development",
+  baseUrl: "",
+  callbackUrl: "",
+  spotifyRedirectUrl: "",
+  database: "/data/datastore.db",
+  cacheFolder: "/data/cache",
+  musicFolder: "/music",
+  spotifyTokenPath: path.join("/data/auth", "spotify-token.json"),
+  youtubeCreds: path.resolve("/data/", "youtube-oauth-creds.json"),
+  irResponseBase: "/app/ir-files",
+  spotifyClientId: undefined,
+  spotifyClientSecret: undefined,
+  spotifyRefreshToken: null,
+  spotifyDeviceName: "VIOX",
+  enableSpotifyCache: false,
+  searchLimit: 50,
+  searchCacheSize: 2000,
+  radioProvider: "radiobrowser",
+  redisUrl: "",
+  visualization: "bar",
+  downloadPodcasts: false,
+}
 
-// Internal state for the 2-second cache
+// ─── Internal: file-config cache (2 s TTL) ─────────────────────────────────
 let cachedFileData: ConfigFile | undefined = undefined
 let lastReadTime = 0
 const CACHE_TTL_MS = 2000
 
-/**
- * Internal helper to get fresh or cached file data
- */
 const getFileData = (): ConfigFile | undefined => {
   const now = Date.now()
   if (!cachedFileData || now - lastReadTime > CACHE_TTL_MS) {
@@ -43,58 +66,82 @@ const getFileData = (): ConfigFile | undefined => {
   return cachedFileData
 }
 
-const getFileConfig = <K extends keyof ConfigFile>(key: K): ConfigFile[K] | undefined => {
-  // C. File System (with 2s Cache)
-  const fileConfig = getFileData()
-  if (fileConfig) {
-    if (!FILE_EXCLUSIONS.has(key)) {
-      return fileConfig[key]
+// ─── Type-coercion helper ───────────────────────────────────────────────────
+const coerceEnvValue = (raw: string, defaultValue: unknown): unknown => {
+  if (typeof defaultValue === "number") return Number(raw)
+  if (typeof defaultValue === "boolean") return raw.toLowerCase() === "true"
+  return raw
+}
+
+// ─── Build the resolved config ──────────────────────────────────────────────
+/**
+ * Assemble the full AppConfig by layering sources in order:
+ *   1. Defaults
+ *   2. Environment variables  (coerced to match the default's type)
+ *   3. Docker secrets         (spotifyClientId, spotifyClientSecret)
+ *   4. Config-file override   (JSON file, cached for 2 s)
+ *
+ * Derived values (callbackUrl, spotifyRedirectUrl) are recomputed after
+ * every layer so they always reflect the final baseUrl.
+ */
+const buildConfig = (): AppConfig => {
+  // 1 ─ Start with defaults
+  const cfg: AppConfig = { ...DEFAULTS }
+
+  // 2 ─ Layer environment variables
+  for (const [key, envVar] of Object.entries(ENV_MAP)) {
+    const raw = process.env[envVar]
+    if (raw !== undefined) {
+      const k = key as keyof AppConfig
+      ;(cfg as unknown as Record<string, unknown>)[k] = coerceEnvValue(raw, DEFAULTS[k])
     }
   }
 
-  return undefined
+  // 3 ─ Docker secrets
+  cfg.spotifyClientId = readSecret("spotify-clientid") ?? cfg.spotifyClientId
+  cfg.spotifyClientSecret = readSecret("spotify-clientsecret") ?? cfg.spotifyClientSecret
+
+  // 4 ─ Config-file override (highest priority)
+  try {
+    const fileOverrides = getFileData()
+    if (fileOverrides) {
+      for (const [key, value] of Object.entries(fileOverrides)) {
+        if (value !== undefined) {
+          ;(cfg as unknown as Record<string, unknown>)[key] = value
+        }
+      }
+    }
+  } catch (err) {
+    logger.warn("Failed to read config file override", err)
+  }
+
+  // 5 ─ Derived values (always recomputed from final baseUrl)
+  cfg.callbackUrl = `${cfg.baseUrl}/callback`
+  cfg.spotifyRedirectUrl = `${cfg.baseUrl}/api/spotify/auth/callback`
+
+  return cfg
 }
 
 /**
- * GLOBAL GETTER
- * Usage: const val = getConfig<string>("radioProvider")
+ * The resolved, typed application configuration.
+ *
+ * Accessing `config.radioProvider` gives you the final merged value
+ * from defaults → env → secrets → file-override.
+ *
+ * The object is rebuilt on every property access when the file-cache
+ * TTL has expired, so runtime file changes are picked up automatically.
+ */
+export const config: AppConfig = new Proxy({} as AppConfig, {
+  get(_target, prop: string) {
+    const resolved = buildConfig()
+    return resolved[prop as keyof AppConfig]
+  },
+})
+
+/**
+ * Legacy getter kept for backward compatibility.
+ * Prefer direct property access via `config.someKey`.
  */
 export const getConfig = <T>(key: string): T => {
-  // A. Derived / Hardcoded Logic
-  if (key === "database") return "/data/datastore.db" as any
-  if (key === "youtubeCreds") return path.resolve("/data/", "youtube-oauth-creds.json") as any
-  if (key === "spotifyTokenPath") {
-    return path.join("/data/auth", "spotify-token.json") as any
-  }
-  if (key === "spotifyClientId") return readSecret("spotify-clientid") as any
-  if (key === "spotifyClientSecret") return readSecret("spotify-clientsecret") as any
-  if (key === "baseUrl") return `${process.env.BASE_URL}` as any
-  if (key === "callbackUrl") return `${process.env.BASE_URL}/callback` as any
-  if (key === "spotifyRedirectUrl")
-    return `${process.env.BASE_URL}/api/spotify/auth/callback` as any
-
-  // B. Registry Lookup
-  const metadata = CONFIG_REGISTRY[key]
-  if (!metadata) {
-    logger.warn(`Config key "${key}" missing from registry.`)
-    return undefined as any
-  }
-  const [envVar, defaultValue] = metadata
-
-  try {
-    // C. File System (with 2s Cache)
-    const fileValue = getFileConfig(key as keyof ConfigFile)
-    if (fileValue) return fileValue as T
-  } catch (err) {
-    logger.trace(`Config key "${key}" not in config file.`, err)
-  }
-  // D. Environment Variables
-  const envVal = process.env[envVar]
-  if (envVal !== undefined) {
-    if (typeof defaultValue === "number") return Number(envVal) as T
-    if (typeof defaultValue === "boolean") return (envVal.toLowerCase() === "true") as T
-    return envVal as T
-  }
-
-  return defaultValue as T
+  return config[key as keyof AppConfig] as T
 }

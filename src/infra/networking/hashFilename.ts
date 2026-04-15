@@ -1,14 +1,14 @@
 import crypto from "crypto"
 import path from "path"
 
-import { getConfig } from "@/config"
+import { config } from "@/config"
 
 export const hashAudioFilename = (url: string): string => {
   const hash = crypto.createHash("sha256").update(url).digest("hex")
-  return path.join(getConfig("cacheFolder"), `proxy_cache_${hash}.mp3`)
+  return path.join(config.cacheFolder, `proxy_cache_${hash}.mp3`)
 }
 
 export const hashImageFilename = (url: string): string => {
   const hash = crypto.createHash("sha256").update(url).digest("hex")
-  return path.join(getConfig("cacheFolder"), `albumart_cache_${hash}`)
+  return path.join(config.cacheFolder, `albumart_cache_${hash}`)
 }
