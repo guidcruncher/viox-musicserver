@@ -21,7 +21,6 @@ export interface AppConfig {
   cacheFolder: string
   musicFolder: string
   spotifyTokenPath: string
-  youtubeCreds: string
   irResponseBase: string
 
   // ── Spotify ────────────────────────────────────────
@@ -29,20 +28,6 @@ export interface AppConfig {
   spotifyClientSecret: string | undefined
   spotifyRefreshToken: string | null
   spotifyDeviceName: string
-  enableSpotifyCache: boolean
-
-  // ── Search / Cache ─────────────────────────────────
-  searchLimit: number
-  searchCacheSize: number
-
-  // ── Radio ──────────────────────────────────────────
-  radioProvider: string
-
-  // ── Redis ──────────────────────────────────────────
-  redisUrl: string
-
-  // ── UI ─────────────────────────────────────────────
-  visualization: string
 
   // ── Podcasts ───────────────────────────────────────
   downloadPodcasts: boolean

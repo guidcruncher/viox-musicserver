@@ -16,14 +16,8 @@ const ENV_MAP: Partial<Record<keyof AppConfig, string>> = {
   cacheFolder: "CACHE_FOLDER",
   musicFolder: "MUSIC_FOLDER",
   irResponseBase: "IR_RESPONSE_BASE",
-  redisUrl: "REDIS_URL",
-  radioProvider: "RADIO_PROVIDER",
-  searchLimit: "SEARCH_BACKEND_LIMIT",
-  searchCacheSize: "SEARCH_CACHE_SIZE",
-  enableSpotifyCache: "ENABLE_SPOTIFY_CACHE",
   spotifyDeviceName: "SPOTIFY_DEVICE_NAME",
   spotifyRefreshToken: "SPOTIFY_REFRESH_TOKEN",
-  visualization: "VISUALIZATION",
   downloadPodcasts: "DOWNLOAD_PODCASTS",
 }
 
@@ -37,18 +31,11 @@ const DEFAULTS: AppConfig = {
   cacheFolder: "/data/cache",
   musicFolder: "/music",
   spotifyTokenPath: path.join("/data/auth", "spotify-token.json"),
-  youtubeCreds: path.resolve("/data/", "youtube-oauth-creds.json"),
   irResponseBase: "/app/ir-files",
   spotifyClientId: undefined,
   spotifyClientSecret: undefined,
   spotifyRefreshToken: null,
   spotifyDeviceName: "VIOX",
-  enableSpotifyCache: false,
-  searchLimit: 50,
-  searchCacheSize: 2000,
-  radioProvider: "radiobrowser",
-  redisUrl: "",
-  visualization: "bar",
   downloadPodcasts: false,
 }
 
@@ -125,7 +112,7 @@ const buildConfig = (): AppConfig => {
 /**
  * The resolved, typed application configuration.
  *
- * Accessing `config.radioProvider` gives you the final merged value
+ * Accessing `config.baseUrl` gives you the final merged value
  * from defaults → env → secrets → file-override.
  *
  * The object is rebuilt on every property access when the file-cache
