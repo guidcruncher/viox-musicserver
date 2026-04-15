@@ -30,6 +30,7 @@ export class PodversePlaybackBackend implements PlaybackBackend {
     })
 
     this.ffplay.on("finished", () => {
+      if (!this.currentItem) return
       eventBus.dispatchEvent({ type: "finished", payload: {} })
     })
 

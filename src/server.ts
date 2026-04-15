@@ -6,6 +6,7 @@ import Fastify from "fastify"
 
 import { config } from "@/config"
 import { createVioxBackend } from "@/core/createBackend"
+import { MpvClient } from "@/infra/backends/mpvClient"
 import { registerEventBus } from "@/infra/eventbus/registerEventBus"
 import { registerScheduler } from "@/infra/scheduler"
 import { logger } from "@/logger"
@@ -65,6 +66,9 @@ export const createServer = async () => {
       title: "VIOX Music Server API Reference",
     },
   })
+
+  logger.info("Connecting to MPV")
+  await MpvClient.warmup()
 
   logger.info("Creating backend")
   const backend = createVioxBackend()

@@ -25,6 +25,7 @@ export class LocalPlaybackBackend implements PlaybackBackend {
     })
 
     this.ffplay.on("finished", () => {
+      if (!this.currentItem) return
       eventBus.dispatchEvent({ type: "finished", payload: {} })
     })
 
