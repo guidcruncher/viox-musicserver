@@ -26,8 +26,11 @@ export class StatusService {
       audioCaps = Capabilities.audioSources[current.sourceRef.source]
       if (current.sourceRef.uri && audioCaps.metadataCap.includes("live")) {
         nowPlaying = await getStreamMetadata(current.sourceRef.uri)
-        if (current.library) {
-          this.libraryStore.upsert([current])
+        if (current.library && nowPlaying) {
+          if (nowPlaying.streamTitle) {
+            current.subtitle = nowPlaying.streamTitle
+            this.libraryStore.upsert([current])
+          }
         }
       }
     }
