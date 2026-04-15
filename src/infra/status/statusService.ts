@@ -4,11 +4,13 @@ import { getStreamMetadata } from "@/infra/networking/getStreamMetadata"
 import type { PlaybackController } from "@/infra/playback/playbackController"
 import { Capabilities } from "@/types"
 
+import { SqliteLibraryStore } from "../libraryStore"
 import { PipewireTopService } from "../playback/pipewireTopUtility"
 
 export class StatusService {
   private readonly pipewireTop = new PipewireTopService()
   constructor(
+    private readonly libraryStore: SqliteLibraryStore,
     private readonly registry: BackendRegistry,
     private readonly playback: PlaybackController,
   ) {}
@@ -24,6 +26,9 @@ export class StatusService {
       audioCaps = Capabilities.audioSources[current.sourceRef.source]
       if (current.sourceRef.uri && audioCaps.metadataCap.includes("live")) {
         nowPlaying = await getStreamMetadata(current.sourceRef.uri)
+        if (current.library) {
+          this.libraryStore.upsert([current])
+        }
       }
     }
 

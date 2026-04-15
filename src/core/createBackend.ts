@@ -81,7 +81,7 @@ export function createVioxBackend(): VioxBackend {
   const reverb = new PipewireReverbService()
   const equalizer = new EqualizerService()
   const speakers = new SpeakerControlService()
-  const status = new StatusService(backendRegistry, playback)
+  const status = new StatusService(library, backendRegistry, playback)
 
   //
   // ────────────────────────────────────────────────
