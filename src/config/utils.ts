@@ -7,7 +7,7 @@ import type { ConfigFile } from "./types"
 export const saveConfig = (cfg: ConfigFile): ConfigFile | undefined => {
   try {
     const filePath = "/config/viox-musicserver-config.json"
-    logger.debug(`Saving config to ${filePath}`)
+
     if (fs.existsSync(filePath)) {
       fs.copyFileSync(filePath, filePath + ".bak")
     }
@@ -23,11 +23,8 @@ export const saveConfig = (cfg: ConfigFile): ConfigFile | undefined => {
 export const readFileConfig = (): ConfigFile | undefined => {
   try {
     const filePath = "/config/viox-musicserver-config.json"
-    logger.debug(`Checking config at ${filePath}`)
     if (fs.existsSync(filePath)) {
-      logger.debug(`Reading config from  ${filePath}`)
       const json = fs.readFileSync(filePath, "utf8").trim()
-      logger.debug(`Config : ${json}`)
       return JSON.parse(json) as ConfigFile
     }
 
