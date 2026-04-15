@@ -11,7 +11,8 @@ export const saveConfig = (cfg: ConfigFile): ConfigFile | undefined => {
     if (fs.existsSync(filePath)) {
       fs.copyFileSync(filePath, filePath + ".bak")
     }
-    fs.writeFileSync(filePath, JSON.stringify(cfg), "utf8")
+    const raw = JSON.stringify(cfg, null, 2)
+    fs.writeFileSync(filePath, raw, "utf8")
     return cfg
   } catch (err) {
     logger.error("Error saving config", err)
