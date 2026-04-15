@@ -1,4 +1,4 @@
-import { getConfig } from "@/config"
+import { config } from "@/config"
 import { LocalFileSystemClient } from "@/infra/local/localFileSystemClient"
 import { SqliteRadioStore } from "@/infra/radioStore"
 import { LocalSourceAdapter } from "@/infra/sources/localAdapter"
@@ -33,7 +33,7 @@ const spotifySource = new SpotifySourceAdapter()
 const tuneInSource = new TuneInSourceAdapter()
 const radioBrowserSource = new RadioBrowserSourceAdapter()
 const podVerseSource = new PodverseSourceAdapter()
-const localSource = new LocalSourceAdapter(new LocalFileSystemClient(getConfig("musicFolder")))
+const localSource = new LocalSourceAdapter(new LocalFileSystemClient(config.musicFolder))
 const streamSource = new StreamAdapter(new SqliteRadioStore())
 
 export const sourceRegistry = new AudioSourceRegistry({

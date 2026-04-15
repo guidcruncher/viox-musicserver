@@ -4,7 +4,7 @@ import swagger from "@fastify/swagger"
 import scalarFastify from "@scalar/fastify-api-reference"
 import Fastify from "fastify"
 
-import { getConfig } from "@/config"
+import { config } from "@/config"
 import { createVioxBackend } from "@/core/createBackend"
 import { registerEventBus } from "@/infra/eventbus/registerEventBus"
 import { registerScheduler } from "@/infra/scheduler"
@@ -15,12 +15,12 @@ import { version } from "@/version"
 
 export const createServer = async () => {
   const app = Fastify({
-    logger: (getConfig("nodeEnv") || "development").toString() == "development",
+    logger: config.nodeEnv === "development",
   })
 
   registerSchemas(app)
 
-  if (getConfig("nodeEnv") == "production") {
+  if (config.nodeEnv === "production") {
     logger.info("Registering client UI")
     const distPath = "/app/client/"
     app.register(fastifyStatic, {
@@ -41,7 +41,7 @@ export const createServer = async () => {
     })
   }
 
-  const allowedOrigin = getConfig<string>("baseUrl")
+  const allowedOrigin = config.baseUrl
   await app.register(cors, {
     origin: allowedOrigin || false,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -55,7 +55,7 @@ export const createServer = async () => {
         description: "The VIOX Music server control API",
         version: version,
       },
-      servers: [{ url: `${getConfig("baseUrl")}` }],
+      servers: [{ url: config.baseUrl }],
     },
   })
 

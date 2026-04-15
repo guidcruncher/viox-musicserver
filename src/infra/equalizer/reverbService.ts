@@ -3,6 +3,7 @@ import { execSync } from "node:child_process"
 
 import * as fs from "fs"
 
+import { config } from "@/config"
 import { logger } from "@/logger"
 
 import { getNodeIdByName } from "./equalizerNode"
@@ -96,7 +97,7 @@ export class PipewireReverbService {
       return
     }
 
-    const irPath = `${process.env.IR_RESPONSE_BASE}/${filename}`
+    const irPath = `${config.irResponseBase}/${filename}`
 
     if (!fs.existsSync(irPath)) {
       logger.error(`IR file does not exist: ${irPath}`)
@@ -136,7 +137,7 @@ export class PipewireReverbService {
   // ────────────────────────────────────────────────
 
   getConvolverPresets(): any {
-    const path = `${process.env.IR_RESPONSE_BASE}/00-index.json`
+    const path = `${config.irResponseBase}/00-index.json`
 
     try {
       const json = fs.readFileSync(path, "utf8")

@@ -2,10 +2,10 @@
 import { promises as fs } from "fs"
 import path from "path"
 
-import { getConfig } from "@/config"
+import { config } from "@/config"
 import { logger } from "@/logger"
 
-const CACHE_PATH = getConfig<string>("spotifyTokenPath")
+const CACHE_PATH = config.spotifyTokenPath
 
 export interface StoredSpotifyToken {
   accessToken: string

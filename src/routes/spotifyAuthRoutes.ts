@@ -2,7 +2,7 @@ import axios from "axios"
 import type { FastifyInstance } from "fastify"
 import querystring from "querystring"
 
-import { getConfig, spotifyScopes } from "@/config"
+import { config, spotifyScopes } from "@/config"
 import { spotifyAuthClient } from "@/infra/spotify/spotifyAuthClient"
 import { spotifyTokenStore } from "@/infra/spotify/spotifyTokenStore"
 import { logger } from "@/logger"
@@ -13,9 +13,9 @@ export function registerSpotifyAuthRoutes(app: FastifyInstance, _backend: VioxBa
 
   app.get("/api/spotify/login", async (req: any, reply: any) => {
     const params = querystring.stringify({
-      client_id: getConfig("spotifyClientId"),
+      client_id: config.spotifyClientId,
       response_type: "code",
-      redirect_uri: `${getConfig("spotifyRedirectUrl")}`,
+      redirect_uri: config.spotifyRedirectUrl,
       scope: spotifyScopes,
     })
 
@@ -28,10 +28,10 @@ export function registerSpotifyAuthRoutes(app: FastifyInstance, _backend: VioxBa
     const params = new URLSearchParams()
     params.set("grant_type", "authorization_code")
     params.set("code", code)
-    params.set("redirect_uri", getConfig("spotifyRedirectUrl"))
+    params.set("redirect_uri", config.spotifyRedirectUrl)
 
     const authHeader = Buffer.from(
-      `${getConfig("spotifyClientId")}:${getConfig("spotifyClientSecret")}`,
+      `${config.spotifyClientId}:${config.spotifyClientSecret}`,
     ).toString("base64")
 
     const res = await axios.post("https://accounts.spotify.com/api/token", params, {
@@ -53,8 +53,7 @@ export function registerSpotifyAuthRoutes(app: FastifyInstance, _backend: VioxBa
       username: user ? user.id : "",
     })
 
-    //    const callbackUrl = `${getConfig("callbackUrl")}?authenticated=true`
-    const callbackUrl = `${getConfig("callbackUrl")}?token=${data.access_token}`
+    const callbackUrl = `${config.callbackUrl}?token=${data.access_token}`
     reply.redirect(callbackUrl)
   })
 

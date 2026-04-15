@@ -1,4 +1,4 @@
-import { getConfig } from "@/config"
+import { config } from "@/config"
 import { FileDownload } from "@/infra/networking/downloadFile"
 import { SqliteSubscriptionEpisodesStore } from "@/infra/subscriptionEpisodesStore"
 import { SqliteSubscriptionsStore } from "@/infra/subscriptionsStore"
@@ -85,7 +85,7 @@ export class PodcastIndexer {
       return
     }
 
-    const download = getConfig<boolean>("downloadPodcasts")
+    const download = config.downloadPodcasts
 
     for (const ep of episodes) {
       await this.processEpisode(sub.id, ep, download)

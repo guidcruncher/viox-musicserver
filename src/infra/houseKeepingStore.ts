@@ -3,7 +3,7 @@ import path from "node:path"
 
 import Database from "better-sqlite3"
 
-import { getConfig } from "@/config"
+import { config } from "@/config"
 import { db } from "@/infra/db"
 import { logger } from "@/logger"
 import { HouseKeepingStore, SqliteBackupResult } from "@/types"
@@ -35,8 +35,8 @@ export class SqliteHouseKeepingStore implements HouseKeepingStore {
 
   async backup(): Promise<SqliteBackupResult | undefined> {
     try {
-      const destinationPath: string = `${getConfig("database")}.bak`
-      const sourcePath: string = `${getConfig("database")}`
+      const destinationPath: string = `${config.database}.bak`
+      const sourcePath: string = config.database
       const start = performance.now()
 
       logger.info("sqlite backup start", { sourcePath, destinationPath })
