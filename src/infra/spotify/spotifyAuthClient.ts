@@ -2,17 +2,10 @@
 
 import axios from "axios"
 
-import { getConfig } from "@/config"
+import { config } from "@/config"
 import { logger } from "@/logger"
 
 import { spotifyTokenStore, StoredSpotifyToken } from "./spotifyTokenStore"
-
-const CLIENT_ID = getConfig<string>("spotifyClientId")
-const CLIENT_SECRET = getConfig<string>("spotifyClientSecret")
-
-// Only needed for the first authorization flow.
-// After that, the refresh token is persisted in /cache/spotify-token.json.
-const ENV_REFRESH_TOKEN = process.env.SPOTIFY_REFRESH_TOKEN || null
 
 export const spotifyAuthClient = {
   refreshing: null as Promise<string> | null,
@@ -59,7 +52,7 @@ export const spotifyAuthClient = {
     this.refreshing = (async () => {
       const stored = await spotifyTokenStore.load()
 
-      const refreshToken = stored?.refreshToken || ENV_REFRESH_TOKEN || null
+      const refreshToken = stored?.refreshToken || config.spotifyRefreshToken || null
 
       if (!refreshToken) {
         throw new Error(
@@ -71,7 +64,7 @@ export const spotifyAuthClient = {
       params.set("grant_type", "refresh_token")
       params.set("refresh_token", refreshToken)
 
-      const authHeader = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64")
+      const authHeader = Buffer.from(`${config.spotifyClientId}:${config.spotifyClientSecret}`).toString("base64")
 
       const res = await axios.post("https://accounts.spotify.com/api/token", params, {
         headers: {
@@ -109,7 +102,7 @@ export const spotifyAuthClient = {
         headers: { Authorization: `Bearer ${token}` },
       })
 
-      const device = data.devices.find((d: any) => d.name === getConfig("spotifyDeviceName"))
+      const device = data.devices.find((d: any) => d.name === config.spotifyDeviceName)
       if (!device) return null
       logger.info(`Found device: ${device.id}`)
 

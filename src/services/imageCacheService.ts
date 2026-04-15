@@ -3,14 +3,14 @@ import { createReadStream, createWriteStream, existsSync, statSync } from "fs"
 import { mkdir } from "fs/promises"
 import path from "path"
 
-import { getConfig } from "@/config"
+import { config } from "@/config"
 import { hashImageFilename } from "@/infra/networking/hashFilename"
 
 export class ImageCacheService {
   private cacheDir: string
 
   constructor() {
-    this.cacheDir = getConfig("cacheFolder")
+    this.cacheDir = config.cacheFolder
   }
 
   private async ensureCacheDir() {

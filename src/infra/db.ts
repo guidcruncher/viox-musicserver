@@ -1,8 +1,8 @@
 import Database from "better-sqlite3"
 
-import { getConfig } from "@/config"
+import { config } from "@/config"
 
-export const db: ReturnType<typeof Database> = new Database(getConfig("database"), {
+export const db: ReturnType<typeof Database> = new Database(config.database, {
   fileMustExist: true,
 })
 
