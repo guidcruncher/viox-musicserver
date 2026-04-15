@@ -1,0 +1,6 @@
+{
+  "entry": ["src/server.{js,ts}"],
+  "project": ["**/*.{js,ts}"],
+  "ignore": ["src/**/*.spec.ts", "src/environments/**"],
+  "ignoreDependencies": ["@types/*"]
+}

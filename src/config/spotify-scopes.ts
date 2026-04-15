@@ -1,0 +1,17 @@
+export const spotifyScopes = [
+  "user-read-playback-state",
+  "user-modify-playback-state",
+  "user-read-currently-playing",
+  "user-read-private",
+  "user-read-email",
+  "playlist-read-private",
+  "playlist-modify-private",
+  "playlist-modify-public",
+  "user-library-read",
+  "user-library-modify",
+  "user-read-playback-position",
+  "streaming",
+  "user-follow-read",
+  "app-remote-control",
+  "playlist-read-collaborative",
+].join(" ")
