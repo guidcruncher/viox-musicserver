@@ -29,6 +29,7 @@ export class RadioPlaybackBackend implements PlaybackBackend {
     })
 
     this.ffplay.on("finished", () => {
+      if (!this.currentItem) return
       eventBus.dispatchEvent({ type: "finished", payload: {} })
     })
 
@@ -70,7 +71,7 @@ export class RadioPlaybackBackend implements PlaybackBackend {
   }
 
   async stop(): Promise<void> {
-    this.ffplay.stop()
+    await this.ffplay.stop()
     this.startedAt = null
     this.currentParentSourceUri = undefined
     this.currentItem = null

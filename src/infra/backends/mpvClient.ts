@@ -48,6 +48,28 @@ export class MpvClient extends EventEmitter {
   }
 
   /**
+   * Proactively connects to the MPV IPC socket with retries.
+   * Call during server startup to ensure the connection is ready before
+   * accepting playback requests.
+   */
+  public static async warmup(retries = 5, delayMs = 1000): Promise<void> {
+    const instance = this.getInstance()
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        await instance.connect()
+        logger.info(`[MpvClient] warmup connected on attempt ${attempt}`)
+        return
+      } catch {
+        logger.warn(`[MpvClient] warmup attempt ${attempt}/${retries} failed`)
+        if (attempt < retries) {
+          await new Promise((resolve) => setTimeout(resolve, delayMs))
+        }
+      }
+    }
+    logger.error("[MpvClient] warmup exhausted all retries — first playback may fail")
+  }
+
+  /**
    * Logs messages with a consistent format
    */
   private log(level: "info" | "warn" | "error", message: string, ...args: any[]) {

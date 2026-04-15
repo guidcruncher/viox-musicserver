@@ -39,6 +39,16 @@ export class PlaybackController {
   ) {
     logger.info("playback: controller initialised")
 
+    // Clear stale queue from a previous session if nothing is currently playing.
+    // On container restart the queue events are replayed from the database, but
+    // nowPlayingStore is wiped by the entrypoint. A non-empty queue with no
+    // active track leads to confusing state (e.g. duplicate-check skipping the
+    // track the user wants to play).
+    if (!nowPlayingStore.current() && this.queue.snapshot.length > 0) {
+      logger.info("playback: clearing stale queue from previous session")
+      this.queue.clear()
+    }
+
     // Listen for track completion from the active backend
     eventBus.on("finished", () => {
       logger.info("playback: track finished event received")
@@ -206,14 +216,23 @@ export class PlaybackController {
       }
 
       this.currentBackend = backend
+
+      await backend.play(item, parentSourceUri)
+
+      // Only update now-playing state after playback has started successfully
       nowPlayingStore.update(item)
 
       const session = this.sessions.startSession()
       this.currentSessionId = session.id
       this.logSessionEvent("play")
-
-      await backend.play(item, parentSourceUri)
     } catch (err) {
+      // Clean up state so the controller doesn't think something is playing
+      nowPlayingStore.remove()
+      this.currentBackend = null
+      if (this.currentSessionId) {
+        this.sessions.endSession(this.currentSessionId)
+        this.currentSessionId = null
+      }
       logger.error("playback: playItem critical failure", { err, itemId: item.id })
     }
   }
