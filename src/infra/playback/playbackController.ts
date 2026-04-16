@@ -102,6 +102,13 @@ export class PlaybackController {
 
   // --- Public API ---
 
+  public async deleteAtQueueIndex(index: number): Promise<void> {
+    const items = this.queue.trackIds
+    if (index < 0 || index > items.length) return
+
+    await this.queue.deleteByIndex(index)
+  }
+
   public async getQueue(): Promise<MediaItem[]> {
     const items = this.queue.trackIds
     const mediaItems: MediaItem[] = []

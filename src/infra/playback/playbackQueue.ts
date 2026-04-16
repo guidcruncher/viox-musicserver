@@ -28,6 +28,12 @@ export class GlobalQueue {
   // --------------------------------------------------------------------------
   // Event application (pure functions)
   // --------------------------------------------------------------------------
+  private applyDeleteByIndex(ev: QueueEvent) {
+    const index = ev.payload.index
+    if (index < 0 || index >= this.items.length) return
+
+    this.items.splice(index, 1)
+  }
 
   private applyEnqueue(ev: QueueEvent) {
     this.items.push(ev.payload.item)
@@ -56,6 +62,8 @@ export class GlobalQueue {
         return this.applyClear()
       case "reorder":
         return this.applyReorder(ev)
+      case "deleteByIndex":
+        return this.applyDeleteByIndex(ev)
     }
   }
 
@@ -66,6 +74,26 @@ export class GlobalQueue {
   lastQueueEntry(): QueueItem | undefined {
     if (this.items.length === 0) return undefined
     return this.items[this.items.length - 1]
+  }
+
+  deleteByIndex(index: number): boolean {
+    if (index < 0 || index >= this.items.length) return false
+
+    const seq = this.nextSeq()
+
+    const ev: QueueEvent = {
+      type: "deleteByIndex",
+      seq,
+      createdAt: this.now(),
+      payload: { index },
+    }
+
+    this.store.appendEvent(ev.seq, ev.type, ev.payload)
+    this.applyEvent(ev)
+    this.store.updatePositions(this.items)
+
+    this.events.push(ev)
+    return true
   }
 
   enqueue(trackId: string, metadata?: Record<string, any>): QueueItem {
