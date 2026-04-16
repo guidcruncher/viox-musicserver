@@ -29,6 +29,17 @@ export function registerQueueRoutes(app: FastifyInstance, backend: VioxBackend) 
     }
   })
 
+  app.delete("/api/queue/delete/:id", async (req: any, reply: any) => {
+    const { id } = req.params as any
+    try {
+      const res = await backend.playback.deleteAtQueueIndex(id)
+      return reply.status(200).send(res)
+    } catch (err) {
+      logger.error("queue: failed to select track at index", { err, id })
+      return reply.status(500).send({ error: "Failed to select track at index" })
+    }
+  })
+
   app.delete("/api/queue/reset", async (_req: any, reply: any) => {
     await backend.queue.reset()
     await backend.playback.clearQueue()

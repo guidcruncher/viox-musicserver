@@ -10,7 +10,7 @@ export interface QueueItem {
 
 export interface QueueEvent {
   seq: number
-  type: "enqueue" | "remove" | "reorder" | "clear"
+  type: "enqueue" | "remove" | "reorder" | "clear" | "deleteByIndex"
   payload: any
   createdAt: number
 }

@@ -64,7 +64,9 @@ export const spotifyAuthClient = {
       params.set("grant_type", "refresh_token")
       params.set("refresh_token", refreshToken)
 
-      const authHeader = Buffer.from(`${config.spotifyClientId}:${config.spotifyClientSecret}`).toString("base64")
+      const authHeader = Buffer.from(
+        `${config.spotifyClientId}:${config.spotifyClientSecret}`,
+      ).toString("base64")
 
       const res = await axios.post("https://accounts.spotify.com/api/token", params, {
         headers: {
