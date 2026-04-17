@@ -4,7 +4,7 @@ import { logger } from "@/logger"
 
 import type { ConfigFile } from "./types"
 
-export const saveConfig = (cfg: ConfigFile): ConfigFile | undefined => {
+const saveConfig = (cfg: ConfigFile): ConfigFile | undefined => {
   try {
     const filePath = "/config/viox-musicserver-config.json"
 

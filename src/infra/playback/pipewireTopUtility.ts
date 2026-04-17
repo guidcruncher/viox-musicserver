@@ -1,6 +1,6 @@
 import { execFile } from "node:child_process"
 
-export interface PwTopRow {
+interface PwTopRow {
   state: string
   id: number
   quant: number | null
@@ -14,7 +14,7 @@ export interface PwTopRow {
   name: string
 }
 
-export interface PwTopStatus {
+interface PwTopStatus {
   isOutputtingAudio: boolean
   rows: PwTopRow[]
   activeNodes: Array<{

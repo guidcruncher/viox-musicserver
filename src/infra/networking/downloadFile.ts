@@ -6,17 +6,17 @@ import { logger } from "@/logger"
 
 import { hashAudioFilename } from "./hashFilename"
 
-export interface DownloadOptions {
+interface DownloadOptions {
   retries?: number
   backoffMs?: number
   chunkSize?: number
 }
 
-export interface FileDownloader {
+interface FileDownloader {
   downloadFile(url: string, opts: DownloadOptions): Promise<void>
 }
 
-export class NullDownload implements FileDownloader {
+class NullDownload implements FileDownloader {
   async downloadFile(url: string, _opts: DownloadOptions = {}): Promise<void> {
     logger.trace(`Null downloader invoked ${url}`)
   }

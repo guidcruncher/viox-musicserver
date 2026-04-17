@@ -18,7 +18,7 @@ export const ListLibrarySchema = {
   },
 }
 
-export const GetLibraryItemSchema = {
+const GetLibraryItemSchema = {
   params: {
     type: "object",
     required: ["id"],
