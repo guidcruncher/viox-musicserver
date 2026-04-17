@@ -153,7 +153,7 @@ export class PlaybackController {
               item.sourceRef.sourceId,
             )
 
-          if (albumTracks) {
+            if (albumTracks) {
               this.stores.cache.upsert(albumTracks)
               tracksToQueue = albumTracks.map((t) => t.id)
             }
@@ -192,7 +192,7 @@ export class PlaybackController {
       return nowPlayingStore.current()
     } catch (err) {
       logger.error("playback: enqueueAndPlay failed", err)
-return undefined
+      return undefined
     }
   }
 
