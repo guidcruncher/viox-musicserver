@@ -76,6 +76,7 @@ export function registerLibraryRoutes(app: FastifyInstance, backend: VioxBackend
     const item = await backend.library.get(id)
     if (item) {
       await backend.library.remove(item.id)
+      await backend.cache.upsert([item])
       res.send(item)
       return
     }

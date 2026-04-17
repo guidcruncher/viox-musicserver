@@ -10,8 +10,16 @@ export function registerPlaybackRoutes(app: FastifyInstance, backend: VioxBacken
   logger.info("Registering Playback routes")
 
   app.post("/api/play", { schema: PlayRequestSchema }, async (req, res) => {
-    const body = req.body as { id: string; parent: string }
-    const track = await backend.playback.enqueueAndPlay(body.id, body.parent)
+    const body = req.body as any
+    if (!body.ids && !body.id) {
+      res.code(400).send({ success: false, message: "Either ids[] or id must be provided" })
+      return
+    }
+
+    const ids = (body.ids ?? [body.id]).filter((id: any): id is string => id !== undefined)
+    const parent = body.parent as any
+
+    const track = await backend.playback.enqueueAndPlay(ids, parent)
     res.send({ ok: true, track })
   })
 
