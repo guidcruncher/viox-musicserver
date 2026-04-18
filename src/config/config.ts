@@ -124,11 +124,3 @@ export const config: AppConfig = new Proxy({} as AppConfig, {
     return resolved[prop as keyof AppConfig]
   },
 })
-
-/**
- * Legacy getter kept for backward compatibility.
- * Prefer direct property access via `config.someKey`.
- */
-const getConfig = <T>(key: string): T => {
-  return config[key as keyof AppConfig] as T
-}

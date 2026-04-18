@@ -17,16 +17,3 @@ export const ListLibrarySchema = {
     },
   },
 }
-
-const GetLibraryItemSchema = {
-  params: {
-    type: "object",
-    required: ["id"],
-    properties: {
-      id: { type: "string" },
-    },
-  },
-  response: {
-    200: { $ref: "MediaItem#" },
-  },
-}

@@ -16,12 +16,6 @@ interface FileDownloader {
   downloadFile(url: string, opts: DownloadOptions): Promise<void>
 }
 
-class NullDownload implements FileDownloader {
-  async downloadFile(url: string, _opts: DownloadOptions = {}): Promise<void> {
-    logger.trace(`Null downloader invoked ${url}`)
-  }
-}
-
 function isRetryableError(err: unknown): boolean {
   if (err instanceof TypeError) return true // fetch network failures
   if (err instanceof Error) {
