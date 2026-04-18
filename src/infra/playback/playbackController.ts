@@ -130,31 +130,43 @@ export class PlaybackController {
   /**
    * Enqueues an item (or its contents if it's an album/playlist) and starts playback if idle.
    */
-  async enqueueAndPlay(id: string, parent?: string): Promise<MediaItem | undefined> {
+  async enqueueAndPlay(ids?: string[], parent?: string): Promise<MediaItem | undefined> {
+    if (!ids) return undefined
+
     try {
-      const vioxId = parseVioxId(id)
-      if (!vioxId) throw new Error(`Invalid Viox ID: ${id}`)
-
       let tracksToQueue: string[] = []
+      for (const id of ids) {
+        const vioxId = parseVioxId(id)
+        if (!vioxId) {
+          logger.error(`Invalid Viox ID: ${id}`)
+          continue
+        }
 
-      // Resolve contents based on type
-      if (vioxId.type === "playlist") {
-        const items = await this.stores.playlist.getItems(id)
-        tracksToQueue = items.map((i) => i.id)
-      } else {
-        const item = await this.resolveItem(id)
-        if (item.sourceRef.itemType === "album") {
-          const albumTracks = await this.stores.tracks.listByParentSourceId(item.sourceRef.sourceId)
-          if (albumTracks) {
-            this.stores.cache.upsert(albumTracks)
-            tracksToQueue = albumTracks.map((t) => t.id)
-          }
+        // Resolve contents based on type
+        if (vioxId.type === "playlist") {
+          const items = await this.stores.playlist.getItems(id)
+          tracksToQueue = items.map((i) => i.id)
         } else {
-          tracksToQueue = [item.id]
+          const item = await this.resolveItem(id)
+          if (item.sourceRef.itemType === "album") {
+            const albumTracks = await this.stores.tracks.listByParentSourceId(
+              item.sourceRef.sourceId,
+            )
+
+            if (albumTracks) {
+              this.stores.cache.upsert(albumTracks)
+              tracksToQueue = albumTracks.map((t) => t.id)
+            }
+          } else {
+            tracksToQueue = [item.id]
+          }
         }
       }
 
-      if (tracksToQueue.length === 0) return
+      if (tracksToQueue.length === 0) {
+        logger.warn("Nothing found to queue, aborting enqueueAndPlayback")
+        return
+      }
 
       // Enqueue all tracks
       let firstQueueId: string | undefined
@@ -179,7 +191,8 @@ export class PlaybackController {
 
       return nowPlayingStore.current()
     } catch (err) {
-      logger.error({ err, id }, "playback: enqueueAndPlay failed")
+      logger.error("playback: enqueueAndPlay failed", err)
+      return undefined
     }
   }
 

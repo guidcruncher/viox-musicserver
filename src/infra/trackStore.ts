@@ -109,8 +109,8 @@ export class SqliteTrackStore implements TrackStore {
       SELECT a.*, CASE WHEN b.id IS NULL THEN 0 ELSE 1 END AS library
         FROM tracks AS a
         LEFT JOIN media_items AS b ON a.id = b.id
-      WHERE item_type IN (${placeholders})
-      ORDER BY title ASC
+      WHERE a.item_type IN (${placeholders})
+      ORDER BY a.title ASC
     `,
       )
       .all(...itemTypes)
@@ -168,7 +168,7 @@ export class SqliteTrackStore implements TrackStore {
         SELECT a.*, CASE WHEN b.id IS NULL THEN 0 ELSE 1 END AS library
         FROM tracks AS a
         LEFT JOIN media_items AS b ON a.id = b.id
-        WHERE source_id = ?
+        WHERE a.source_id = ?
       `,
       )
       .get(id)
@@ -183,8 +183,8 @@ export class SqliteTrackStore implements TrackStore {
       SELECT a.*, CASE WHEN b.id IS NULL THEN 0 ELSE 1 END AS library
         FROM tracks AS a
         LEFT JOIN media_items AS b ON a.id = b.id        
-      WHERE parent_source_id = ?
-      ORDER BY track ASC
+      WHERE a.parent_source_id = ?
+      ORDER BY a.track ASC
     `,
       )
       .all(parentSourceId)

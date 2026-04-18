@@ -71,6 +71,18 @@ export function registerLibraryRoutes(app: FastifyInstance, backend: VioxBackend
     res.send({})
   })
 
+  app.delete("/api/library/:id", async (req, res) => {
+    const { id } = req.params as { id: string }
+    const item = await backend.library.get(id)
+    if (item) {
+      await backend.library.remove(item.id)
+      await backend.cache.upsert([item])
+      res.send(item)
+      return
+    }
+    res.send({})
+  })
+
   app.get("/api/playlists", async (req, res) => {
     const { offset, limit } = req.query as any
     let playlists

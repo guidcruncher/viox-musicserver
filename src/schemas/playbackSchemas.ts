@@ -1,9 +1,9 @@
 export const PlayRequestSchema = {
   body: {
     type: "object",
-    required: ["id"],
     properties: {
       id: { type: "string" },
+      ids: { type: "array", items: { type: "string" } },
       parent: { type: "string" },
     },
   },
