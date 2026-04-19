@@ -2,10 +2,11 @@ import type { FastifyInstance } from "fastify"
 
 import { logger } from "@/logger"
 import { StreamerSchema } from "@/schemas"
-import { streamerService } from "@/services/streamerService"
+import { AudioStreamService } from "@/services/audioService"
 import type { VioxBackend } from "@/types"
 
-export function registerStreamerRoutes(app: FastifyInstance, _backend: VioxBackend) {
+export function registerAudioStreamRoutes(app: FastifyInstance, _backend: VioxBackend) {
+  const streamerService = new AudioStreamService()
   logger.info("Registering version routes")
 
   app.get("/api/stream", { schema: StreamerSchema }, async (req: any, reply: any) => {

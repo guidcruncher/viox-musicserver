@@ -3,8 +3,8 @@ import FFT from "fft.js"
 
 import { logger } from "@/logger"
 
-export class AudioService {
-  private static instance: AudioService
+export class FFTStreamService {
+  private static instance: FFTStreamService
   private pwProcess: ChildProcessWithoutNullStreams | null = null
   private listeners: Set<(data: Float32Array) => void> = new Set()
   private fft = new FFT(1024)
@@ -12,27 +12,27 @@ export class AudioService {
 
   private constructor() {}
 
-  public static getInstance(): AudioService {
-    if (!AudioService.instance) {
-      AudioService.instance = new AudioService()
+  public static getInstance(): FFTStreamService {
+    if (!FFTStreamService.instance) {
+      FFTStreamService.instance = new FFTStreamService()
     }
-    return AudioService.instance
+    return FFTStreamService.instance
   }
 
   public addListener(callback: (data: Float32Array) => void): void {
     this.listeners.add(callback)
-    logger.info(`[AudioService] Client connected. Total: ${this.listeners.size}`)
+    logger.info(`[FFTStreamService] Client connected. Total: ${this.listeners.size}`)
     if (this.listeners.size === 1) this.startPipeWire()
   }
 
   public removeListener(callback: (data: Float32Array) => void): void {
     this.listeners.delete(callback)
-    logger.info(`[AudioService] Client disconnected. Total: ${this.listeners.size}`)
+    logger.info(`[FFTStreamService] Client disconnected. Total: ${this.listeners.size}`)
     if (this.listeners.size === 0) this.stopPipeWire()
   }
 
   private startPipeWire(): void {
-    logger.info("[AudioService] Starting PipeWire capture...")
+    logger.info("[FFTStreamService] Starting PipeWire capture...")
 
     this.pwProcess = spawn("pw-record", [
       "--target",
@@ -87,12 +87,12 @@ export class AudioService {
       }
     })
 
-    this.pwProcess.on("error", (err) => logger.error("[AudioService] Spawn Error:", err))
+    this.pwProcess.on("error", (err) => logger.error("[FFTStreamService] Spawn Error:", err))
   }
 
   private stopPipeWire(): void {
     if (this.pwProcess) {
-      logger.info("[AudioService] Stopping PipeWire (No active clients)")
+      logger.info("[FFTStreamService] Stopping PipeWire (No active clients)")
       this.pwProcess.kill("SIGTERM")
       this.pwProcess = null
     }

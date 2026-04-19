@@ -6,6 +6,7 @@ import type { VioxBackend } from "@/types"
 
 import { registerAlbumArtRoutes } from "@/routes/albumArtRoutes"
 import { registerArtistRoutes } from "@/routes/artistRoutes"
+import { registerAudioStreamRoutes } from "@/routes/audioStreamRoutes"
 import { registerBackendStatusRoutes } from "@/routes/backendStatusRoutes"
 import { registerCatalogRoutes } from "@/routes/catalogRoutes"
 import { registerEqualizerRoutes } from "@/routes/equalizerRoutes"
@@ -23,13 +24,13 @@ import { registerRadioRoutes } from "@/routes/radioRoutes"
 import { registerSearchRoutes } from "@/routes/searchRoutes"
 import { registerSpeakerRoutes } from "@/routes/speakerRoutes"
 import { registerSpotifyAuthRoutes } from "@/routes/spotifyAuthRoutes"
-import { registerStreamerRoutes } from "@/routes/streamerRoutes"
 import { registerSystemRoutes } from "@/routes/systemRoutes"
 import { registerVersionRoutes } from "@/routes/versionRoutes"
 
 export const registerAllRoutes = async (app: FastifyInstance, backend: VioxBackend) => {
   registerAlbumArtRoutes(app, backend)
   registerArtistRoutes(app, backend)
+  registerAudioStreamRoutes(app, backend)
   registerBackendStatusRoutes(app, backend)
   registerCatalogRoutes(app, backend)
   registerEqualizerRoutes(app, backend)
@@ -47,7 +48,6 @@ export const registerAllRoutes = async (app: FastifyInstance, backend: VioxBacke
   registerSearchRoutes(app, backend)
   registerSpeakerRoutes(app, backend)
   registerSpotifyAuthRoutes(app, backend)
-  registerStreamerRoutes(app, backend)
   registerSystemRoutes(app, backend)
   registerVersionRoutes(app, backend)
 }
