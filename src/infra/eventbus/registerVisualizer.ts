@@ -3,11 +3,11 @@ import { FastifyInstance } from "fastify"
 
 import { logger } from "@/logger"
 import { AudioService } from "@/services/fftService"
-
+/
 export async function registerVisualizer(fastify: FastifyInstance) {
   // 2. Define the WebSocket route
   // We use the 'connection' object which contains the raw socket
-  fastify.get("/api/ws/visualizer", { websocket: true }, (connection) => {
+  fastify.get("/api/fft", { websocket: true }, (connection) => {
     const socket = connection
     const audioService = AudioService.getInstance()
 
