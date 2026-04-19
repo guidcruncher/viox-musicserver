@@ -1,22 +1,23 @@
 import { ChildProcessWithoutNullStreams, spawn } from "child_process"
 import { PassThrough, Readable } from "stream"
+
 import { logger } from "@/logger"
 
 export class AudioStreamService {
-  private static instance: AudioService
+  private static instance: AudioStreamService
   private pwProcess: ChildProcessWithoutNullStreams | null = null
-  
+
   // A PassThrough stream acts as a central hub (fan-out)
   private centralStream: PassThrough = new PassThrough()
   private consumerCount = 0
 
   private constructor() {}
 
-  public static getInstance(): AudioService {
-    if (!AudioService.instance) {
-      AudioService.instance = new AudioService()
+  public static getInstance(): AudioStreamService {
+    if (!AudioStreamService.instance) {
+      AudioStreamService.instance = new AudioStreamService()
     }
-    return AudioService.instance
+    return AudioStreamService.instance
   }
 
   /**
@@ -25,7 +26,7 @@ export class AudioStreamService {
    */
   public getAudioStream(): Readable {
     this.consumerCount++
-    logger.info(`[AudioService] New stream consumer connected. Total: ${this.consumerCount}`)
+    logger.info(`[AudioStreamService] New stream consumer connected. Total: ${this.consumerCount}`)
 
     if (this.consumerCount === 1) {
       this.startPipeWire()
@@ -39,8 +40,8 @@ export class AudioStreamService {
     consumerStream.on("close", () => {
       this.centralStream.unpipe(consumerStream)
       this.consumerCount--
-      logger.info(`[AudioService] Consumer disconnected. Total: ${this.consumerCount}`)
-      
+      logger.info(`[AudioStreamService] Consumer disconnected. Total: ${this.consumerCount}`)
+
       if (this.consumerCount === 0) {
         this.stopPipeWire()
       }
@@ -50,7 +51,7 @@ export class AudioStreamService {
   }
 
   private startPipeWire(): void {
-    logger.info("[AudioService] Starting PipeWire 2-channel capture...")
+    logger.info("[AudioStreamService] Starting PipeWire 2-channel capture...")
 
     /**
      * Capturing 2 channels (Stereo)
@@ -58,10 +59,14 @@ export class AudioStreamService {
      * Rate: 48000Hz
      */
     this.pwProcess = spawn("pw-record", [
-      "--target", "snapcast-sink",
-      "--format", "s16",
-      "--rate", "48000",
-      "--channels", "2",
+      "--target",
+      "snapcast-sink",
+      "--format",
+      "s16",
+      "--rate",
+      "48000",
+      "--channels",
+      "2",
       "-", // Output to stdout
     ])
 
@@ -69,17 +74,17 @@ export class AudioStreamService {
     this.pwProcess.stdout.pipe(this.centralStream, { end: false })
 
     this.pwProcess.on("error", (err) => {
-      logger.error("[AudioService] Spawn Error:", err)
+      logger.error("[AudioStreamService] Spawn Error:", err)
     })
 
     this.pwProcess.stderr.on("data", (data) => {
-      logger.debug(`[AudioService] pw-record stderr: ${data}`)
+      logger.debug(`[AudioStreamService] pw-record stderr: ${data}`)
     })
   }
 
   private stopPipeWire(): void {
     if (this.pwProcess) {
-      logger.info("[AudioService] Stopping PipeWire (No active consumers)")
+      logger.info("[AudioStreamService] Stopping PipeWire (No active consumers)")
       // Unpipe first to prevent errors on the central stream
       this.pwProcess.stdout.unpipe(this.centralStream)
       this.pwProcess.kill("SIGTERM")
