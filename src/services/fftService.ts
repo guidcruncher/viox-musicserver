@@ -3,7 +3,7 @@ import FFT from "fft.js"
 
 import { logger } from "@/logger"
 
-export class AudioService {
+export class FFTStreamService {
   private static instance: AudioService
   private pwProcess: ChildProcessWithoutNullStreams | null = null
   private listeners: Set<(data: Float32Array) => void> = new Set()
