@@ -37,7 +37,7 @@ export async function getStreamMetadata(streamUrl: string): Promise<IcyMetadata 
     }
 
     return normalised
-  } catch  {
+  } catch {
     logger.error("Error fetching stream metadata")
     return undefined
   }

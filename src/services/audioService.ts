@@ -7,11 +7,19 @@ export class AudioStreamService {
   private static instance: AudioStreamService
   private pwProcess: ChildProcessWithoutNullStreams | null = null
 
-  // A PassThrough stream acts as a central hub (fan-out)
-  private centralStream: PassThrough = new PassThrough()
+  /**
+   * The central hub.
+   * We set highWaterMark to 16KB (~85ms of audio) to keep latency tight.
+   */
+  private centralStream: PassThrough = new PassThrough({ highWaterMark: 16384 })
   private consumerCount = 0
 
-  private constructor() {}
+  private constructor() {
+    // Prevent the central stream from closing if the source process restarts
+    this.centralStream.on("error", (err) =>
+      logger.error("[AudioStreamService] Central Stream Error:", err),
+    )
+  }
 
   public static getInstance(): AudioStreamService {
     if (!AudioStreamService.instance) {
@@ -20,27 +28,18 @@ export class AudioStreamService {
     return AudioStreamService.instance
   }
 
-  /**
-   * Returns a new readable stream of the raw audio data.
-   * Format: PCM S16 LE, 48000Hz, 2 Channels
-   */
   public getAudioStream(): Readable {
     this.consumerCount++
-    logger.info(`[AudioStreamService] New stream consumer connected. Total: ${this.consumerCount}`)
 
-    if (this.consumerCount === 1) {
-      this.startPipeWire()
-    }
+    // Each consumer gets their own PassThrough with a small buffer
+    const consumerStream = new PassThrough({ highWaterMark: 16384 })
 
-    // Create a sub-stream for this specific consumer
-    const consumerStream = new PassThrough()
     this.centralStream.pipe(consumerStream)
 
-    // Handle cleanup when this specific consumer disconnects/destroys their stream
     consumerStream.on("close", () => {
       this.centralStream.unpipe(consumerStream)
       this.consumerCount--
-      logger.info(`[AudioStreamService] Consumer disconnected. Total: ${this.consumerCount}`)
+      logger.info(`[AudioStreamService] Client left. Active: ${this.consumerCount}`)
 
       if (this.consumerCount === 0) {
         this.stopPipeWire()
@@ -51,13 +50,8 @@ export class AudioStreamService {
   }
 
   private startPipeWire(): void {
-    logger.info("[AudioStreamService] Starting PipeWire 2-channel capture...")
+    logger.info("[AudioStreamService] Spawning PipeWire capture...")
 
-    /**
-     * Capturing 2 channels (Stereo)
-     * Format: s16 (16-bit Little Endian)
-     * Rate: 48000Hz
-     */
     this.pwProcess = spawn("pw-record", [
       "--target",
       "snapcast-sink",
@@ -67,26 +61,32 @@ export class AudioStreamService {
       "48000",
       "--channels",
       "2",
-      "-", // Output to stdout
+      "-",
     ])
 
-    // Pipe the process stdout directly into our central PassThrough stream
-    this.pwProcess.stdout.pipe(this.centralStream, { end: false })
+    this.pwProcess.stdout.on("data", (chunk: Buffer) => {
+      // attempt to write to the central hub
+      const bufferOk = this.centralStream.write(chunk)
 
-    this.pwProcess.on("error", (err) => {
-      logger.error("[AudioStreamService] Spawn Error:", err)
+      /**
+       * BACKPRESSURE EVASION
+       * If write() returns false, the internal buffer is full.
+       * We force-read (drain) the hub to drop the old data and prioritize the new 'live' chunk.
+       */
+      if (!bufferOk) {
+        this.centralStream.read()
+        // Re-attempt write after clearing space
+        this.centralStream.write(chunk)
+      }
     })
 
-    this.pwProcess.stderr.on("data", (data) => {
-      logger.debug(`[AudioStreamService] pw-record stderr: ${data}`)
-    })
+    this.pwProcess.stderr.on("data", (data) => logger.debug(`[pw-record] ${data}`))
+    this.pwProcess.on("error", (err) => logger.error("[AudioStreamService] Spawn Error:", err))
   }
 
   private stopPipeWire(): void {
     if (this.pwProcess) {
-      logger.info("[AudioStreamService] Stopping PipeWire (No active consumers)")
-      // Unpipe first to prevent errors on the central stream
-      this.pwProcess.stdout.unpipe(this.centralStream)
+      logger.info("[AudioStreamService] Killing PipeWire process")
       this.pwProcess.kill("SIGTERM")
       this.pwProcess = null
     }
