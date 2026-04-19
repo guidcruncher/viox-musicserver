@@ -7,27 +7,39 @@ import type { VioxBackend } from "@/types"
 export function registerVisualizerRoutes(app: FastifyInstance, _backend: VioxBackend) {
   logger.info("Registering visualiser routes")
 
-  app.get("/api/ws/visualizer", { websocket: true }, (connection, _req) => {
+app.get("/api/ws/visualizer", { websocket: true }, (connection, _req) => {
+  try {
     const audioService = AudioService.getInstance()
+    
+    // Destructure socket for cleaner code
+    const { socket } = connection;
 
-    // Define the broadcast callback for this specific socket
     const onData = (fftData: Float32Array) => {
-      if (connection.readyState === 1) {
-        connection.send(fftData.buffer)
+      // Use socket.readyState (1 is OPEN)
+      if (socket.readyState === 1) {
+        socket.send(fftData.buffer)
       }
     }
 
-    logger.info("Visualizer New client subscribed to singleton stream")
+    logger.info("Visualizer: New client subscribed")
     audioService.addListener(onData)
 
-    connection.on("close", () => {
-      logger.info("Gisuaoizerv Client unsubscribed")
+    // Use socket.on instead of connection.on
+    socket.on("close", () => {
+      logger.info("Visualizer: Client unsubscribed")
       audioService.removeListener(onData)
     })
 
-    connection.on("error", () => {
-      logger.error("Visualizer socket error")
+    socket.on("error", (err) => {
+      logger.error("Visualizer socket error", err)
       audioService.removeListener(onData)
     })
-  })
+    
+  } catch (err) {
+    logger.error("Error in visualizer", err)
+  }
+})
+
+
+
 }
