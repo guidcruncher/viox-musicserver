@@ -4,7 +4,7 @@ export const StreamerSchema = {
   querystring: {
     type: "object",
     properties: {
-      format: { type: "string", enum: ["aac", "mp3", "mp4"] },
+      format: { type: "string", enum: ["aac", "mp3", "mp4", "opus"] },
     },
   },
 }
