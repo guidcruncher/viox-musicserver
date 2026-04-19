@@ -1,31 +1,33 @@
-import { FastifyInstance, FastifyRequest } from "fastify"
-import { AudioService } from "@/services/fftService"
+import { FastifyInstance } from "fastify"
+
 import { logger } from "@/logger"
+import { AudioService } from "@/services/fftService"
 import type { VioxBackend } from "@/types"
 
 export function registerVisualizerRoutes(app: FastifyInstance, _backend: VioxBackend) {
-  app.get("/ws/visualizer", { websocket: true }, (connection, req: FastifyRequest) => {
-    const audioService = new AudioService()
+  logger.info("Registering visualiser routes")
 
-    logger.info("Client connected to FFT stream")
+  app.get("/api/ ws/visualizer", { websocket: true }, (connection, _req) => {
+    const audioService = AudioService.getInstance()
 
-    // Start the stream and send data to this specific client
-    audioService.streamFFT((fftData) => {
-      if (connection.socket.readyState === connection.socket.OPEN) {
-        // Sending as raw binary for maximum performance
+    // Define the broadcast callback for this specific socket
+    const onData = (fftData: Float32Array) => {
+      if (connection.socket.readyState === 1) {
         connection.socket.send(fftData.buffer)
       }
-    })
+    }
 
-    // Cleanup when this specific client closes the tab
+    logger.info("Visualizer New client subscribed to singleton stream")
+    audioService.addListener(onData)
+
     connection.socket.on("close", () => {
-      audioService.stop()
-      logger.info("Client disconnected, stream stopped")
+      logger.info("Gisuaoizerv Client unsubscribed")
+      audioService.removeListener(onData)
     })
 
-    connection.socket.on("error", (err) => {
-      logger.error("Error in visualizer", err)
-      audioService.stop()
+    connection.socket.on("error", () => {
+      logger.error("Visualizer socket error", err)
+      audioService.removeListener(onData)
     })
   })
 }
