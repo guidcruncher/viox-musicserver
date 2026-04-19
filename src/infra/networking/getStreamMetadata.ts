@@ -13,7 +13,7 @@ interface IcyMetadata {
   raw: Record<string, string>
 }
 
-export async function getStreamMetadata(streamUrl: string): Promise<IcyMetadata | undefined > {
+export async function getStreamMetadata(streamUrl: string): Promise<IcyMetadata | undefined> {
   try {
     const { stdout } = await execFileAsync("ffprobe", [
       "-v",

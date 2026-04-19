@@ -70,7 +70,7 @@ export class AudioService {
           for (let i = 0; i < 64; i++) {
             const real = out[i * 2]
             const imag = out[i * 2 + 1]
-            let mag = Math.sqrt(real * real + imag * imag)
+            const mag = Math.sqrt(real * real + imag * imag)
 
             if (mag < NOISE_THRESHOLD) {
               magnitudes[i] = 0
