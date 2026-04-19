@@ -6,6 +6,7 @@ import type { VioxBackend } from "@/types";
 
 import { registerAlbumArtRoutes } from "@/routes/albumArtRoutes";
 import { registerArtistRoutes } from "@/routes/artistRoutes";
+import { registerAudioStreamRoutes } from "@/routes/audioStreamRoutes";
 import { registerBackendStatusRoutes } from "@/routes/backendStatusRoutes";
 import { registerCatalogRoutes } from "@/routes/catalogRoutes";
 import { registerEqualizerRoutes } from "@/routes/equalizerRoutes";
@@ -31,6 +32,7 @@ import { registerVersionRoutes } from "@/routes/versionRoutes";
 export const registerAllRoutes = async(app: FastifyInstance, backend: VioxBackend) => {
   registerAlbumArtRoutes(app, backend);
   registerArtistRoutes(app, backend);
+  registerAudioStreamRoutes(app, backend);
   registerBackendStatusRoutes(app, backend);
   registerCatalogRoutes(app, backend);
   registerEqualizerRoutes(app, backend);
