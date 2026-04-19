@@ -8,6 +8,7 @@ import { config } from "@/config"
 import { createVioxBackend } from "@/core/createBackend"
 import { MpvClient } from "@/infra/backends/mpvClient"
 import { registerEventBus } from "@/infra/eventbus/registerEventBus"
+import { registerVisualizer } from "@/infra/eventbus/registerVisualizer"
 import { registerScheduler } from "@/infra/scheduler"
 import { logger } from "@/logger"
 import { registerAllRoutes } from "@/routes"
@@ -81,6 +82,7 @@ export const createServer = async () => {
 
   logger.info("Registering eventbus")
   await registerEventBus(app)
+  await registerVisualizer(app)
   logger.info("Registered eventbus")
 
   return app
