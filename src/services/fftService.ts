@@ -1,5 +1,5 @@
-import { ChildProcessWithoutNullStreams,spawn } from "child_process"
-import { fft, util as fftUtil } from "fft-js"
+import { ChildProcessWithoutNullStreams, spawn } from "child_process"
+import { FFTW } from "node-fftw"
 
 import { logger } from "@/logger"
 
@@ -7,6 +7,10 @@ export class AudioService {
   private static instance: AudioService
   private pwProcess: ChildProcessWithoutNullStreams | null = null
   private listeners: Set<(data: Float32Array) => void> = new Set()
+  private fft = new FFTW(1024)
+
+  // For throttled logging
+  private lastLogTime = 0
 
   private constructor() {}
 
@@ -19,8 +23,8 @@ export class AudioService {
 
   public addListener(callback: (data: Float32Array) => void): void {
     this.listeners.add(callback)
+    logger.info(`[AudioService] Listener added. Total listeners: ${this.listeners.size}`)
 
-    // Start the process only if this is the first listener
     if (this.listeners.size === 1) {
       this.startPipeWire()
     }
@@ -28,15 +32,16 @@ export class AudioService {
 
   public removeListener(callback: (data: Float32Array) => void): void {
     this.listeners.delete(callback)
+    logger.info(`[AudioService] Listener removed. Total listeners: ${this.listeners.size}`)
 
-    // Kill the process if no one is watching
     if (this.listeners.size === 0) {
       this.stopPipeWire()
     }
   }
 
   private startPipeWire(): void {
-    logger.log("Starting Singleton PipeWire Process...")
+    logger.info("[AudioService] 🔊 Initializing PipeWire capture (pw-record)...")
+
     this.pwProcess = spawn("pw-record", [
       "--target",
       "default",
@@ -53,26 +58,47 @@ export class AudioService {
       const samples = new Int16Array(chunk.buffer, chunk.byteOffset, chunk.length / 2)
 
       if (samples.length >= 1024) {
-        const signal = Array.from(samples.slice(0, 1024)).map((n) => n / 32768.0)
-        try {
-          const phasors = fft(signal)
-          const magnitudes = fftUtil.fftMag(phasors)
-          const fftData = new Float32Array(magnitudes.slice(0, 64))
+        const realInput = new Float64Array(1024)
+        const imagInput = new Float64Array(1024)
 
-          // Broadcast to all connected listeners
-          this.listeners.forEach((callback) => callback(fftData))
-        } catch (err) {
-          // FFT sizing error handling
-          loggger.error("Error in FFT cslculator", err)
+        for (let i = 0; i < 1024; i++) {
+          realInput[i] = samples[i] / 32768.0
         }
+
+        const { real, imag } = this.fft.forward(realInput, imagInput)
+        const bins = 64
+        const magnitudes = new Float32Array(bins)
+
+        for (let i = 0; i < bins; i++) {
+          magnitudes[i] = Math.sqrt(real[i] * real[i] + imag[i] * imag[i])
+        }
+
+        // Throttle "Data Flowing" log to once every 5 seconds
+        const now = Date.now()
+        if (now - this.lastLogTime > 5000) {
+          logger.info(
+            `[AudioService] ⚡ FFT Broadcast: Active with ${this.listeners.size} clients.`,
+          )
+          this.lastLogTime = now
+        }
+
+        this.listeners.forEach((cb) => cb(magnitudes))
       }
+    })
+
+    this.pwProcess.stderr.on("data", (data) => {
+      logger.error(`[AudioService] PipeWire STDERR: ${data}`)
+    })
+
+    this.pwProcess.on("exit", (code) => {
+      logger.info(`[AudioService] PipeWire process exited with code ${code}`)
     })
   }
 
   private stopPipeWire(): void {
     if (this.pwProcess) {
-      logger.log("No active listeners. Killing PipeWire process.")
-      this.pwProcess.kill("SIGKILL")
+      logger.info("[AudioService] 🔇 Killing PipeWire process (No active listeners)...")
+      this.pwProcess.kill("SIGTERM")
       this.pwProcess = null
     }
   }

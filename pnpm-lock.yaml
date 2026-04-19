@@ -41,6 +41,9 @@ importers:
       music-metadata:
         specifier: ^11.12.3
         version: 11.12.3
+      node-fftw:
+        specifier: ^1.0.0
+        version: 1.0.0
       rss-parser:
         specifier: ^3.13.0
         version: 3.13.0
@@ -1626,6 +1629,9 @@ packages:
   node-abi@3.89.0:
     resolution: {integrity: sha512-6u9UwL0HlAl21+agMN3YAMXcKByMqwGx+pq+P76vii5f7hTPtKDp08/H9py6DY+cfDw7kQNTGEj/rly3IgbNQA==}
     engines: {node: '>=10'}
+
+  node-fftw@1.0.0:
+    resolution: {integrity: sha512-qSESglYG1BUh6h1ppuq9MnCXyb2M4FqJSOOBQVImw+wL9PYS1IZNItD4+ycNCuiyopmCaO+5cOmqVPHb9MdxgA==}
 
   normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
@@ -3536,6 +3542,8 @@ snapshots:
   node-abi@3.89.0:
     dependencies:
       semver: 7.7.4
+
+  node-fftw@1.0.0: {}
 
   normalize-path@3.0.0: {}
 
