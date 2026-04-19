@@ -6,28 +6,35 @@ import type { VioxBackend } from "@/types"
 export function registerAudioStreamRoutes(fastify: FastifyInstance, _backend: VioxBackend) {
   const audioService = AudioStreamService.getInstance()
 
-  fastify.get("/api/stream.raw", async (request: FastifyRequest, reply: FastifyReply) => {
-    const audioStream = audioService.getAudioStream()
+  fastify.get("/api/stream", async (request: FastifyRequest, reply: FastifyReply) => {
+    const stream = audioService.getAudioStream();
 
-    // Set appropriate headers for raw PCM audio
+    // Standard headers for Ogg/Opus live streaming
     reply.raw.writeHead(200, {
-      "Content-Type": "audio/l16;rate=48000;channels=2",
-      Connection: "keep-alive",
+      "Content-Type": "audio/ogg",
+      "Connection": "keep-alive",
       "Transfer-Encoding": "chunked",
-    })
+      "Cache-Control": "no-cache, no-store",
+    });
 
-    /**
-     * Handle Client Disconnect
-     * If the user closes the tab or stops the stream, we must destroy
-     * the local stream to trigger the AudioService cleanup logic.
-     */
-    request.raw.on("close", () => {
-      if (!audioStream.destroyed) {
-        audioStream.destroy()
+    // Handle network-level backpressure
+    const onData = (chunk: Buffer) => {
+      const drained = reply.raw.write(chunk);
+      if (!drained) {
+        stream.pause();
+        reply.raw.once("drain", () => stream.resume());
       }
-    })
+    };
 
-    // Return the stream directly to Fastify
-    return audioStream
+    stream.on("data", onData);
+
+    // Critical: Clean up when the Pi disconnects
+    request.raw.on("close", () => {
+      stream.removeListener("data", onData);
+      stream.destroy();
+    });
+
+    // Keeps the request alive
+    await reply;
   })
 }
