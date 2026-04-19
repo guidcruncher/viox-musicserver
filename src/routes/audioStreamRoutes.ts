@@ -1,40 +1,47 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
+import type { FastifyInstance } from "fastify"
 
+import { logger } from "@/logger"
+import { StreamerSchema } from "@/schemas"
 import { AudioStreamService } from "@/services/audioService"
 import type { VioxBackend } from "@/types"
 
-export function registerAudioStreamRoutes(fastify: FastifyInstance, _backend: VioxBackend) {
-  const audioService = AudioStreamService.getInstance()
+export function registerAudioStreamRoutes(app: FastifyInstance, _backend: VioxBackend) {
+  const streamerService= new AudioStreamService()
+  logger.info("Registering version routes")
 
-  fastify.get("/api/stream", async (request: FastifyRequest, reply: FastifyReply) => {
-    const stream = audioService.getAudioStream();
+  app.get("/api/stream", { schema: StreamerSchema }, async (req: any, reply: any) => {
+    // 1. Identify format via smart negotiation
+    const format = streamerService.negotiateFormat(
+      (req.query as any).format,
+      req.headers.accept,
+      req.headers["user-agent"],
+    )
 
-    // Standard headers for Ogg/Opus live streaming
-    reply.raw.writeHead(200, {
-      "Content-Type": "audio/ogg",
-      "Connection": "keep-alive",
-      "Transfer-Encoding": "chunked",
-      "Cache-Control": "no-cache, no-store",
-    });
+    // 2. Setup Stream
+    const { process: ffmpeg, config } = streamerService.createStream(format)
+    const headers = streamerService.getHeaders(format)
 
-    // Handle network-level backpressure
-    const onData = (chunk: Buffer) => {
-      const drained = reply.raw.write(chunk);
-      if (!drained) {
-        stream.pause();
-        reply.raw.once("drain", () => stream.resume());
-      }
-    };
+    // 3. Write Response
+    reply.raw.writeHead(200, headers)
 
-    stream.on("data", onData);
+    if (config.primingFrame) {
+      reply.raw.write(config.primingFrame)
+    }
 
-    // Critical: Clean up when the Pi disconnects
-    request.raw.on("close", () => {
-      stream.removeListener("data", onData);
-      stream.destroy();
-    });
+    ffmpeg.stdout.pipe(reply.raw)
 
-    // Keeps the request alive
-    await reply;
+    // 4. Cleanup
+    const cleanup = () => {
+      streamerService.stopStream(ffmpeg)
+      if (!reply.raw.writableEnded) reply.raw.end()
+    }
+
+    req.raw.on("close", cleanup)
+    ffmpeg.on("error", (err: any) => {
+      logger.error(`FFmpeg Error: ${err.message}`)
+      cleanup()
+    })
+
+    return reply
   })
 }

@@ -34,7 +34,8 @@ ENV RADIO_PROVIDER=radiobrowser \
     SEARCH_BACKEND_LIMIT=50 \
     SEARCH_CACHE_SIZE=2000 \
     DOWNLOAD_PODCASTS=true \
-    NODE_ENV=production
+    NODE_ENV=production \
+    PULSE_SERVER=unix:/run/user/1000/pulse/native
 
     # Create required directories
 RUN mkdir -p \
