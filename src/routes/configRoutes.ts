@@ -10,11 +10,7 @@ export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend
 
   app.get("/api/config/:key", async (req: any, reply: any) => {
     const { key } = req.params as any
-    if (key in config) {
-      return { value: (config as any)[key] }
-    }
-
-    return reply.status(404).send({ error: "Config key not found" })
+    return { value: (config as any)[key] }
   })
 
   app.put("/api/config/:key", async (req: any, reply: any) => {

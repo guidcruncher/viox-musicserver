@@ -37,6 +37,7 @@ const DEFAULTS: AppConfig = {
   spotifyRefreshToken: null,
   spotifyDeviceName: "VIOX",
   downloadPodcasts: false,
+  visualizer: "bar",
 }
 
 // ─── Internal: file-config cache (2 s TTL) ─────────────────────────────────
