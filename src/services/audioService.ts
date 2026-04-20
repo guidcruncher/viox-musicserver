@@ -2,8 +2,8 @@ import { ChildProcessWithoutNullStreams, spawn } from "child_process"
 
 import { logger } from "@/logger"
 
-// Added 'opus' to the union type
-type AudioFormat = "aac" | "mp3" | "mp4" | "opus"
+// Audio formats - listed in order of increasing CPU load (generally) and quality (generally)
+type AudioFormat = "pcm" | "mp3" | "flac" | "aac" | "mp4" | "opus"
 
 interface FormatConfig {
   mimeType: string
@@ -12,9 +12,14 @@ interface FormatConfig {
 }
 
 export class AudioStreamService {
+  public static getAudioFormatsSupported(): string[] {
+    const cpuOrder: AudioFormat[] = ["pcm", "mp3", "flac", "aac", "mp4", "opus"]
+    return cpuOrder as string[]
+  }
+
   private readonly configs: Record<AudioFormat, FormatConfig> = {
     opus: {
-      mimeType: "audio/ogg", // Standard container for Opus over HTTP
+      mimeType: "audio/ogg",
       ffmpegArgs: [
         "-c:a",
         "libopus",
@@ -29,16 +34,18 @@ export class AudioStreamService {
         "-application",
         "lowdelay",
         "-f",
-        "opus", // Tells FFmpeg to use the ogg/opus muxer
+        "opus",
         "-",
       ],
       primingFrame: undefined,
     },
+
     aac: {
       mimeType: "audio/aac",
       ffmpegArgs: ["-c:a", "aac", "-b:a", "96k", "-f", "adts", "-"],
       primingFrame: Buffer.from([0xff, 0xf1, 0x50, 0x80, 0x00, 0x1f, 0xfc]),
     },
+
     mp3: {
       mimeType: "audio/mpeg",
       ffmpegArgs: ["-c:a", "libmp3lame", "-b:a", "128k", "-f", "mp3", "-"],
@@ -46,6 +53,7 @@ export class AudioStreamService {
         0xff, 0xfb, 0x90, 0x44, 0x00, 0x00, 0x00, 0x08, 0x00, 0x44, 0x00, 0x00,
       ]),
     },
+
     mp4: {
       mimeType: "audio/mp4",
       ffmpegArgs: [
@@ -61,11 +69,36 @@ export class AudioStreamService {
       ],
       primingFrame: undefined,
     },
+
+    pcm: {
+      mimeType: "audio/L16",
+      ffmpegArgs: ["-c:a", "pcm_s16le", "-ar", "48000", "-ac", "2", "-f", "s16le", "-"],
+      primingFrame: undefined,
+    },
+
+    flac: {
+      mimeType: "audio/flac",
+      ffmpegArgs: [
+        "-c:a",
+        "flac",
+        "-compression_level",
+        "5", // Balanced CPU vs size
+        "-ar",
+        "48000",
+        "-ac",
+        "2",
+        "-f",
+        "flac",
+        "-",
+      ],
+      primingFrame: undefined,
+    },
   }
 
   public negotiateFormat(queryFormat?: string, accept?: string, ua?: string): AudioFormat {
     logger.debug("Negotiating format")
 
+    // 1. Explicit override always wins
     if (queryFormat && queryFormat in this.configs) {
       logger.debug(`Using format override from querystring ${queryFormat}`)
       return queryFormat as AudioFormat
@@ -74,31 +107,39 @@ export class AudioStreamService {
     const acceptHeader = accept || ""
     const userAgent = ua || ""
 
-    // Opus is preferred for low-latency if supported (Modern Chrome/Firefox/Edge)
-    if (acceptHeader.includes("audio/ogg") || acceptHeader.includes("audio/webm")) {
-      // Note: audio/ogg is used by Firefox/Chrome for Opus
-      logger.debug("Using opus")
-      return "opus"
+    // 2. CPU‑ordered preference list (lowest → highest)
+    const cpuOrder: AudioFormat[] = ["pcm", "mp3", "flac", "aac", "mp4", "opus"]
+
+    // 3. Map formats to MIME indicators
+    const mimeMatches: Record<AudioFormat, string[]> = {
+      pcm: ["audio/L16", "audio/raw"],
+      mp3: ["audio/mpeg"],
+      flac: ["audio/flac"],
+      aac: ["audio/aac"],
+      mp4: ["audio/mp4"],
+      opus: ["audio/ogg", "audio/webm"],
     }
 
-    if (acceptHeader.includes("audio/mp4")) {
-      logger.debug("Using mp4")
-      return "mp4"
+    // 4. Try to match Accept header in CPU‑efficient order
+    for (const format of cpuOrder) {
+      const mimes = mimeMatches[format]
+      if (mimes.some((m) => acceptHeader.includes(m))) {
+        logger.debug(`Selected ${format} based on Accept header`)
+        return format
+      }
     }
 
-    // ... rest of your negotiation logic
-    if (acceptHeader.includes("audio/aac")) return "aac"
-    if (acceptHeader.includes("audio/mpeg")) return "mp3"
-
+    // 5. Safari fallback (AAC)
     if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
+      logger.debug("Safari detected, using AAC")
       return "aac"
     }
 
-    return "mp3"
+    // 6. Default to lowest CPU format
+    logger.debug("No match found, defaulting to pcm")
+    return "pcm"
   }
 
-  // getHeaders, createStream, and stopStream remain the same
-  // as they dynamically use the configs object.
   public getHeaders(format: AudioFormat) {
     const config = this.configs[format]
     return {
@@ -130,7 +171,7 @@ export class AudioStreamService {
         "-hide_banner",
         "-loglevel",
         "error",
-        "-nostdin", // Added to prevent Code 255/input hangs
+        "-nostdin",
         "-f",
         "pulse",
         "-i",
@@ -138,7 +179,7 @@ export class AudioStreamService {
         ...config.ffmpegArgs,
       ],
       {
-        env: { ...process.env }, // Ensure PULSE_SERVER is passed
+        env: { ...process.env },
       },
     )
 
@@ -147,7 +188,7 @@ export class AudioStreamService {
 
   public stopStream(process: ChildProcessWithoutNullStreams): void {
     if (!process.killed) {
-      process.kill("SIGTERM") // SIGTERM is cleaner than SIGKILL for FFmpeg
+      process.kill("SIGTERM")
     }
   }
 }
