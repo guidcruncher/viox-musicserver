@@ -4,7 +4,7 @@ Transport: WebSocket (binary)
 Payload: Float32Array(64)
 
 ## 1. Overview
-This document defines the binary protocol used by the AudioService FFT stream.  
+This document defines the binary protocol used by the AudioService FFT stream ( located at /api/fft).  
 Clients receive real‑time FFT magnitude frames derived from a 1024‑point real FFT at 48 kHz.
 
 The protocol is optimized for:
