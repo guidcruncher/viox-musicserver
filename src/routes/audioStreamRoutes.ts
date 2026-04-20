@@ -7,7 +7,7 @@ import type { VioxBackend } from "@/types"
 
 export function registerAudioStreamRoutes(app: FastifyInstance, _backend: VioxBackend) {
   const streamerService = new AudioStreamService()
-  logger.info("Registering version routes")
+  logger.info("Registering audioStream routes")
 
   app.get("/api/stream", { schema: StreamerSchema }, async (req: any, reply: any) => {
     // 1. Identify format via smart negotiation
