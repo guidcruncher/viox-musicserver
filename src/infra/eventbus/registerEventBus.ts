@@ -5,6 +5,7 @@ import { logger } from "@/logger"
 
 import { eventBus } from "./eventBus"
 import { GoLibrespotListener } from "./listeners/goLibrespotListener"
+import { MpvClientListener } from "./listeners/mpvClientListener"
 import { VioxCommand } from "./types"
 
 export async function registerEventBus(fastify: FastifyInstance) {
@@ -45,4 +46,5 @@ export async function registerEventBus(fastify: FastifyInstance) {
 
   // 3. Initialize listeners
   new GoLibrespotListener().start()
+  new MpvClientListener().start()
 }

@@ -10,6 +10,7 @@ interface MpvResponse {
   request_id?: number
   event?: string
   name?: string
+  id?: number // Used by property-change events
 }
 
 export class MpvClient extends EventEmitter {
@@ -24,7 +25,11 @@ export class MpvClient extends EventEmitter {
   private isConnected = false
   private isConnecting = false
   private reconnectTimeout: NodeJS.Timeout | null = null
-  private retryDelay = 1000 // Start with 1s
+  private retryDelay = 1000
+
+  // Trackers for progress calculation
+  private _currentTime = 0
+  private _duration = 0
 
   private constructor(private socketPath: string) {
     super()
@@ -37,49 +42,6 @@ export class MpvClient extends EventEmitter {
     return MpvClient.instance
   }
 
-  public static async restart(): Promise<void> {
-    try {
-      await new Promise((resolve) => exec(`/usr/local/bin/mpv.sh`, resolve))
-    } catch (e) {
-      logger.warn("[MpvClient] start failed", e)
-    }
-
-    return this.getInstance().connect()
-  }
-
-  /**
-   * Proactively connects to the MPV IPC socket with retries.
-   * Call during server startup to ensure the connection is ready before
-   * accepting playback requests.
-   */
-  public static async warmup(retries = 5, delayMs = 1000): Promise<void> {
-    const instance = this.getInstance()
-    for (let attempt = 1; attempt <= retries; attempt++) {
-      try {
-        await instance.connect()
-        logger.info(`[MpvClient] warmup connected on attempt ${attempt}`)
-        return
-      } catch {
-        logger.warn(`[MpvClient] warmup attempt ${attempt}/${retries} failed`)
-        if (attempt < retries) {
-          await new Promise((resolve) => setTimeout(resolve, delayMs))
-        }
-      }
-    }
-    logger.error("[MpvClient] warmup exhausted all retries — first playback may fail")
-  }
-
-  /**
-   * Logs messages with a consistent format
-   */
-  private log(level: "info" | "warn" | "error", message: string, ...args: any[]) {
-    const timestamp = new Date().toISOString()
-    logger[level](`[${timestamp}] [MpvClient] [${level.toUpperCase()}] ${message}`, ...args)
-  }
-
-  /**
-   * Establishes connection with guard clauses and cleanup
-   */
   public async connect(): Promise<void> {
     if (this.isConnected) return
     if (this.isConnecting) {
@@ -87,9 +49,7 @@ export class MpvClient extends EventEmitter {
     }
 
     this.isConnecting = true
-    this.log("info", `Attempting connection to ${this.socketPath}`)
 
-    // Critical: Ensure old socket is destroyed before creating a new one to prevent EISCONN
     if (this.socket) {
       this.socket.destroy()
       this.socket.removeAllListeners()
@@ -104,13 +64,16 @@ export class MpvClient extends EventEmitter {
         reject(new Error("MPV connection timeout"))
       }, 5000)
 
-      this.socket!.connect(this.socketPath, () => {
+      this.socket!.connect(this.socketPath, async () => {
         clearTimeout(connectionTimeout)
         this.isConnected = true
         this.isConnecting = false
-        this.retryDelay = 1000 // Reset backoff on success
-        this.log("info", "Successfully connected to MPV")
+        this.retryDelay = 1000
         this.setupListeners()
+
+        // CRITICAL: Re-subscribe to observations on every new connection
+        await this.setupProgressObservations()
+
         this.emit("connected")
         resolve()
       })
@@ -118,61 +81,33 @@ export class MpvClient extends EventEmitter {
       this.socket!.once("error", (err) => {
         clearTimeout(connectionTimeout)
         this.isConnecting = false
-        this.log("error", `Socket connection failed: ${err.message}`)
         this.handleReconnect()
         reject(err)
       })
     })
   }
 
-  private setupListeners(): void {
-    if (!this.socket) return
-
-    this.socket.on("data", (chunk: string) => this.handleData(chunk))
-
-    this.socket.on("error", (err) => {
-      this.log("error", `Runtime socket error: ${err.message}`)
-    })
-
-    this.socket.on("close", (hadError) => {
-      this.log("warn", `Connection closed ${hadError ? "due to error" : "by MPV"}`)
-      this.cleanup()
-      this.handleReconnect()
-    })
-  }
-
-  private handleReconnect() {
-    if (this.reconnectTimeout) return
-
-    this.log("info", `Retrying connection in ${this.retryDelay}ms...`)
-    this.reconnectTimeout = setTimeout(async () => {
-      this.reconnectTimeout = null
-      // Exponential backoff up to 30 seconds
-      this.retryDelay = Math.min(this.retryDelay * 2, 30000)
-      try {
-        await this.connect()
-      } catch {
-        // Error already logged in connect()
-      }
-    }, this.retryDelay)
-  }
-
-  private cleanup(reason: string = "Connection lost") {
-    this.isConnected = false
-    this.isConnecting = false
-    this.buffer = ""
-
-    // Reject all pending promises so the app doesn't hang
-    for (const [id, req] of this.pendingRequests) {
-      clearTimeout(req.timer)
-      req.reject(new Error(`${reason} for request ${id}`))
+  public static async restart(): Promise<void> {
+    try {
+      await new Promise((resolve) => exec(`/usr/local/bin/mpv.sh`, resolve))
+    } catch (e) {
+      logger.warn("[MpvClient] start failed", e)
     }
-    this.pendingRequests.clear()
 
-    if (this.socket) {
-      this.socket.destroy()
-      this.socket.removeAllListeners()
-      this.socket = null
+    return this.getInstance().connect()
+  }
+
+  /**
+   * Tells MPV to push updates whenever these values change
+   */
+  private async setupProgressObservations(): Promise<void> {
+    try {
+      // Use fixed IDs for these properties so we can identify them in handleData
+      await this.send(["observe_property", 10, "time-pos"])
+      await this.send(["observe_property", 11, "duration"])
+      await this.send(["observe_property", 12, "pause"])
+    } catch (e) {
+      logger.error("[MpvClient] Failed to setup observations", e)
     }
   }
 
@@ -188,6 +123,7 @@ export class MpvClient extends EventEmitter {
       try {
         const msg: MpvResponse = JSON.parse(trimmed)
 
+        // Handle Request/Response Cycle
         if (msg.request_id && this.pendingRequests.has(msg.request_id)) {
           const req = this.pendingRequests.get(msg.request_id)
           if (req) {
@@ -198,18 +134,39 @@ export class MpvClient extends EventEmitter {
           this.pendingRequests.delete(msg.request_id)
         }
 
+        // Handle Property Changes (Progress Tracking)
+        if (msg.event === "property-change") {
+          this.processPropertyChange(msg)
+        }
+
+        // Emit generic events (end-file, pause, etc)
         if (msg.event) {
           this.emit(msg.event, msg)
         }
       } catch (e) {
-        this.log("error", `Failed to parse MPV message: ${trimmed}`, e)
+        logger.error(`[MpvClient] Parse error: ${trimmed}`)
       }
     }
   }
 
-  /**
-   * Sends a command with a 3-second timeout guard
-   */
+  private processPropertyChange(msg: MpvResponse) {
+    if (msg.id === 10) {
+      // time-pos
+      this._currentTime = msg.data ?? 0
+    } else if (msg.id === 11) {
+      // duration
+      this._duration = msg.data ?? 0
+    }
+
+    const percent = this._duration > 0 ? (this._currentTime / this._duration) * 100 : 0
+
+    this.emit("time-update", {
+      current: this._currentTime,
+      total: this._duration,
+      percent: percent,
+    })
+  }
+
   public async send(command: (string | number | boolean)[]): Promise<any> {
     if (!this.isConnected) {
       await this.connect()
@@ -229,13 +186,7 @@ export class MpvClient extends EventEmitter {
       this.pendingRequests.set(id, { resolve, reject, timer })
 
       if (this.socket && this.isConnected) {
-        this.socket.write(payload, (err) => {
-          if (err) {
-            clearTimeout(timer)
-            this.pendingRequests.delete(id)
-            reject(err)
-          }
-        })
+        this.socket.write(payload)
       } else {
         clearTimeout(timer)
         this.pendingRequests.delete(id)
@@ -244,10 +195,66 @@ export class MpvClient extends EventEmitter {
     })
   }
 
-  // --- Convenience Methods ---
+  private setupListeners(): void {
+    if (!this.socket) return
+    this.socket.on("data", (chunk: string) => this.handleData(chunk))
+    this.socket.on("close", () => {
+      this.cleanup()
+      this.handleReconnect()
+    })
+  }
+
+  private handleReconnect() {
+    if (this.reconnectTimeout) return
+    this.reconnectTimeout = setTimeout(async () => {
+      this.reconnectTimeout = null
+      this.retryDelay = Math.min(this.retryDelay * 2, 30000)
+      try {
+        await this.connect()
+      } catch {}
+    }, this.retryDelay)
+  }
+
+  public static async warmup(retries = 5, delayMs = 1000): Promise<void> {
+    const instance = this.getInstance()
+    for (let attempt = 1; attempt <= retries; attempt++) {
+      try {
+        await instance.connect()
+        logger.info(`[MpvClient] warmup connected on attempt ${attempt}`)
+        return
+      } catch {
+        logger.warn(`[MpvClient] warmup attempt ${attempt}/${retries} failed`)
+        if (attempt < retries) {
+          await new Promise((resolve) => setTimeout(resolve, delayMs))
+        }
+      }
+    }
+    logger.error("[MpvClient] warmup exhausted all retries — first playback may fail")
+  }
+
+  private cleanup(reason: string = "Connection lost") {
+    this.isConnected = false
+    this.isConnecting = false
+    for (const [id, req] of this.pendingRequests) {
+      clearTimeout(req.timer)
+      req.reject(new Error(`${reason} for request ${id}`))
+    }
+    this.pendingRequests.clear()
+    if (this.socket) {
+      this.socket.destroy()
+      this.socket = null
+    }
+  }
+
+  // Convenience methods
   async play(path: string) {
     return this.send(["loadfile", path])
   }
+  async stop() {
+    this._currentTime = 0
+    return this.send(["stop"])
+  }
+
   async togglePause() {
     return this.send(["cycle", "pause"])
   }
@@ -256,14 +263,5 @@ export class MpvClient extends EventEmitter {
   }
   async resume() {
     return this.send(["set_property", "pause", false])
-  }
-  async stop() {
-    return this.send(["stop"])
-  }
-  async seek(seconds: number) {
-    return this.send(["seek", seconds, "relative"])
-  }
-  async observe(propertyName: string) {
-    return this.send(["observe_property", 1, propertyName])
   }
 }
