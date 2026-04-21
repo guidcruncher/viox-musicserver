@@ -1,6 +1,12 @@
 {
   "name": "viox-musicserver",
   "version": "0.1.0",
+  "license": "MIT",
+  "description": "VIOX Music Server",
+  "keywords": "viox",
+  "homepage": "https://github.com/guidcruncher/viox-musicserver",
+  "author": "John Crocker <182365840+guidcruncher@users.noreply.github.com> (https://linktr.ee/johncrocker)",
+  "funding": "https://buymeacoffee.com/guidcruncher",
   "main": "dist/index.js",
   "scripts": {
     "docker": "make dev",
