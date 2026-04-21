@@ -2,3 +2,6 @@ allowBuilds:
   better-sqlite3: true
   esbuild: true
   node-fftw: true
+
+onlyBuiltDependencies:
+  - better-sqlite3
