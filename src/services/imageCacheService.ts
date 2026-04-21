@@ -54,7 +54,7 @@ export class ImageCacheService {
       throw new Error(`Failed to fetch image: HTTP ${response.status}`)
     }
 
-    const mimeType = response.headers["content-type"] ?? "application/octet-stream"
+    const mimeType = String(response.headers["content-type"] ?? "application/octet-stream")
 
     // Cache to disk
     const writer = createWriteStream(filePath)

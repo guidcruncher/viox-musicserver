@@ -31,6 +31,8 @@ export interface AppConfig {
 
   // ── Podcasts ───────────────────────────────────────
   downloadPodcasts: boolean
+
+  visualizer: string
 }
 
 /**
