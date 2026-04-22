@@ -13,6 +13,7 @@ type VioxEventType =
   | "active"
   | "inactive"
   | "finished"
+  | "time-update"
 
 export interface VioxEvent {
   type: VioxEventType

@@ -8,7 +8,7 @@ import type { VioxBackend } from "@/types"
 export function registerConfigRoutes(app: FastifyInstance, _backend: VioxBackend) {
   logger.info("Registering config routes")
 
-  app.get("/api/config/:key", async (req: any, reply: any) => {
+  app.get("/api/config/:key", async (req: any, _reply: any) => {
     const { key } = req.params as any
     return { value: (config as any)[key] }
   })
