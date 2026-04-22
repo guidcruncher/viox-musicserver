@@ -2,6 +2,7 @@
 import { createVioxBackend } from "@/core/createBackend"
 import { MpvClient } from "@/infra/backends/mpvClient"
 import { logger } from "@/logger"
+
 import { eventBus } from "../eventBus"
 import { VioxEvent } from "../types"
 
@@ -22,7 +23,7 @@ export class MpvClientListener {
 
         const evt: VioxEvent = {
           type: "time-update",
-          payload: { current, total, percent }
+          payload: { current, total, percent },
         }
 
         eventBus.dispatchEvent(evt)

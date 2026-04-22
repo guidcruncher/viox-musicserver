@@ -8,7 +8,12 @@ export class FFTStreamService {
   private pwProcess: ChildProcessWithoutNullStreams | null = null
   private listeners: Set<(data: Float32Array) => void> = new Set()
   private fft = new FFT(1024)
-  private lastLogTime = 0
+
+  // --- Throttling & Smoothing State ---
+  private lastEmitTime = 0
+  private readonly EMIT_INTERVAL_MS = 33 // Target ~30fps to save browser CPU
+  private peakMagnitudes = new Float32Array(64)
+  // ------------------------------------
 
   private constructor() {}
 
@@ -50,6 +55,7 @@ export class FFTStreamService {
       try {
         const samples = new Int16Array(chunk.buffer, chunk.byteOffset, chunk.length / 2)
 
+        // Process audio in 1024 sample chunks
         if (samples.length >= 1024) {
           const input = new Float32Array(1024)
           for (let i = 0; i < 1024; i++) {
@@ -59,28 +65,42 @@ export class FFTStreamService {
           const out = this.fft.createComplexArray()
           this.fft.realTransform(out, input)
 
-          const magnitudes = new Float32Array(64)
-
           /**
-           * NOISE GATE: Subtracts system floor noise.
-           * Increase this if bars still jitter during silence.
+           * PEAK DETECTION:
+           * We update our local peakMagnitudes array with the highest values
+           * found in this specific audio chunk.
            */
-          const NOISE_THRESHOLD = 0.012
-
           for (let i = 0; i < 64; i++) {
             const real = out[i * 2]
             const imag = out[i * 2 + 1]
             const mag = Math.sqrt(real * real + imag * imag)
 
-            if (mag < NOISE_THRESHOLD) {
-              magnitudes[i] = 0
-            } else {
-              // Smoothly start the signal from zero above the noise floor
-              magnitudes[i] = (mag - NOISE_THRESHOLD) * 1.5
+            if (mag > this.peakMagnitudes[i]) {
+              this.peakMagnitudes[i] = mag
             }
           }
 
-          this.listeners.forEach((cb) => cb(magnitudes))
+          /**
+           * THROTTLE CHECK:
+           * Only broadcast to listeners if the EMIT_INTERVAL has passed.
+           */
+          const now = Date.now()
+          if (now - this.lastEmitTime >= this.EMIT_INTERVAL_MS) {
+            const NOISE_THRESHOLD = 0.012
+            const outputBuffer = new Float32Array(64)
+
+            for (let i = 0; i < 64; i++) {
+              const val = this.peakMagnitudes[i]
+              outputBuffer[i] = val < NOISE_THRESHOLD ? 0 : (val - NOISE_THRESHOLD) * 1.5
+            }
+
+            // Send the aggregated peaks to clients
+            this.listeners.forEach((cb) => cb(outputBuffer))
+
+            // Reset tracking for the next interval
+            this.lastEmitTime = now
+            this.peakMagnitudes.fill(0)
+          }
         }
       } catch (err) {
         logger.error("Error in FFT Service", err)

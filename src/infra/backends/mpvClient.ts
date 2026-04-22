@@ -144,7 +144,7 @@ export class MpvClient extends EventEmitter {
           this.emit(msg.event, msg)
         }
       } catch (e) {
-        logger.error(`[MpvClient] Parse error: ${trimmed}`)
+        logger.error(`[MpvClient] Parse error: ${trimmed}`, e)
       }
     }
   }
@@ -211,7 +211,9 @@ export class MpvClient extends EventEmitter {
       this.retryDelay = Math.min(this.retryDelay * 2, 30000)
       try {
         await this.connect()
-      } catch {}
+      } catch {
+        logger.warn("Reconnecting")
+      }
     }, this.retryDelay)
   }
 
