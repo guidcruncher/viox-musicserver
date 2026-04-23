@@ -42,13 +42,13 @@ export class GoLibrespotListener {
 
   private startTicker() {
     if (this.ticker) return
-    // Tick every 500ms for a smoother UI than 1s
+    // Tick every 5000ms (5 seconds) to limit browser/UI swamp
     this.ticker = setInterval(() => {
       if (this.isPlaying) {
-        this.currentTimeMs += 500
+        this.currentTimeMs += 5000
         this.emitProgress()
       }
-    }, 500)
+    }, 5000)
   }
 
   private stopTicker() {
@@ -88,12 +88,19 @@ export class GoLibrespotListener {
         switch (raw.event ?? raw.type) {
           case "metadata":
             const metaData: goLibrespotMetaData = raw
-            this.durationMs = metaData.duration // Capture total track length
+            // Populate duration from metadata event
+            this.durationMs = metaData.duration
             evt = { type: "metadata", payload: metaData }
             break
 
           case "playing":
             this.isPlaying = true
+
+            // Backup: populate duration from playing payload if available
+            if (raw.duration) {
+              this.durationMs = raw.duration
+            }
+
             const playing = (await this.getMediaItem(raw.uri)) ?? raw
 
             // Only reset time to 0 if it's a new track (not a resume)
@@ -102,13 +109,14 @@ export class GoLibrespotListener {
             }
 
             this.startTicker()
+            // Emit immediately so UI updates right at track start
+            this.emitProgress()
+
             evt = { type: raw.resume ? "track_resume" : "track_start", payload: playing }
             break
 
           case "paused":
             this.isPlaying = false
-            // Keep the ticker running but it won't increment because isPlaying is false
-            // or stop it to save resources:
             this.stopTicker()
             const paused: goLibrespotPaused = raw
             evt = { type: "track_pause", payload: paused }
@@ -116,14 +124,15 @@ export class GoLibrespotListener {
 
           case "seek":
             const seek: goLibrespotSeek = raw
-            this.currentTimeMs = seek.position // Update internal clock to seek target
-            this.emitProgress() // Push update immediately for UI responsiveness
+            this.currentTimeMs = seek.position // Update internal clock
+            this.emitProgress() // Immediate push for UI responsiveness
             evt = { type: "seek", payload: seek }
             break
 
           case "not_playing":
             this.isPlaying = false
             this.currentTimeMs = 0
+            this.durationMs = 0 // Reset for next track
             this.stopTicker()
             this.emitProgress() // Reset UI to 0
             eventBus.emit("finished", {})
