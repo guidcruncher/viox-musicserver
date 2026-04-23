@@ -33,6 +33,9 @@ export interface AppConfig {
   downloadPodcasts: boolean
 
   visualizer: string
+
+  // ── Misc ───────────────────────────────────────
+  dontProxyRadioStreams: boolean
 }
 
 /**
