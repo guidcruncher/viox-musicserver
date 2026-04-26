@@ -64,6 +64,24 @@ services:
     # IPC for shared memory (PulseAudio)
     ipc: host
 
+  viox-speaker:
+    image: guidcruncher/viox-speaker:latest
+    container_name: viox-speaker
+    hostname: viox-speaker
+    restart: unless-stopped
+    depends_on:
+      - viox-musicserver
+    devices:
+      - /dev/snd:/dev/snd
+    environment:
+      - VIOX_HOST=192.168.1.202
+      - SPEAKER_NAME="VIOX Music Server""
+    # Capabilities for audio access
+    cap_add:
+      - SYS_NICE
+    # IPC for shared memory (PulseAudio)
+    ipc: host
+
 secrets:
   spotify-clientid:
     file: ../spotify-clientid.secret

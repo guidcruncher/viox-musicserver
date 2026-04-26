@@ -2,6 +2,7 @@
 import { eventBus } from "@/infra/eventbus/eventBus"
 import { logger } from "@/logger"
 import type { MediaItem, PlaybackBackend } from "@/types"
+import { config } from "@/config"
 
 import { MpvClient } from "./mpvClient"
 
@@ -47,6 +48,7 @@ export class RadioPlaybackBackend implements PlaybackBackend {
     const url = item.sourceRef.uri
     if (!url) throw new Error("Radio backend: no media URL")
 
+if (!config["dontProxyRadioStreams"]) {
     const proxiedUrl = `http://127.0.0.1:8080/api/proxy?url=${encodeURIComponent(url)}&source=${item.sourceRef.source}`
 
     logger.debug(`Original playback URL ${url}`)
@@ -56,6 +58,13 @@ export class RadioPlaybackBackend implements PlaybackBackend {
     this.pausedAt = null
 
     await this.ffplay.play(proxiedUrl)
+return 
+}
+
+  logger.debug(`Direct playback URL ${url}`)
+    this.startedAt = Date.now() - positionMs
+    this.pausedAt = null
+    await this.ffplay.play(url)
   }
 
   async pause(): Promise<void> {

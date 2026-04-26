@@ -71,15 +71,6 @@ configure_environment() {
 
     echo "Pipewire started"
 
-    echo "Starting Snapcast Client"
-    snapclient --player alsa -s "hw:CARD=AUDIO,DEV=0" \
-        --hostID "VIOX Speaker" \
-        --sampleformat "48000:16:*" \
-        --logsink stdout \
-        --host 127.0.0.1 &
-
-    echo "Snapcast Client started"
-
     echo "Starting MPV"
 
     rm -rf /tmp/mpv-ipc

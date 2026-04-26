@@ -19,6 +19,7 @@ const ENV_MAP: Partial<Record<keyof AppConfig, string>> = {
   spotifyDeviceName: "SPOTIFY_DEVICE_NAME",
   spotifyRefreshToken: "SPOTIFY_REFRESH_TOKEN",
   downloadPodcasts: "DOWNLOAD_PODCASTS",
+  dontProxyRadioStreams: "DONT_PROXY_RADIO",
 }
 
 // ─── Defaults ───────────────────────────────────────────────────────────────
@@ -37,6 +38,7 @@ const DEFAULTS: AppConfig = {
   spotifyRefreshToken: null,
   spotifyDeviceName: "VIOX",
   downloadPodcasts: false,
+  dontProxyRadioStreams: true,
   visualizer: "bar",
 }
 
