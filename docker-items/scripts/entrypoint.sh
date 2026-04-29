@@ -92,6 +92,7 @@ echo "Initialization complete. Starting application."
 
 mkdir -p /data/golibrespot/
 cp  /app/golibrespot-config.template  /data/golibrespot/config.yml
+rm -f /data/golibrespot/lockfile
 /usr/local/bin/go-librespot --config_dir /data/golibrespot &
 
 node /app/api/index.js
