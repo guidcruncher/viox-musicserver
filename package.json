@@ -17,7 +17,7 @@
     "build": "pnpm run generate:barrels && pnpm run generate:routes && pnpm run build:api",
     "build:api": "tsc && tsc-alias",
     "start": "node dist/index.js",
-    "format": "prettier --config ./.prettierrc --write \"src/**/*.ts\" src/*.ts",
+    "format": "prettier --no-error-on-unmatched-pattern --config ./.prettierrc --write \"src/**/*.ts\" src/*.ts",
     "test": "vitest",
     "test:unit": "vitest --run --reporter=verbose",
     "test:watch": "vitest --watch",
